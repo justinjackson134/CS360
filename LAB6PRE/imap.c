@@ -53,7 +53,7 @@ imap()
   gp = (GD *)buf;
 
   imap = gp->bg_inode_bitmap;
-  printf("bmap = %d\n", imap);
+  printf("imap = %d\n", imap);
 
   // read inode_bitmap block
   get_block(fd, imap, buf);
