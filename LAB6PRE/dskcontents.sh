@@ -1,4 +1,4 @@
-#! bin/sh
+#! /bin/sh
 #------ Run as a sh script -----------
         sudo mount -o loop diskimage  /mnt
         ls -l /mnt
