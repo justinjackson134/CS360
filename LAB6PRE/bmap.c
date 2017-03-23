@@ -35,7 +35,7 @@ int tst_bit(char *buf, int bit)
   return 0;
 }
 
-imap()
+bmap()
 {
   char buf[BLKSIZE];
   int  bmap, ninodes;
@@ -79,7 +79,7 @@ main(int argc, char *argv[ ])
     exit(1);
   }
 
-  imap();
+  bmap();
 }
 /*********************** SAMPLE Bmap ***********************************
 11111111 11000000 00000000 00000000 00000000 00000000 00000000 00000000 
