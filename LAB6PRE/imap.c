@@ -62,6 +62,8 @@ imap()
     (tst_bit(buf, i)) ?	putchar('1') : putchar('0');
     if (i && (i % 8)==0)
        printf(" ");
+    if (i && (i % 64)==0)
+       printf("\n");
   }
   printf("\n");
 }
