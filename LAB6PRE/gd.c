@@ -72,8 +72,8 @@ gd()
   printf("bg_free_inodes_count = %d\n", gp->bg_free_inodes_count);
   printf("bg_used_dirs_count   = %d\n", gp->bg_used_dirs_count);
 
-  printf("bg_pad               = %d\n", gp->bg_pad);
-  printf("bg_reserved          = %d\n", gp->bg_reserved);
+  // DOESNT EXIST //printf("bg_pad               = %d\n", gp->bg_pad);
+  // DOESNT EXIST //printf("bg_reserved          = %d\n", gp->bg_reserved);
 
   
 }
