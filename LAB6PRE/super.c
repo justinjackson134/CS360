@@ -111,7 +111,7 @@ main(int argc, char *argv[ ])
   super();
 }
 
-***** SAMPLE OUTPUTs of super.c ****************
+/***** SAMPLE OUTPUTs of super.c ****************
 s_inodes_count                 =      184
 s_blocks_count                 =     1440
 s_free_inodes_count            =      174
@@ -124,4 +124,4 @@ s_max_mnt_count                =       34
 s_magic                        =     ef53
 s_mtime = Mon Feb  9 07:08:22 2004
 s_inode_size                   =      128
-************************************************
+************************************************/
