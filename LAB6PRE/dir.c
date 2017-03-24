@@ -23,6 +23,7 @@ int iblock;
 
 char dbuf[1024];
 char *name;
+int LEN = 255;
 
 int get_block(int fd, int blk, char buf[ ])
 {
@@ -113,7 +114,7 @@ main(int argc, char *argv[])
 
   printf("Before get line\n");
   //name = (malloc(255*sizeof(char)));
-  getline(&name, 255, stdin);
+  getline(&name, &LEN, stdin);
   printf("after get line");
   search(ip, name);
 }
