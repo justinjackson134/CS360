@@ -85,7 +85,7 @@ inode()
         while (cp < &dbuf[1024])
         {
             //use dp-> to print the DIR entries as  [inode rec_len name_len name]
-            printf("DIR ENTRY - rec_len: %d, name_len: %d", dp->rec_len, dp->name_len);
+            printf("DIR ENTRY - rec_len: %d, name_len: %d\n", dp->rec_len, dp->name_len);
             cp += dp->rec_len;
             dp = (SUPER *) cp;
         }
