@@ -127,6 +127,7 @@ main(int argc, char *argv[ ])
 
   imap = gp->bg_inode_bitmap;
   printf("imap = %d\n", imap);
+  printf("Please Enter a Char: ");
   getchar();
 
   for (i=0; i < 5; i++){  
