@@ -114,14 +114,14 @@ int search(INODE *ip, char *name)
 	        //printf("Name: %s == dp->name: %s", name, dp->name);
 	    	if(strcmp(name, dp->name) == 0)
 	    	{
-	    		printf("Found at INODE: %d", dp->inode);
+	    		printf("Found at INODE: %d\n", dp->inode);
 	    		exit(1);
 	    	}
 
 	        cp += dp->rec_len;
 	        dp = (SUPER *) cp;
 	    }
-	    printf("Not Found: 0");
+	    printf("Not Found: 0\n");
 }
 
 char *disk = "mydisk";
