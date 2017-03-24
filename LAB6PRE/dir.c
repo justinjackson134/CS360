@@ -111,7 +111,7 @@ int search(INODE *ip, char *name)
 	    {
 	        //use dp-> to print the DIR entries as  [inode rec_len name_len name]
 	        //printf("DIR ENTRY - rec_len: %d, name_len: %d, name: %s\n", dp->rec_len, dp->name_len, dp->name);
-	        printf("Name: %s == dp->name: %s", name, dp->name);
+	        //printf("Name: %s == dp->name: %s", name, dp->name);
 	    	if(strcmp(name, dp->name) == 0)
 	    	{
 	    		printf("Found at INODE: %d", dp->inode);
@@ -138,6 +138,7 @@ main(int argc, char *argv[])
 
   inode();
 
+  printf("Enter name to search for: ");
   getline(&name, &LEN, stdin);
 
   search(ip, name);
