@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <ext2fs/ext2_fs.h>
 
+#include <string.h>
+
 #define BLKSIZE 1024
 
 // define shorter TYPES, save typing efforts
@@ -95,7 +97,28 @@ inode()
 
 int search(INODE *ip, char *name)
 {
-	printf("NAME: %s", name);
+	printf("Searching for: %s", name);
+
+	get_block(fd, ip->i_block[0], dbuf);  // char dbuf[1024]
+
+		DIR *dp = (SUPER *)dbuf;
+	    char *cp = dbuf;
+
+	    while (cp < &dbuf[1024])
+	    {
+	        //use dp-> to print the DIR entries as  [inode rec_len name_len name]
+	        //printf("DIR ENTRY - rec_len: %d, name_len: %d, name: %s\n", dp->rec_len, dp->name_len, dp->name);
+	    	if(strcmp(name, dp->name) == 0)
+	    	{
+	    		printf("Found at INODE: %d", dp->inode);
+	    		exit(1);
+	    	}
+
+
+	        cp += dp->rec_len;
+	        dp = (SUPER *) cp;
+	    }
+	    printf("Not Found: 0");
 }
 
 char *disk = "mydisk";
@@ -112,10 +135,8 @@ main(int argc, char *argv[])
 
   inode();
 
-  printf("Before get line\n");
-  //name = (malloc(255*sizeof(char)));
   getline(&name, &LEN, stdin);
-  printf("after get line");
+
   search(ip, name);
 }
 /******************************
