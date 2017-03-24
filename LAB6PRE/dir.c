@@ -22,7 +22,7 @@ int fd;
 int iblock;
 
 char dbuf[1024];
-char name[255];
+char *name;
 
 int get_block(int fd, int blk, char buf[ ])
 {
@@ -112,7 +112,7 @@ main(int argc, char *argv[])
   inode();
 
   printf("Before get line\n");
-  getline(&name, 255, stdin);
+  getline(name, 255, stdin);
   printf("after get line");
   search(ip, name);
 }
