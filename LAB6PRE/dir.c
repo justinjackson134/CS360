@@ -112,7 +112,8 @@ main(int argc, char *argv[])
   inode();
 
   printf("Before get line\n");
-  getline(name, 255, stdin);
+  //name = (malloc(255*sizeof(char)));
+  getline(&name, 255, stdin);
   printf("after get line");
   search(ip, name);
 }
