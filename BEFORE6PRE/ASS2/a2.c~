@@ -1,0 +1,48 @@
+/***** MAIN *****/
+int main(int argc, char *argv[ ], char *env[ ])
+{
+  putchar('\n');
+  prints("ThisIsAString");
+}
+
+/***** MYPRINTF *****/
+int myprintf()
+{
+  return;
+}
+
+/***** PRINT STRING INT *****/
+int prints(char *s)
+{
+  while(*s)
+  {
+    putchar(*s++);
+  }
+  putchar(' ');
+}
+
+/***** PRINT UNSIGNED INT *****/
+typedef unsigned int u32;
+
+int BASE = 10;
+char *table = "0123456789ABCDEF";
+
+int rpu(u32 x)
+{
+  char c;
+  if (x)
+  {
+     c = table[x % BASE];
+     rpu(x / BASE);
+     putchar(c);
+  }
+} 
+
+int printu(u32 x)
+{
+  if (x==0)
+     putchar('0');
+  else
+     rpu(x);
+  putchar(' ');
+}
