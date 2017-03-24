@@ -111,8 +111,9 @@ main(int argc, char *argv[])
 
   inode();
 
+  printf("Before get line\n");
   getline(name, 255, stdin);
-
+  printf("after get line");
   search(ip, name);
 }
 /******************************
