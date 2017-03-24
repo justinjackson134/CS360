@@ -22,7 +22,7 @@ int fd;
 int iblock;
 
 char dbuf[1024];
-char *name [255];
+char name[255];
 
 int get_block(int fd, int blk, char buf[ ])
 {
