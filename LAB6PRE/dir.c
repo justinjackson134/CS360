@@ -22,6 +22,7 @@ int fd;
 int iblock;
 
 char dbuf[1024];
+char *name [255];
 
 int get_block(int fd, int blk, char buf[ ])
 {
@@ -91,6 +92,11 @@ inode()
         }
 }
 
+int search(INODE *ip, char *name)
+{
+	printf("NAME: %s", name);
+}
+
 char *disk = "mydisk";
 main(int argc, char *argv[])
 { 
@@ -104,6 +110,10 @@ main(int argc, char *argv[])
   }
 
   inode();
+
+  name = getline(name, 255, stdin);
+
+  search(ip, char *name);
 }
 /******************************
 inode_block = 10
