@@ -97,6 +97,9 @@ inode()
 
 int search(INODE *ip, char *name)
 {
+	// cut off newline
+	name[strlen(name)-1] = 0;
+
 	printf("Searching for: %s", name);
 
 	get_block(fd, ip->i_block[0], dbuf);  // char dbuf[1024]
