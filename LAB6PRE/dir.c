@@ -111,7 +111,7 @@ main(int argc, char *argv[])
 
   inode();
 
-  name = getline(name, 255, stdin);
+  getline(name, 255, stdin);
 
   search(ip, char *name);
 }
