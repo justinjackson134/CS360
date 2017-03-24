@@ -113,7 +113,7 @@ main(int argc, char *argv[])
 
   getline(name, 255, stdin);
 
-  search(ip, char *name);
+  search(ip, name);
 }
 /******************************
 inode_block = 10
