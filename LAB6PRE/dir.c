@@ -21,6 +21,8 @@ DIR   *dp;
 int fd;
 int iblock;
 
+char dbuf[1024];
+
 int get_block(int fd, int blk, char buf[ ])
 {
   lseek(fd,(long)blk*BLKSIZE, 0);
@@ -75,15 +77,17 @@ inode()
   u32  i_block[15];                 // IMPORTANT, but later
  ***************************/
 
+  get_block(fd, ip->i_block[0], dbuf);  // char dbuf[1024]
 
-  get_block(fd, 33, dbuf);  // char dbuf[1024]
+        DIR *dp = (SUPER *)dbuf;
+        char *cp = dbuf;
 
-        DIR *dp = (  )dbuf;  char *cp = dbuf;
-
-        while (cp < &dbuf[1024]){
-            use dp-> to print the DIR entries as  [inode rec_len name_len name]
+        while (cp < &dbuf[1024])
+        {
+            //use dp-> to print the DIR entries as  [inode rec_len name_len name]
+            printf("DIR ENTRY - rec_len: %d, name_len: %d", dp->rec_len, dp->name_len);
             cp += dp->rec_len;
-            dp = (  ) cp;
+            dp = (SUPER *) cp;
         }
 }
 
