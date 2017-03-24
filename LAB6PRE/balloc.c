@@ -130,8 +130,6 @@ main(int argc, char *argv[ ])
   printf("Please Enter a Char: ");
   getchar();
 
-  for (i=0; i < 5; i++){  
-    ino = balloc(fd);
-    printf("allocated block = %d\n", ino);
-  }
+  ino = balloc(fd);
+  printf("allocated block = %d\n", ino);
 }
