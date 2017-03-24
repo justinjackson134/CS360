@@ -1,4 +1,4 @@
-void emptyM
+void emptyMain2()
 {
 	printf("Empty Main");
 }
