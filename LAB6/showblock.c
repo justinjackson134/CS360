@@ -217,6 +217,7 @@ showblock() {
     //-------------------------------------------------------
     //use inumber to read in its INODE and let ip --> this INODE 
 	int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
+	printf("%d", INODES_PER_BLOCK);
     get_block(fd, (InodesBeginBlock + ((inumber-1)/INODES_PER_BLOCK)), buf);
     ip = (SUPER *)buf + ((inumber-1)%INODES_PER_BLOCK);
     //ip = get_block(fd, inumber, buf);
