@@ -140,9 +140,6 @@ get_tokens_from_pathname() {
 char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
 int search(INODE * inodePtr, char * name) {
-  // cut off newline
-  //name[strlen(name)-1] = 0;
-
   printf("\nSEARCHING FOR: %s", name);
 
   get_block(fd, inodePtr->i_block[0], dbuf);  // char dbuf[1024]
@@ -164,20 +161,10 @@ int search(INODE * inodePtr, char * name) {
       cp += dp->rec_len;
       dp = (DIR *) cp;
 
-       getchar();
+      getchar();
   }
   printf(" - Not Found\n");
   return 0;
-
-  //6. Start from the root INODE in (3), search for name[0] in its data block(s), if not found - return 0
-  // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
-
-  //7. Use the inode number, ino, to locate the corresponding INODE: Recall that ino counts from 1.  Use the Mailman's algorithm
-  // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
-
-  // search for name string in the data blocks of this INODE
-  // if found, return name's inumber
-  // else      return 0
 }
 
 
