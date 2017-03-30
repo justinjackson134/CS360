@@ -91,11 +91,21 @@ get_group_descriptor_get_inodebegin() {
 // Vars for get_tokens
 char *name[128];
 char *pathname = "/";
+int i = 0;
 
 get_tokens_from_pathname() {
   printf("\nPathname: %s\n", pathname);
 
-  //name[0] = strtok(argv[1], "/");
+  // May have to remove an initial '/'
+  // Get first token
+  name[0] = strtok(pathname, "/");
+  printf(" %s\n", name[0]);
+
+  while (name[i] != NULL) {
+    i++;
+    name[i] = strtok(NULL, "/");
+    printf(" %s\n", name[i]);
+  }
 }
 
 
