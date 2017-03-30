@@ -1,5 +1,5 @@
 
-                   PROJECT Assignment #1
+/*                   PROJECT Assignment #1
   
               MUST complete this work THIS WEEK
    
@@ -10,7 +10,7 @@
 
 
 OBJECTIVE: mount root to start the PROJECT; ls, cd, pwd to show FS contents
-
+*/
 /*************** type.h file ***************
 typedef unsigned char  u8;
 typedef unsigned short u16;
@@ -57,7 +57,7 @@ typedef struct proc{
 *********************************/
 
 
-GIVEN BASE Code: Complete THIS code during class lecture.
+//GIVEN BASE Code: Complete THIS code during class lecture.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,7 +96,7 @@ main(int argc, char *argv[ ])   // run as a.out [diskname]
   }
   print fd or dev to see its value!!!
 
-(1). printf("checking EXT2 FS\n");
+/*(1). printf("checking EXT2 FS\n");
 
      Write C code to check EXT2 FS; if not EXT2 FS: exit
 
@@ -139,15 +139,15 @@ main(int argc, char *argv[ ])   // run as a.out [diskname]
        if (strcmp(cmd, "quit")==0)
           quit();
      }
-}
+}*/
 
 int init()
 {
-   WRITE C code to initialize
+  /* WRITE C code to initialize
 
    (1).All minode's refCount=0;
    (2).proc[0]'s pid=1, uid=0, cwd=0, fd[ ]=0;
-       proc[1]'s pid=2, uid=1, cwd=0, fd[ ]=0;
+       proc[1]'s pid=2, uid=1, cwd=0, fd[ ]=0;*/
 }
 
 // load root INODE and set root pointer to it
@@ -159,7 +159,7 @@ int mount_root()
  
 int ls(char *pathname)  // dig out YOUR OLD lab work for ls() code 
 {
-  WRITE C code for these:
+  /*WRITE C code for these:
 
     determine initial dev: 
     if pathname[0]== '/': dev = root->dev;
@@ -173,12 +173,12 @@ int ls(char *pathname)  // dig out YOUR OLD lab work for ls() code
     if mip->INODE is a DIR{
        step through DIR entries:
        for each name, ls_file(pathname/name);
-    }
+    }*/
 }
 
 int chdir(pathname)
 {
-  Write C code to do these:
+  /*Write C code to do these:
 
     determine initial dev as in ls()
     convert pathname to (dev, ino);
@@ -189,22 +189,22 @@ int chdir(pathname)
     if mip->INODE is a DIR{
        dispose of OLD cwd;
        set cwd to mip;
-    }
+    }*/
 }   
  
-int pwd(running->cwd): YOU WRITE CODE FOR THIS ONE!!!
+//int pwd(running->cwd): YOU WRITE CODE FOR THIS ONE!!!
 
 int quit()
 {
-  for each minode[ ] do {
+  /*for each minode[ ] do {
       if  minode[ ]'s refCount != 0: 
           write its INODE back to disk; 
-  }
+  }*/
   exit(0);  // terminate program
 }
 
 
-======================================================================
-SAMPLE solution:
+//======================================================================
+//SAMPLE solution:
 
-~samples/P1/p1 with mydisk
+//~samples/P1/p1 with mydisk
