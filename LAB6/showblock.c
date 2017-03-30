@@ -271,12 +271,23 @@ showblock() {
   }
    printf("============Indirect Blocks==================\n");
    get_block(fd, ip->i_block[12], blocks);
+   printf(" ");
    for (int i = 0; i < (sizeof(blocks) / sizeof(int)); i++)
    {
 	   printf("%d ", blocks[i]);
 	   if (i % 10 == 0 && i!=0)
 		   printf("\n ");
    }
+   printf("============Double Indirect Blocks==================\n");
+   get_block(fd, ip->i_block[13], blocks);
+   printf(" ");
+   for (int i = 0; i < (sizeof(blocks) / sizeof(int)); i++)
+   {
+	   printf("%d ", block[i]);
+	   if (i % 10 == 0 && i != 0)
+		   printf("\n ");
+   }
+   printf("\n\nGoodbye!\n\n\n");
 }
 
 
