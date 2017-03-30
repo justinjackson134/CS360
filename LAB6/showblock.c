@@ -288,6 +288,7 @@ showblock() {
 		   printf("%d ", dblocks[i]);
 
 		   printf("\n *************************************\n");
+		   printf(" ");
 		   get_block(fd, dblocks[i], dblocks2);
 		   for (int j = 0; j < 256; j++)
 		   {
