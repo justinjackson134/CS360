@@ -212,10 +212,11 @@ showblock() {
     //use inumber to read in its INODE and let ip --> this INODE
   	//get_block(fd, (((inumber-1)/8)+InodesBeginBlock), buf);
     
+    //////////////////////////////////////////////////////////////////////////////////////////  <------------------- THIS WORKS
     // get inode start block     
-    get_block(fd, InodesBeginBlock+1, buf);
-
-    ip = (INODE *)buf + 3;         // ip points at 2nd INODE
+    //get_block(fd, InodesBeginBlock+1, buf);
+    //ip = (INODE *)buf + 3;         // ip points at 2nd INODE
+    //////////////////////////////////////////////////////////////////////////////////////////
     
     printf("\nPrinting Found Block:\n-------------------------\n - inumber=%d\n", inumber);
     printf(" - mode=%4x ", ip->i_mode);
