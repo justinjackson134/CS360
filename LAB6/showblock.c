@@ -245,7 +245,7 @@ showblock() {
       printf("\n\n\nDIRECTORY!\n\n\n");
     }
     else {
-      if(i == n) {        
+      if(i == n-1) {        
         printf("\n\n\nLAST ELEMENT! AND NOT A DIR\n\n\n");
       }
       printf("\n\n\nNOT DIRECTORY!\n\n\n");
