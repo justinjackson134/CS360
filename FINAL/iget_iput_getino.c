@@ -22,9 +22,31 @@ int imap;
 int iblock;
 
 /********** Functions as BEFORE ***********/
-int get_block(int dev, int blk, char buf[ ])
-int put_block(int dev, int blk, char buf[ ])
-int tst_bit(), set_bit(), clr_bit(); 
+int get_block(int dev, int blk, char buf[ ]){
+  lseek(fd, (long)blk*BLKSIZE, 0);
+  read(fd, buf, BLKSIZE);
+}
+int put_block(int dev, int blk, char buf[ ]) {
+  lseek(fd, (long)blk*BLKSIZE, 0);
+  write(fd, buf, BLKSIZE);
+}
+int tst_bit(char *buf, int bit) {
+  int i, j;
+  i = bit / 8;  j = bit % 8;
+  if (buf[i] & (1 << j))
+     return 1;
+  return 0;
+}
+int set_bit(char *buf, int bit) {
+  int i, j;
+  i = bit/8; j=bit%8;
+  buf[i] |= (1 << j);
+}
+int clr_bit(char *buf, int bit) {
+  int i, j;
+  i = bit/8; j=bit%8;
+  buf[i] &= ~(1 << j);
+}
 
 /*
 3. FS Level-1 Data Structures
@@ -56,42 +78,30 @@ PROC* running           MINODE *root
 init() // Initialize data structures of LEVEL-1:
  {
   //(1). 2 PROCs, P0 with uid=0, P1 with uid=1, all PROC.cwd = 0
+  proc[0] = malloc(sizeof(PROC));
+  proc[0]->uid = 0;
+  proc[0]->pid = 0;
+  proc[0]->cwd = 0;
+
+  proc[1] = malloc(sizeof(PROC));
+  proc[1]->uid = 0;
+  proc[1]->pid = 0;
+  proc[1]->cwd = 0;
+
   //(2). MINODE minode[100]; all with refCount=0
+  int i = 0;
+  for (i = 0; i < 100; i++) {
+    minode[i] = malloc(sizeof(MINODE));
+    minode[i]->refCount = 0;
+  }
+
   //(3). MINODE *root = 0;
+  root = 0;
  }
 
-//4.. Write C code for
+//4.1 Write C code for
 //         MINODE *mip = iget(dev, ino)
-//         int iput(MINDOE *mip)
-//      int ino = getino(int *dev, char *pathname)
-
 // load INODE at (dev,ino) into a minode[]; return mip->minode[]
-MINODE *iget(int dev, int ino)
-{
-//(1). search minode[ ] array for an item pointed by mip with the SAME (dev,ino)
-     if (found){
-        mip->refCount++;  // inc user count by 1
-        return mip;
-     }
-
-//(2). search minode[ ] array for an item pointed by mip whose refCount=0:
-//       mip->refCount = 1;   // mark it in use
-//       assign it to (dev, ino); 
-//       initialize other fields: dirty=0; mounted=0; mountPtr=0
-
-//(3). use mailman to compute
-
-//       blk  = block containing THIS INODE
-//       disp = which INODE in block
-    
-//       load blk into buf[ ];
-//       INODE *ip point at INODE in buf[ ];
-
-//       copy INODE into minode.INODE by
-//       mip->INODE = *ip;
-
-//(4). return mip;
-
 MINODE *iget(int dev, int ino)
 {
   int i, blk, disp;
@@ -128,29 +138,35 @@ MINODE *iget(int dev, int ino)
   return 0;
 }
 
-
+//4.2 Write C code for
+//         int iput(MINDOE *mip)
 int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 {
-//(1). mip->refCount--;
+  //(1). mip->refCount--;
+  mip->refCount--;
  
-//(2). if (mip->refCount > 0) return;
-//     if (!mip->dirty)       return;
+  //(2). if (mip->refCount > 0) return;
+  if(mip->refCount > 0)
+    return;
+  //     if (!mip->dirty)       return;
+  if(!mip->dirty)
+    return;
  
-//(3).  /* write INODE back to disk */
+  //(3).  /* write INODE back to disk */
 
- printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino); 
+  printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino); 
 
- //Use mip->ino to compute 
+  //Use mip->ino to compute 
 
-     //blk containing this INODE
-     //disp of INODE in blk
+  //blk containing this INODE
+  //disp of INODE in blk
 
-     get_block(mip->dev, block, buf);
+  get_block(mip->dev, block, buf);
 
-     ip = (INODE *)buf + disp;
-     *ip = mip->INODE;
+  ip = (INODE *)buf + disp;
+  *ip = mip->INODE;
 
-     put_block(mip->dev, block, buf);
+  put_block(mip->dev, block, buf);
 } 
 
 int search(MINODE *mip, char *name)
@@ -158,6 +174,8 @@ int search(MINODE *mip, char *name)
     // YOUR search function !!!
 }
 
+//4.3 Write C code for
+//      int ino = getino(int *dev, char *pathname)
 int getino(int *dev, char *pathname)
 {
   int i, ino, blk, disp;
