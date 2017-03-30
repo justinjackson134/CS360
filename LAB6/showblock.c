@@ -222,9 +222,9 @@ showblock() {
     //////////////////////////////////////////////////////////////////////////////////////////
     
     printf("\nPrinting Found Inode:\n-------------------------\n - inode=%d\n", inumber);
-    printf(" - InodesPerBlock: %d\n\n", INODES_PER_BLOCK);
-    printf(" - Found in Block: %d", (((inumber-1)/INODES_PER_BLOCK)+InodesBeginBlock));
-    printf(" - Found @ Offset: %d", ((inumber - 1) % INODES_PER_BLOCK));
+    printf(" - InodesPerBlock: %d\n", INODES_PER_BLOCK);
+    printf(" - Found in Block: %d\n", (((inumber-1)/INODES_PER_BLOCK)+InodesBeginBlock));
+    printf(" - Found @ Offset: %d\n", ((inumber - 1) % INODES_PER_BLOCK));
     printf(" - mode=%4x ", ip->i_mode);
     printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
     printf(" - size=%d\n", ip->i_size);
