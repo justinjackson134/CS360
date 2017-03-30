@@ -149,13 +149,14 @@ int search(INODE * inodePtr, char * name) {
       printf("Name: %s == dp->name: %s", name, dp->name);
       if(strcmp(name, dp->name) == 0)
       {
-        printf("Found at INODE: %d\n", dp->inode);
-        exit(1);
+        printf("\nFound at INODE: %d\n", dp->inode);
+        return dp->inode;
       }
         cp += dp->rec_len;
         dp = (SUPER *) cp;
     }
-    printf("Not Found: 0\n");
+    printf("Not Found\n");
+    return 0;
 
   //6. Start from the root INODE in (3), search for name[0] in its data block(s), if not found - return 0
   // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
@@ -205,12 +206,12 @@ showblock() {
     inumber = search(ip, name[j]);
     //can't find name[i], BOMB OUT!  
     if (inumber == 0) {
-      printf("\nCan't find name[%d]: '%s'", i, name[i]);
+      printf("\nCan't find name[%d]: '%s'", j, name[j]);
       exit(1);
     } 
     //-------------------------------------------------------
     //use inumber to read in its INODE and let ip --> this INODE 
-
+    ip = inumber;
   }
     
   // if you reach here, you must have ip --> the INODE of pathname.
