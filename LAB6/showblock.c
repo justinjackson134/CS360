@@ -97,7 +97,7 @@ read_InodeBeginBlock() {
 
   ip = (INODE *)buf + 1;         // ip points at 2nd INODE
   
-  printf(" - ip points at: %d", ip);
+  printf(" - ip points at: %d\n", (INODE *)buf + 1);
   printf(" - mode=%4x ", ip->i_mode);
   printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
   printf(" - size=%d\n", ip->i_size);
