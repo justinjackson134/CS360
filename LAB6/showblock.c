@@ -210,9 +210,9 @@ showblock() {
     
     //-------------------------------------------------------
     //use inumber to read in its INODE and let ip --> this INODE
-int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
-    
-  	get_block(fd, (((inumber-1)/8)+InodesBeginBlock), buf);
+    int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
+
+  	get_block(fd, (((inumber-1)/INODES_PER_BLOCK)+InodesBeginBlock), buf);
     ip = (INODE *)buf + ((inumber-1)%INODES_PER_BLOCK);
 
     //////////////////////////////////////////////////////////////////////////////////////////  <------------------- THIS WORKS
@@ -221,21 +221,18 @@ int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
     //ip = (INODE *)buf + 3;         // ip points at 2nd INODE
     //////////////////////////////////////////////////////////////////////////////////////////
     
-    printf("\nPrinting Found Block:\n-------------------------\n - inumber=%d\n", inumber);
+    printf("\nPrinting Found Inode:\n-------------------------\n - inode=%d\n", inumber);
+    printf(" - InodesPerBlock: %d\n\n", INODES_PER_BLOCK);
+    printf(" - Found in Block: %d", (((inumber-1)/INODES_PER_BLOCK)+InodesBeginBlock))
+    printf(" - Found @ Offset: %d", ((inumber - 1) % INODES_PER_BLOCK));
     printf(" - mode=%4x ", ip->i_mode);
     printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
     printf(" - size=%d\n", ip->i_size);
     printf(" - time=%s", ctime(&ip->i_ctime));
     printf(" - link=%d\n", ip->i_links_count);
     printf(" - i_block[0]=%d\n", ip->i_block[0]);
-
-    
-  	printf("Inodes Per Block: %d\n\n", INODES_PER_BLOCK);
-  	printf("THIS IS BUF : %s  \n\n", buf);
-  	printf("this is the buffer for get block : %d\n\n", (((inumber - 1) / INODES_PER_BLOCK)));
-  	printf("i_number = %d\n\n", inumber);
-  	printf("offset = %d\n\n", ((inumber - 1) % INODES_PER_BLOCK));
-  	getchar();
+  	
+    //getchar();
 
   	//get_inode(fd, inumber, InodesBeginBlock, &ip);
   	//ip = get_block(fd, inumber, buf);
