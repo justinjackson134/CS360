@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <ext2fs/ext2_fs.h>
 #include <string.h> // Used for strtok
+#include <sys/stat.h> // Used for S_ISDIR
 
 typedef unsigned char  u8;
 typedef unsigned short u16;
