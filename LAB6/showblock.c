@@ -274,7 +274,7 @@ showblock() {
    for (int i = 0; i < (sizeof(blocks) / sizeof(int)); i++)
    {
 	   printf("%d ", blocks[i]);
-	   if (i % 10 == 0)
+	   if (i % 10 == 0 && i!=0)
 		   printf("\n ");
    }
 }
