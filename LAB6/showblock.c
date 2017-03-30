@@ -242,13 +242,16 @@ showblock() {
   	//ip = get_block(fd, inumber, buf);
 
     if(S_ISDIR(ip->i_mode)) {
-      printf("\n\n\nDIRECTORY!\n\n\n");
+      //printf("\n\n\nDIRECTORY!\n\n\n");
     }
     else {
       if(i == n-1) {        
-        printf("\n\n\nLAST ELEMENT! AND NOT A DIR\n\n\n");
+        //printf("\n\n\nLAST ELEMENT! AND NOT A DIR\n\n\n");
       }
-      printf("\n\n\nNOT DIRECTORY!\n\n\n");
+      else {
+        //printf("\n\n\nNOT DIRECTORY!\n\n\n");
+        printf("\nname[%d]: '%s' is not a directory, exiting.\n", i, name[i]);
+      }
     }
   }
     
