@@ -215,7 +215,7 @@ showblock() {
     // get inode start block     
     get_block(fd, InodesBeginBlock, buf);
 
-    ip = (INODE *)buf + 2;         // ip points at 2nd INODE
+    ip = (INODE *)buf + 11;         // ip points at 2nd INODE
     
     printf(" - mode=%4x ", ip->i_mode);
     printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
