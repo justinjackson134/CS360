@@ -202,11 +202,11 @@ showblock() {
   //7.#2 Then, all you have to do is call search() n times, as sketched below.
   //Assume:    n,  name[0], ...., name[n-1]   are globals and ip --> INODE of /
 
-  for (j = 0; j < n; j++){
-    inumber = search(ip, name[j]);
+  for (i = 0; i < n; i++){
+    inumber = search(ip, name[i]);
     //can't find name[i], BOMB OUT!  
     if (inumber == 0) {
-      printf("\nCan't find name[%d]: '%s'", j, name[j]);
+      printf("\nCan't find name[%d]: '%s'", i, name[i]);
       exit(1);
     } 
     //-------------------------------------------------------
