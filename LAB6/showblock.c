@@ -260,7 +260,7 @@ showblock() {
 
   //8.#2 Extract information from ip --> as required.
   // Should print the disk blocks (direct, indirect, double-indirect) of the file. 
-  int blocks[256],dblocks[256];
+  int blocks[256],dblocks[256],dblocks2[256];
   printf("\n===========The direct blocks of inode %d are===========\n", inumber);
    for(int i = 0; i < 14;i++){
 	   if (ip->i_block[i] != 0)
@@ -284,8 +284,20 @@ showblock() {
    for (int i = 0; i < (sizeof(dblocks) / sizeof(int)); i++)
    {
 	   printf("%d ", dblocks[i]);
-	   if (i % 10 == 0 && i != 0)
-		   printf("\n ");
+	   printf("\n *************************************\n");
+	   get_block(fd, dblocks[i], dblocks2);
+	   for (int j = 0; j < 256; j++)
+	   {
+		   
+		   if (dblocks2[j] != 0) {
+			   printf("%d ", dblocks2[j]);
+			   if (j % 10 == 0 && j != 0)
+				   printf("\n ");
+		   }
+			  
+		   else
+			   continue;
+	   }
    }
    printf("\n\nGoodbye!\n\n\n");
 }
