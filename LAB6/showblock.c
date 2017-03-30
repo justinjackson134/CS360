@@ -77,8 +77,8 @@ verifyext2fs() {
   }
 
   //With the SuperBlock read in, you might as well print... nblocks, ninodes, ngroups, inodes_per_group, number of free inodes and blocks, etc.
-  printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - ngroups:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
-          sp->s_blocks_count, sp->s_inodes_count, -1, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
+  printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
+          sp->s_blocks_count, sp->s_inodes_count, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
 }
 
 ///////////////////////////////////////////////////////////////
