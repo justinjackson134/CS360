@@ -224,7 +224,7 @@ showblock() {
 	printf("offset = %d\n\n", ((inumber - 1) % INODES_PER_BLOCK));
 	getchar();
     get_block(fd, (InodesBeginBlock + ((inumber-1)/INODES_PER_BLOCK)), buf);
-	ip = ((SUPER *)buf + 2);
+	ip = ((SUPER *)buf + 3);
     //ip = (SUPER *)buf + ((inumber-1)%INODES_PER_BLOCK);
     //ip = get_block(fd, inumber, buf);
   }
