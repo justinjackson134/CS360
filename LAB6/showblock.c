@@ -135,30 +135,30 @@ char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
 int search(INODE * inodePtr, char * name) {
   // cut off newline
-    name[strlen(name)-1] = 0;
+  //name[strlen(name)-1] = 0;
 
-    printf("Searching for: %s", name);
+  printf("Searching for: %s", name);
 
-    get_block(fd, inodePtr->i_block[0], dbuf);  // char dbuf[1024]
+  get_block(fd, inodePtr->i_block[0], dbuf);  // char dbuf[1024]
 
-    DIR *dp = (SUPER *)dbuf;
-    char *cp = dbuf;
+  DIR *dp = (SUPER *)dbuf;
+  char *cp = dbuf;
 
-    while (cp < &dbuf[1024])
+  while (cp < &dbuf[1024])
+  {
+    //use dp-> to print the DIR entries as  [inode rec_len name_len name]
+    printf("\nDIR ENTRY - rec_len: %d, name_len: %d, name: %s\n", dp->rec_len, dp->name_len, dp->name);
+    printf("\nName: %s == dp->name: %s", name, dp->name);
+    if(strcmp(name, dp->name) == 0)
     {
-      //use dp-> to print the DIR entries as  [inode rec_len name_len name]
-      printf("DIR ENTRY - rec_len: %d, name_len: %d, name: %s\n", dp->rec_len, dp->name_len, dp->name);
-      printf("Name: %s == dp->name: %s", name, dp->name);
-      if(strcmp(name, dp->name) == 0)
-      {
-        printf("\nFound at INODE: %d\n", dp->inode);
-        return dp->inode;
-      }
-        cp += dp->rec_len;
-        dp = (SUPER *) cp;
+      printf("\nFound at INODE: %d\n", dp->inode);
+      return dp->inode;
     }
-    printf("Not Found\n");
-    return 0;
+      cp += dp->rec_len;
+      dp = (SUPER *) cp;
+  }
+  printf("Not Found\n");
+  return 0;
 
   //6. Start from the root INODE in (3), search for name[0] in its data block(s), if not found - return 0
   // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
