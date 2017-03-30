@@ -67,18 +67,28 @@ verifyext2fs() {
   }
 
   //With the SuperBlock read in, you might as well print... nblocks, ninodes, ngroups, inodes_per_group, number of free inodes and blocks, etc.
-  printf("\nSUPERBLOCK\n------------------------- - nblocks:          %d\n - ninodes:          %d\n - ngroups:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
+  printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - ngroups:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
           sp->s_blocks_count, sp->s_inodes_count, 0, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
 }
+
+// Set GP ptr to group descriptor
+get_group_descriptor() {
+  get_block(fd, 2, buf);
+  gp = (SUPER *)buf;
+}
+
+// Vars for showblock
+int InodesBeginBlock = 0;
 
 // Actual code for this assignment
 showblock() {
   // Verify that the opened FS is ext2
   verifyext2fs();
   
-
-
-
+  // Read in group descriptor block, determine where INODEs begin on the disk. Call it the InodesBeginBlock
+  get_group_descriptor();
+  InodesBeginBlock = gp->bg_inode_table;
+  printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
 
 }
 
