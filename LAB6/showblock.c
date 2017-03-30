@@ -140,7 +140,6 @@ get_tokens_from_pathname() {
 char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
 int search(INODE * inodePtr, char * name) {
-<<<<<<< HEAD
 	printf("\nSEARCHING FOR: %s", name);
 	for (int i = 0; i < 12; i++) {
 		if (inodePtr->i_block[i] == 0)
@@ -169,7 +168,7 @@ int search(INODE * inodePtr, char * name) {
 		printf(" - Not Found\n");
 		return 0;
 	}
-=======
+
   printf("\nSEARCHING FOR: %s", name);
 
   get_block(fd, inodePtr->i_block[0], dbuf);  // char dbuf[1024]
@@ -191,11 +190,10 @@ int search(INODE * inodePtr, char * name) {
       cp += dp->rec_len;
       dp = (DIR *) cp;
 
-      getchar();
+      //getchar();
   }
   printf("\n - Not Found\n");
   return 0;
->>>>>>> origin/master
 }
 
 
