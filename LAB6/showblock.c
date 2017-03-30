@@ -211,6 +211,21 @@ showblock() {
     //-------------------------------------------------------
     //use inumber to read in its INODE and let ip --> this INODE
   	//get_block(fd, (((inumber-1)/8)+InodesBeginBlock), buf);
+    
+    // get inode start block     
+    get_block(fd, InodesBeginBlock, buf);
+
+    ip = (INODE *)buf + 2;         // ip points at 2nd INODE
+    
+    printf(" - mode=%4x ", ip->i_mode);
+    printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
+    printf(" - size=%d\n", ip->i_size);
+    printf(" - time=%s", ctime(&ip->i_ctime));
+    printf(" - link=%d\n", ip->i_links_count);
+    printf(" - i_block[0]=%d\n", ip->i_block[0]);
+
+
+
 
     int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
   	printf("Inodes Per Block: %d\n\n", INODES_PER_BLOCK);
