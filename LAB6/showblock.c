@@ -90,13 +90,14 @@ get_group_descriptor_get_inodebegin() {
 ///////////////////////////////////////////////////////////////
 // Read in the inodes from begin block
 read_InodeBeginBlock() {
-  printf("\nPrinting InodeBeginBlock:\n-------------------------\n - inode_block=%d\n", InodesBeginBlock);
+  printf("\nPrinting InodeBeginBlock:\n-------------------------\n - InodesBeginBlock=%d\n", InodesBeginBlock);
 
   // get inode start block     
   get_block(fd, InodesBeginBlock, buf);
 
   ip = (INODE *)buf + 1;         // ip points at 2nd INODE
   
+  printf(" - ip points at: %d", ip);
   printf(" - mode=%4x ", ip->i_mode);
   printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
   printf(" - size=%d\n", ip->i_size);
