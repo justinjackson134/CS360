@@ -140,6 +140,7 @@ get_tokens_from_pathname() {
 char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
 int search(INODE * inodePtr, char * name) {
+<<<<<<< HEAD
 	printf("\nSEARCHING FOR: %s", name);
 	for (int i = 0; i < 12; i++) {
 		if (inodePtr->i_block[i] == 0)
@@ -168,6 +169,33 @@ int search(INODE * inodePtr, char * name) {
 		printf(" - Not Found\n");
 		return 0;
 	}
+=======
+  printf("\nSEARCHING FOR: %s", name);
+
+  get_block(fd, inodePtr->i_block[0], dbuf);  // char dbuf[1024]
+
+  DIR *dp = (SUPER *)dbuf;
+  char *cp = dbuf;
+
+  while (cp < &dbuf[1024])
+  {
+    //use dp-> to print the DIR entries as  [inode rec_len name_len name]
+    //printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
+    if(strcmp(name, dp->name) == 0)
+    {
+      //printf("\n - Name: %s == %s", name, dp->name);
+      printf("\n - Found at INODE: %d\n", dp->inode);
+      return dp->inode;
+    }
+      //printf("\n - Name: %s != %s", name, dp->name);
+      cp += dp->rec_len;
+      dp = (DIR *) cp;
+
+      //getchar();
+  }
+  printf("\n - Not Found\n");
+  return 0;
+>>>>>>> origin/master
 }
 
 
@@ -207,7 +235,7 @@ showblock() {
     inumber = search(ip, name[i]);
     //can't find name[i], BOMB OUT!  
     if (inumber == 0) {
-      printf("\nCan't find name[%d]: '%s'", i, name[i]);
+      printf("\nCan't find name[%d]: '%s'\n", i, name[i]);
       exit(1);
     } 
     
