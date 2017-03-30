@@ -146,7 +146,7 @@ showblock() {
   //6-7. Inside step 8
 
   //8. Since Steps 6-7 will be repeated n times, you should implement a function
-  search(/*INODE * inodePtr, char * name)*/); // <--------------------------------------------------------------------------------------------------- THIS CALL SHOULD BE DOWN IN 7.#2
+  //search(/*INODE * inodePtr, char * name)*/); // <--------------------------------------------------------------------------------------------------- THIS CALL SHOULD BE DOWN IN 7.#2
 
   //7.#2 Then, all you have to do is call search() n times, as sketched below.
   /*
