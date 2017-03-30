@@ -49,7 +49,7 @@ main(int argc, char *argv[ ])   // run as a.out [diskname]
      printf("open %s failed\n", disk);  
      exit(1);
   }
-  print fd or dev to see its value!!!
+  //print fd or dev to see its value!!!
 
 /*(1). printf("checking EXT2 FS\n");
 
