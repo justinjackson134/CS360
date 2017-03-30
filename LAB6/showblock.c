@@ -213,10 +213,11 @@ showblock() {
   	//get_block(fd, (((inumber-1)/8)+InodesBeginBlock), buf);
     
     // get inode start block     
-    get_block(fd, InodesBeginBlock, buf);
+    get_block(fd, InodesBeginBlock+1, buf);
 
-    ip = (INODE *)buf + 11;         // ip points at 2nd INODE
+    ip = (INODE *)buf + 3;         // ip points at 2nd INODE
     
+    printf("\nPrinting Found Block:\n-------------------------\n - inumber=%d\n", inumber);
     printf(" - mode=%4x ", ip->i_mode);
     printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
     printf(" - size=%d\n", ip->i_size);
