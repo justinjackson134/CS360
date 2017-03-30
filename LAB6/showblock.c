@@ -283,20 +283,26 @@ showblock() {
    printf(" ");
    for (int i = 0; i < (sizeof(dblocks) / sizeof(int)); i++)
    {
-	   printf("%d ", dblocks[i]);
-	   printf("\n *************************************\n");
-	   get_block(fd, dblocks[i], dblocks2);
-	   for (int j = 0; j < 256; j++)
+	   if (dblocks[i] != 0)
 	   {
-		   
-		   if (dblocks2[j] != 0) {
-			   printf("%d ", dblocks2[j]);
-			   if (j % 10 == 0 && j != 0)
-				   printf("\n ");
+		   printf("%d ", dblocks[i]);
+
+		   printf("\n *************************************\n");
+		   get_block(fd, dblocks[i], dblocks2);
+		   for (int j = 0; j < 256; j++)
+		   {
+
+			   if (dblocks2[j] != 0) {
+				   printf("%d ", dblocks2[j]);
+				   if (j % 10 == 0 && j != 0)
+					   printf("\n ");
+			   }
+
+			   else
+				   continue;
 		   }
-			  
-		   else
-			   continue;
+	  
+		
 	   }
    }
    printf("\n\nGoodbye!\n\n\n");
