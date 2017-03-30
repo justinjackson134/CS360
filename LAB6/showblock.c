@@ -60,17 +60,23 @@ verifyext2fs() {
   sp = (SUPER *)buf;
 
   // check for EXT2 magic number:
-  printf("s_magic = %x\n", sp->s_magic);
+  printf("VALID EXT2 FS: s_magic = %x\n", sp->s_magic);
   if (sp->s_magic != 0xEF53) {
     printf("NOT an EXT2 FS\n");
     exit(1);
   }
+
+  //With the SuperBlock read in, you might as well print... nblocks, ninodes, ngroups, inodes_per_group, number of free inodes and blocks, etc.
+  printf("SUPERBLOCK\n - nblocks: %d\n - ninodes: %d\n - ngroups: %d\n - inodes_per_group: %d\n - # free inodes: %d\n - # free blocks: %d\n",
+          s_blocks_count, s_inodes_count, 0, s_inodes_per_group, s_free_inodes_count, s_free_blocks_count);
 }
 
 // Actual code for this assignment
 showblock() {
+  // Verify that the opened FS is ext2
   verifyext2fs();
   
+
 
 
 
