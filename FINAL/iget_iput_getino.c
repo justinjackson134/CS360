@@ -1,58 +1,4 @@
-         
-iget_iput_getino Functions
-
-
-
-1. type.h file for FS LEVEL_1 
-
-/*************** type.h file ******************/
-typedef unsigned char  u8;
-typedef unsigned short u16;
-typedef unsigned int   u32;
-
-typedef struct ext2_super_block SUPER;
-typedef struct ext2_group_desc  GD;
-typedef struct ext2_inode       INODE;
-typedef struct ext2_dir_entry_2 DIR;
-
-SUPER *sp;
-GD    *gp;
-INODE *ip;
-DIR   *dp;   
-
-#define BLKSIZE     1024
-
-#define NMINODE      100
-#define NFD           16
-#define NPROC          4
-
-typedef struct minode{
-  INODE INODE;
-  int dev, ino;
-  int refCount;
-  int dirty;
-  int mounted;
-  struct mntable *mptr;
-}MINODE;
-
-typedef struct oft{
-  int  mode;
-  int  refCount;
-  MINODE *mptr;
-  int  offset;
-}OFT;
-
-typedef struct proc{
-  struct proc *next;
-  int          pid;
-  int          uid;
-  MINODE      *cwd;
-  OFT         *fd[NFD];
-}PROC;
-
-//================= end of type.h ===================
-
-2. Includes and Global Variables:
+//Includes and Global Variables:
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,8 +26,7 @@ int get_block(int dev, int blk, char buf[ ])
 int put_block(int dev, int blk, char buf[ ])
 int tst_bit(), set_bit(), clr_bit(); 
 
-
-
+/*
 3. FS Level-1 Data Structures
 
 PROC* running           MINODE *root                          
@@ -106,48 +51,46 @@ PROC* running           MINODE *root
     pid=2           |
     uid=1           |  
     cwd ----> root minode        |==========|  
+*/
 
-3. init() // Initialize data structures of LEVEL-1:
-   {
-     (1). 2 PROCs, P0 with uid=0, P1 with uid=1, all PROC.cwd = 0
-     (2). MINODE minode[100]; all with refCount=0
-     (3). MINODE *root = 0;
-   }
+init() // Initialize data structures of LEVEL-1:
+ {
+  //(1). 2 PROCs, P0 with uid=0, P1 with uid=1, all PROC.cwd = 0
+  //(2). MINODE minode[100]; all with refCount=0
+  //(3). MINODE *root = 0;
+ }
 
-========================================================================
-
-4.. Write C code for
-
-         MINODE *mip = iget(dev, ino)
-         int iput(MINDOE *mip)
-         int ino = getino(int *dev, char *pathname)
+//4.. Write C code for
+//         MINODE *mip = iget(dev, ino)
+//         int iput(MINDOE *mip)
+//      int ino = getino(int *dev, char *pathname)
 
 // load INODE at (dev,ino) into a minode[]; return mip->minode[]
 MINODE *iget(int dev, int ino)
 {
-(1). search minode[ ] array for an item pointed by mip with the SAME (dev,ino)
+//(1). search minode[ ] array for an item pointed by mip with the SAME (dev,ino)
      if (found){
         mip->refCount++;  // inc user count by 1
         return mip;
      }
 
-(2). search minode[ ] array for an item pointed by mip whose refCount=0:
-       mip->refCount = 1;   // mark it in use
-       assign it to (dev, ino); 
-       initialize other fields: dirty=0; mounted=0; mountPtr=0
+//(2). search minode[ ] array for an item pointed by mip whose refCount=0:
+//       mip->refCount = 1;   // mark it in use
+//       assign it to (dev, ino); 
+//       initialize other fields: dirty=0; mounted=0; mountPtr=0
 
-(3). use mailman to compute
+//(3). use mailman to compute
 
-       blk  = block containing THIS INODE
-       disp = which INODE in block
+//       blk  = block containing THIS INODE
+//       disp = which INODE in block
     
-       load blk into buf[ ];
-       INODE *ip point at INODE in buf[ ];
+//       load blk into buf[ ];
+//       INODE *ip point at INODE in buf[ ];
 
-       copy INODE into minode.INODE by
-       mip->INODE = *ip;
+//       copy INODE into minode.INODE by
+//       mip->INODE = *ip;
 
-(4). return mip;
+//(4). return mip;
 
 MINODE *iget(int dev, int ino)
 {
@@ -188,19 +131,19 @@ MINODE *iget(int dev, int ino)
 
 int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 {
-(1). mip->refCount--;
+//(1). mip->refCount--;
  
-(2). if (mip->refCount > 0) return;
-     if (!mip->dirty)       return;
+//(2). if (mip->refCount > 0) return;
+//     if (!mip->dirty)       return;
  
-(3).  /* write INODE back to disk */
+//(3).  /* write INODE back to disk */
 
  printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino); 
 
- Use mip->ino to compute 
+ //Use mip->ino to compute 
 
-     blk containing this INODE
-     disp of INODE in blk
+     //blk containing this INODE
+     //disp of INODE in blk
 
      get_block(mip->dev, block, buf);
 
