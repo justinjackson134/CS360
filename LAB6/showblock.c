@@ -239,6 +239,15 @@ showblock() {
 
   	//get_inode(fd, inumber, InodesBeginBlock, &ip);
   	//ip = get_block(fd, inumber, buf);
+
+    if(S_ISDIR(ip->i_mode))
+    {
+      printf("\n\n\nDIRECTORY!\n\n\n");
+    }
+    else
+    {
+      printf("\n\n\nNOT DIRECTORY!\n\n\n");      
+    }
   }
     
   // if you reach here, you must have ip --> the INODE of pathname.
