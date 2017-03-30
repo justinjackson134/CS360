@@ -153,11 +153,9 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
     return;
  
   //(3).  /* write INODE back to disk */
-
   printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino); 
 
-  //Use mip->ino to compute 
-
+  //Use mip->ino to compute;
   //blk containing this INODE
   //disp of INODE in blk
 
