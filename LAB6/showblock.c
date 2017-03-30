@@ -156,7 +156,7 @@ int search(INODE * inodePtr, char * name) {
     }
       printf("\n - Name: %s != %s", name, dp->name);
       cp += dp->rec_len;
-      dp = (DIR *) cp;
+      dp = (SUPER *) cp;
 
        getchar();
   }
