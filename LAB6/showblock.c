@@ -210,6 +210,8 @@ showblock() {
     
     //-------------------------------------------------------
     //use inumber to read in its INODE and let ip --> this INODE
+int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
+    
   	get_block(fd, (((inumber-1)/8)+InodesBeginBlock), buf);
     ip = (INODE *)buf + ((inumber-1)%INODES_PER_BLOCK);
 
@@ -227,7 +229,7 @@ showblock() {
     printf(" - link=%d\n", ip->i_links_count);
     printf(" - i_block[0]=%d\n", ip->i_block[0]);
 
-    int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
+    
   	printf("Inodes Per Block: %d\n\n", INODES_PER_BLOCK);
   	printf("THIS IS BUF : %s  \n\n", buf);
   	printf("this is the buffer for get block : %d\n\n", (((inumber - 1) / INODES_PER_BLOCK)));
