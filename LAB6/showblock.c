@@ -97,7 +97,6 @@ read_InodeBeginBlock() {
 
   ip = (INODE *)buf + 1;         // ip points at 2nd INODE
   
-  printf(" - ip points at: %d\n", (INODE *)buf + 1);
   printf(" - mode=%4x ", ip->i_mode);
   printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
   printf(" - size=%d\n", ip->i_size);
@@ -133,6 +132,31 @@ get_tokens_from_pathname() {
 ///////////////////////////////////////////////////////////////
 // Searches through data blocks to find entry specified by pathname
 int search(INODE * inodePtr, char * name) {
+  // cut off newline
+    name[strlen(name)-1] = 0;
+
+    printf("Searching for: %s", name);
+
+    get_block(fd, inodePtr->i_block[0], dbuf);  // char dbuf[1024]
+
+    DIR *dp = (SUPER *)dbuf;
+    char *cp = dbuf;
+
+    while (cp < &dbuf[1024])
+    {
+      //use dp-> to print the DIR entries as  [inode rec_len name_len name]
+      printf("DIR ENTRY - rec_len: %d, name_len: %d, name: %s\n", dp->rec_len, dp->name_len, dp->name);
+      printf("Name: %s == dp->name: %s", name, dp->name);
+      if(strcmp(name, dp->name) == 0)
+      {
+        printf("Found at INODE: %d\n", dp->inode);
+        exit(1);
+      }
+        cp += dp->rec_len;
+        dp = (SUPER *) cp;
+    }
+    printf("Not Found: 0\n");
+
   //6. Start from the root INODE in (3), search for name[0] in its data block(s), if not found - return 0
   // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
 
@@ -148,6 +172,8 @@ int search(INODE * inodePtr, char * name) {
 
 
 ///////////////////////////////////////////////////////////////
+int inumber;
+
 // Actual code for this assignment
 showblock() {
   //1. Open the device for READ (DONE IN MAINLINE). Read in Superblock, verify it is ext2
@@ -158,6 +184,7 @@ showblock() {
   get_group_descriptor_get_inodebegin();  
 
   //3. Read in InodeBeginBlock to get the inode of /, which is INODE #2. NOTE: inode number counts from 1.
+  // Also points ip to the 2nd Inode, which should be the root inode
   read_InodeBeginBlock();
   // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
 
@@ -172,20 +199,21 @@ showblock() {
   //search(/*INODE * inodePtr, char * name)*/); // <--------------------------------------------------------------------------------------------------- THIS CALL SHOULD BE DOWN IN 7.#2
 
   //7.#2 Then, all you have to do is call search() n times, as sketched below.
-  /*
-    Assume:    n,  name[0], ...., name[n-1]   are globals
+  //Assume:    n,  name[0], ...., name[n-1]   are globals and ip --> INODE of /
 
-    ip --> INODE of /
+  for (j = 0; j < n; j++){
+    inumber = search(ip, name[j]);
+    //can't find name[i], BOMB OUT!  
+    if (inumber == 0) {
+      printf("\nCan't find name[%d]: '%s'", i, name[i]);
+      exit(1);
+    } 
+    //-------------------------------------------------------
+    //use inumber to read in its INODE and let ip --> this INODE 
 
-    for (i= 0; i < n; i++){
-      inumber = search(ip, name[i])  
-      if (inumber == 0) : can't find name[i], BOMB OUT!
-      -------------------------------------------------------
-      use inumber to read in its INODE and let ip --> this INODE 
-    }
+  }
     
-    // if you reach here, you must have ip --> the INODE of pathname.
-  */
+  // if you reach here, you must have ip --> the INODE of pathname.
 
   //8.#2 Extract information from ip --> as required.
   // Should print the disk blocks (direct, indirect, double-indirect) of the file. 
