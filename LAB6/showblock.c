@@ -216,7 +216,7 @@ showblock() {
     } 
     //-------------------------------------------------------
     //use inumber to read in its INODE and let ip --> this INODE 
-    get_block(fd, (InodeBeginBlock + ((inumber-1)/8)), buf);
+    get_block(fd, (InodesBeginBlock + ((inumber-1)/8)), buf);
     ip = (SUPER *)buf + ((inumber-1)%8);
     //ip = get_block(fd, inumber, buf);
   }
