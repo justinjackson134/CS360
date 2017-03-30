@@ -156,7 +156,7 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
   printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino); 
 
   //Use mip->ino to compute;
-  //blk containing this INODE
+  //blk containing this INODE <--------------------------------------------------------------------------------------------DO THIS?
   //disp of INODE in blk
 
   get_block(mip->dev, block, buf);
@@ -167,9 +167,38 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
   put_block(mip->dev, block, buf);
 } 
 
-int search(MINODE *mip, char *name)
-{
-    // YOUR search function !!!
+// Vars for search
+char dbuf[1024];
+// Searches through data blocks to find entry specified by pathname
+int search(MINODE *mip, char *name) {
+  printf("\nSEARCHING FOR: %s", name);
+  for (int i = 0; i < 12; i++) {
+    if (mip->i_block[i] == 0)
+      return 0;
+    get_block(fd, mip->i_block[i], dbuf);  // char dbuf[1024]
+
+    DIR *dp = (SUPER *)dbuf;
+    char *cp = dbuf;
+
+    while (cp < &dbuf[1024])
+    {
+      //use dp-> to print the DIR entries as  [inode rec_len name_len name]
+      //printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
+      if (strcmp(name, dp->name) == 0)
+      {
+        //printf("\n - Name: %s == %s", name, dp->name);
+        printf("\n - Found at INODE: %d\n", dp->inode);
+        return dp->inode;
+      }
+      //printf("\n - Name: %s != %s", name, dp->name);
+      cp += dp->rec_len;
+      dp = (DIR *)cp;
+
+      //getchar();
+    }
+    printf(" - Not Found\n");
+    return 0;
+  }
 }
 
 //4.3 Write C code for
