@@ -233,7 +233,7 @@ showblock() {
 
   	//get_inode(fd, inumber, InodesBeginBlock, &ip);
   	
-    getblock(fd, (((inumber-1)/8)+InodesBeginBlock), buf);
+    get_block(fd, (((inumber-1)/8)+InodesBeginBlock), buf);
     ip = (SUPER *)buf + ((inumber-1)%INODES_PER_BLOCK);
     //ip = get_block(fd, inumber, buf);
   }
