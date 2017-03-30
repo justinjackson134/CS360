@@ -144,8 +144,6 @@ int search(INODE * inodePtr, char * name) {
   DIR *dp = (SUPER *)dbuf;
   char *cp = dbuf;
 
-  getchar();
-
   while (cp < &dbuf[1024])
   {
     //use dp-> to print the DIR entries as  [inode rec_len name_len name]
@@ -159,6 +157,8 @@ int search(INODE * inodePtr, char * name) {
       printf("\n - Name: %s != %s", name, dp->name);
       cp += dp->rec_len;
       dp = (SUPER *) cp;
+
+       getchar();
   }
   printf(" - Not Found\n");
   return 0;
