@@ -137,7 +137,7 @@ int search(INODE * inodePtr, char * name) {
   // cut off newline
   //name[strlen(name)-1] = 0;
 
-  printf("Searching for: %s", name);
+  printf("\nSEARCHING FOR: %s", name);
 
   get_block(fd, inodePtr->i_block[0], dbuf);  // char dbuf[1024]
 
@@ -147,17 +147,17 @@ int search(INODE * inodePtr, char * name) {
   while (cp < &dbuf[1024])
   {
     //use dp-> to print the DIR entries as  [inode rec_len name_len name]
-    printf("\nDIR ENTRY - rec_len: %d, name_len: %d, name: %s\n", dp->rec_len, dp->name_len, dp->name);
-    printf("\nName: %s == dp->name: %s", name, dp->name);
+    printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
+    printf("\n - Name: %s == dp->name: %s", name, dp->name);
     if(strcmp(name, dp->name) == 0)
     {
-      printf("\nFound at INODE: %d\n", dp->inode);
+      printf("\n - Found at INODE: %d\n", dp->inode);
       return dp->inode;
     }
       cp += dp->rec_len;
       dp = (SUPER *) cp;
   }
-  printf("Not Found\n");
+  printf(" - Not Found\n");
   return 0;
 
   //6. Start from the root INODE in (3), search for name[0] in its data block(s), if not found - return 0
