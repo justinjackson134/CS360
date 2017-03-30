@@ -214,7 +214,7 @@ showblock() {
     } 
     //-------------------------------------------------------
     //use inumber to read in its INODE and let ip --> this INODE 
-    //ip = inumber;
+    ip = (SUPER *) inumber;
   }
     
   // if you reach here, you must have ip --> the INODE of pathname.
