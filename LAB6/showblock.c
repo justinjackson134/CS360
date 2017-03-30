@@ -163,7 +163,7 @@ int search(INODE * inodePtr, char * name) {
 
       //getchar();
   }
-  printf(" - Not Found\n");
+  printf("\n - Not Found\n");
   return 0;
 }
 
@@ -204,7 +204,7 @@ showblock() {
     inumber = search(ip, name[i]);
     //can't find name[i], BOMB OUT!  
     if (inumber == 0) {
-      printf("\nCan't find name[%d]: '%s'", i, name[i]);
+      printf("\nCan't find name[%d]: '%s'\n", i, name[i]);
       exit(1);
     } 
     
