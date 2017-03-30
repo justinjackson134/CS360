@@ -54,7 +54,7 @@ int get_block(int fd, int blk, char buf[ ]) {
   lseek(fd, (long)blk*BLKSIZE, 0);
   read(fd, buf, BLKSIZE);
 }
-#define BLOC_OFFSET(block) (BLKSIZE + block-1)*BLKSIZE;
+#define BLOC_OFFSET(block) (BLKSIZE + block-1)*BLKSIZE
 
 void get_inode(int fd, int ino, int inode_table,INODE *inode) {
 	lseek(fd, BLOC_OFFSET(inode_table) + (ino - 1) * sizeof(INODE), 0);
