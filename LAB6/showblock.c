@@ -98,9 +98,10 @@ main(int argc, char *argv[ ]) {
   }
   fd = open(disk, O_RDONLY);
   if (fd < 0) {
-    printf("open failed\n");
+    printf("Open failed\n");
     exit(1);
   }
+  printf("Opened '%s' for RDONLY\n", disk);
   
   showblock();
 }
