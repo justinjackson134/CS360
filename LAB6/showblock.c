@@ -217,6 +217,10 @@ showblock() {
 
   //8.#2 Extract information from ip --> as required.
   // Should print the disk blocks (direct, indirect, double-indirect) of the file. 
+  // for(int i = 0; i < 15;i++)
+  //	printf("%d?         \n",ip->i_block[i]);
+  //
+
 }
 
 
