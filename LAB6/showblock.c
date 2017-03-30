@@ -211,7 +211,8 @@ showblock() {
     //-------------------------------------------------------
     //use inumber to read in its INODE and let ip --> this INODE
   	get_block(fd, (((inumber-1)/8)+InodesBeginBlock), buf);
-    
+    ip = (INODE *)buf + ((inumber-1)%INODES_PER_BLOCK);
+
     //////////////////////////////////////////////////////////////////////////////////////////  <------------------- THIS WORKS
     // get inode start block     
     //get_block(fd, InodesBeginBlock+1, buf);
@@ -226,9 +227,6 @@ showblock() {
     printf(" - link=%d\n", ip->i_links_count);
     printf(" - i_block[0]=%d\n", ip->i_block[0]);
 
-
-
-
     int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
   	printf("Inodes Per Block: %d\n\n", INODES_PER_BLOCK);
   	printf("THIS IS BUF : %s  \n\n", buf);
@@ -238,10 +236,7 @@ showblock() {
   	getchar();
 
   	//get_inode(fd, inumber, InodesBeginBlock, &ip);
-  	
-    
-    ip = (INODE *)buf + ((inumber-1)%INODES_PER_BLOCK);
-    //ip = get_block(fd, inumber, buf);
+  	//ip = get_block(fd, inumber, buf);
   }
     
   // if you reach here, you must have ip --> the INODE of pathname.
