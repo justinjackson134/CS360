@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <ext2fs/ext2_fs.h>
+#include <string.h> // Used for strtok
 
 typedef unsigned char  u8;
 typedef unsigned short u16;
@@ -77,22 +78,37 @@ get_group_descriptor() {
   gp = (SUPER *)buf;
 }
 
+get_tokens() {
+  printf("\nPathname: %s\n", argv[1]);
+
+  //name[0] = strtok(argv[1], "/");
+}
+
+
+
+
 // Vars for showblock
 int InodesBeginBlock = 0;
+char *name[128];
 
 // Actual code for this assignment
 showblock() {
+  //1. Open the device for READ (DONE IN MAINLINE). Read in Superblock, verify it is ext2
   // Verify that the opened FS is ext2
   verifyext2fs();
   
-  // Read in group descriptor block, determine where INODEs begin on the disk. Call it the InodesBeginBlock
+  //2. Read in group descriptor block, determine where INODEs begin on the disk. Call it the InodesBeginBlock
   get_group_descriptor();
   InodesBeginBlock = gp->bg_inode_table;
   printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
 
+  //3. Read in InodeBeginBlock to get the inode of /, which is INODE #2. NOTE: inode number counts from 1.
+  // HOW DO THIS?
+
+  //4. Break up pathname into components and let the number of components be n, Denote the components by name[0] name[1] name[n-1]
+  get_tokens();  
+
 }
-
-
 
 
 
@@ -101,7 +117,7 @@ showblock() {
 // Name of disk to open
 char *disk = "mydisk";
 
-// Mainline handles opening of disk
+// Mainline handles opening of disk, then calls showblock()
 main(int argc, char *argv[ ]) { 
   if (argc > 1) {
     disk = argv[1];
