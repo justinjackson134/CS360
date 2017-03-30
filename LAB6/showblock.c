@@ -104,7 +104,7 @@ get_tokens_from_pathname() {
   while (name[i] != NULL) {
     i++;
     name[i] = strtok(NULL, "/");
-    printf(" - name[%d] %s\n", i, name[i]);
+    printf(" - name[%d]: %s\n", i, name[i]);
   }
 }
 
@@ -128,6 +128,7 @@ showblock() {
   //4. Break up pathname into components and let the number of components be n, Denote the components by name[0] name[1] name[n-1]
   get_tokens_from_pathname();  
 
+  printf("VERIFYING NAME STILL ACCESSABLE IN NEW FUNCTION-> name[0]: %s", name[0]);
   //5. 
 }
 
