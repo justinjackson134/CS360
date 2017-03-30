@@ -79,7 +79,7 @@ get_group_descriptor() {
 }
 
 get_tokens() {
-  printf("\nPathname: %s\n", argv[1]);
+  printf("\nPathname: %s\n", pathname);
 
   //name[0] = strtok(argv[1], "/");
 }
@@ -90,6 +90,7 @@ get_tokens() {
 // Vars for showblock
 int InodesBeginBlock = 0;
 char *name[128];
+char *pathname;
 
 // Actual code for this assignment
 showblock() {
@@ -121,6 +122,9 @@ char *disk = "mydisk";
 main(int argc, char *argv[ ]) { 
   if (argc > 1) {
     disk = argv[1];
+  }
+  if (argc > 2) {
+    pathname = argv[2];
   }
   fd = open(disk, O_RDONLY);
   if (fd < 0) {
