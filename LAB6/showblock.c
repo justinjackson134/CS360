@@ -130,6 +130,8 @@ get_tokens_from_pathname() {
 }
 
 ///////////////////////////////////////////////////////////////
+// Vars for search
+char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
 int search(INODE * inodePtr, char * name) {
   // cut off newline
