@@ -99,12 +99,12 @@ get_tokens_from_pathname() {
   // May have to remove an initial '/'
   // Get first token
   name[0] = strtok(pathname, "/");
-  printf(" %s\n", name[0]);
+  printf(" - name[0]: %s\n", name[0]);
 
   while (name[i] != NULL) {
     i++;
     name[i] = strtok(NULL, "/");
-    printf(" %s\n", name[i]);
+    printf(" - name[%d] %s\n", i, name[i]);
   }
 }
 
