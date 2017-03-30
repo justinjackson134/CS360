@@ -108,6 +108,19 @@ get_tokens_from_pathname() {
   }
 }
 
+///////////////////////////////////////////////////////////////
+// Searches through data blocks to find entry specified by pathname
+int search(INODE * inodePtr, char * name) {
+  //6. Start from the root INODE in (3), search for name[0] in its data block(s), if not found - return 0
+  // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
+
+  //7. Use the inode number, ino, to locate the corresponding INODE: Recall that ino counts from 1.  Use the Mailman's algorithm
+  // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
+
+  // search for name string in the data blocks of this INODE
+  // if found, return name's inumber
+  // else      return 0
+}
 
 
 
@@ -123,13 +136,36 @@ showblock() {
   get_group_descriptor_get_inodebegin();  
 
   //3. Read in InodeBeginBlock to get the inode of /, which is INODE #2. NOTE: inode number counts from 1.
-  // HOW DO THIS?
+  // HOW DO THIS? <---------------------------------------------------------------------------------------------------------------------------------- NEEDS TO BE DONE
 
   //4. Break up pathname into components and let the number of components be n, Denote the components by name[0] name[1] name[n-1]
   get_tokens_from_pathname();  
 
-  printf("VERIFYING NAME STILL ACCESSABLE IN NEW FUNCTION-> name[0]: %s", name[0]);
-  //5. 
+  //5. No step five
+
+  //6-7. Inside step 8
+
+  //8. Since Steps 6-7 will be repeated n times, you should implement a function
+  search(/*INODE * inodePtr, char * name)*/); // <--------------------------------------------------------------------------------------------------- THIS CALL SHOULD BE DOWN IN 7.#2
+
+  //7.#2 Then, all you have to do is call search() n times, as sketched below.
+  /*
+    Assume:    n,  name[0], ...., name[n-1]   are globals
+
+    ip --> INODE of /
+
+    for (i= 0; i < n; i++){
+      inumber = search(ip, name[i])  
+      if (inumber == 0) : can't find name[i], BOMB OUT!
+      -------------------------------------------------------
+      use inumber to read in its INODE and let ip --> this INODE 
+    }
+    
+    // if you reach here, you must have ip --> the INODE of pathname.
+  */
+
+  //8.#2 Extract information from ip --> as required.
+  // Should print the disk blocks (direct, indirect, double-indirect) of the file. 
 }
 
 
