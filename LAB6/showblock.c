@@ -44,6 +44,7 @@ struct ext2_super_block {
 };
 **********************************************************************/
 
+///////////////////////////////////////////////////////////////
 // Vars for getblock()
 char buf[BLKSIZE];
 int fd;
@@ -54,6 +55,7 @@ int get_block(int fd, int blk, char buf[ ]) {
   read(fd, buf, BLKSIZE);
 }
 
+///////////////////////////////////////////////////////////////
 // Checks to make sure that the open fs is ext2
 verifyext2fs() {
   // read SUPER block
@@ -72,13 +74,25 @@ verifyext2fs() {
           sp->s_blocks_count, sp->s_inodes_count, 0, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
 }
 
+///////////////////////////////////////////////////////////////
+// Vars for showblock
+int InodesBeginBlock = 0;
+
 // Set GP ptr to group descriptor
-get_group_descriptor() {
+get_group_descriptor_get_inodebegin() {
   get_block(fd, 2, buf);
   gp = (SUPER *)buf;
+
+  InodesBeginBlock = gp->bg_inode_table;
+  printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
 }
 
-get_tokens() {
+///////////////////////////////////////////////////////////////
+// Vars for get_tokens
+char *name[128];
+char *pathname = "/";
+
+get_tokens_from_pathname() {
   printf("\nPathname: %s\n", pathname);
 
   //name[0] = strtok(argv[1], "/");
@@ -87,11 +101,8 @@ get_tokens() {
 
 
 
-// Vars for showblock
-int InodesBeginBlock = 0;
-char *name[128];
-char *pathname;
 
+///////////////////////////////////////////////////////////////
 // Actual code for this assignment
 showblock() {
   //1. Open the device for READ (DONE IN MAINLINE). Read in Superblock, verify it is ext2
@@ -99,16 +110,15 @@ showblock() {
   verifyext2fs();
   
   //2. Read in group descriptor block, determine where INODEs begin on the disk. Call it the InodesBeginBlock
-  get_group_descriptor();
-  InodesBeginBlock = gp->bg_inode_table;
-  printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
+  get_group_descriptor_get_inodebegin();  
 
   //3. Read in InodeBeginBlock to get the inode of /, which is INODE #2. NOTE: inode number counts from 1.
   // HOW DO THIS?
 
   //4. Break up pathname into components and let the number of components be n, Denote the components by name[0] name[1] name[n-1]
-  get_tokens();  
+  get_tokens_from_pathname();  
 
+  //5. 
 }
 
 
@@ -120,12 +130,15 @@ char *disk = "mydisk";
 
 // Mainline handles opening of disk, then calls showblock()
 main(int argc, char *argv[ ]) { 
+  // If given a diskname, use it instead of mydisk - DEFAULT: "mydisk"
   if (argc > 1) {
     disk = argv[1];
   }
+  // If given a pathname, set pathname - DEFAULT: "/"
   if (argc > 2) {
     pathname = argv[2];
   }
+  // Open disk for read only
   fd = open(disk, O_RDONLY);
   if (fd < 0) {
     printf("Open failed\n");
@@ -133,5 +146,6 @@ main(int argc, char *argv[ ]) {
   }
   printf("Opened '%s' for RDONLY\n", disk);
   
+  // Call main function
   showblock();
 }
