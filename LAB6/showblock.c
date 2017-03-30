@@ -219,7 +219,9 @@ showblock() {
 	int INODES_PER_BLOCK = BLKSIZE / sizeof(INODE);
 	printf("%d\n\n", INODES_PER_BLOCK);
 	printf("THIS IS BUF : %s  \n\n", buf);
-	printf("this it the buffer for get block : %d\n\n", (((inumber - 1) / INODES_PER_BLOCK)));
+	printf("this is the buffer for get block : %d\n\n", (((inumber - 1) / INODES_PER_BLOCK)));
+	printf("i_number = %d\n\n", inumber);
+	printf("offset = %d\n\n", ((inumber - 1) % INODES_PER_BLOCK));
 	getchar();
     get_block(fd, (InodesBeginBlock + ((inumber-1)/INODES_PER_BLOCK)), buf);
     ip = (SUPER *)buf + ((inumber-1)%INODES_PER_BLOCK);
