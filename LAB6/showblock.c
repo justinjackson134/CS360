@@ -251,6 +251,7 @@ showblock() {
       else {
         //printf("\n\n\nNOT DIRECTORY!\n\n\n");
         printf("\nname[%d]: '%s' is not a directory, exiting.\n", i, name[i]);
+        exit(1);
       }
     }
   }
