@@ -22,6 +22,10 @@ int imap;
 int iblock;
 
 /********** Functions as BEFORE ***********/
+// Vars for getblock()
+char buf[BLKSIZE];
+int fd;
+
 int get_block(int dev, int blk, char buf[ ]){
   lseek(fd, (long)blk*BLKSIZE, 0);
   read(fd, buf, BLKSIZE);
@@ -46,6 +50,30 @@ int clr_bit(char *buf, int bit) {
   int i, j;
   i = bit/8; j=bit%8;
   buf[i] &= ~(1 << j);
+}
+
+///////////////////////////////////////////////////////////////
+// Vars for get_tokens
+char *name[128];
+char *pname = "/";
+int j = 0, n = 0;
+
+get_tokens_from_pathname() {
+  printf("\nPathname: %s\n", pname);
+
+  // May have to remove an initial '/'
+  // Get first token
+  name[0] = strtok(pname, "/");
+  printf(" - name[0]: %s\n", name[0]);
+
+  while (name[j] != NULL) {
+    j++;
+    name[j] = strtok(NULL, "/");
+    printf(" - name[%d]: %s\n", j, name[j]);
+  }
+
+  n = j;
+  printf(" - n = %d\n", n);
 }
 
 /*
@@ -75,6 +103,7 @@ PROC* running           MINODE *root
     cwd ----> root minode        |==========|  
 */
 
+/*
 init() // Initialize data structures of LEVEL-1:
  {
   //(1). 2 PROCs, P0 with uid=0, P1 with uid=1, all PROC.cwd = 0
@@ -84,11 +113,11 @@ init() // Initialize data structures of LEVEL-1:
   proc[0]->cwd = 0;
 
   proc[1] = malloc(sizeof(PROC));
-  proc[1]->uid = 0;
+  proc[1]->uid = 1;
   proc[1]->pid = 0;
   proc[1]->cwd = 0;
 
-  //(2). MINODE minode[100]; all with refCount=0
+  //(2). MINODE minode[100]; all with refCount=0 <----------------------------------------MOVED TO PASS1
   int i = 0;
   for (i = 0; i < 100; i++) {
     minode[i] = malloc(sizeof(MINODE));
@@ -98,6 +127,7 @@ init() // Initialize data structures of LEVEL-1:
   //(3). MINODE *root = 0;
   root = 0;
  }
+ */
 
 //4.1 Write C code for
 //         MINODE *mip = iget(dev, ino)
@@ -122,7 +152,7 @@ MINODE *iget(int dev, int ino)
        printf("allocating NEW minode[%d] for [%d %d]\n", i, dev, ino);
        mip->refCount = 1;
        mip->dev = dev; mip->ino = ino;  // assing to (dev, ino)
-       mip->dirty = mip->mounted = mip->mountPtr = 0;
+       mip->dirty = mip->mounted = mip->mptr = 0;
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
@@ -142,6 +172,10 @@ MINODE *iget(int dev, int ino)
 //         int iput(MINDOE *mip)
 int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 {
+  int blk, disp;
+  char buf[BLKSIZE];
+  INODE *ip;
+
   //(1). mip->refCount--;
   mip->refCount--;
  
@@ -155,24 +189,39 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
   //(3).  /* write INODE back to disk */
   printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino); 
 
+<<<<<<< HEAD
   //Use mip->ino to compute;
   //blk containing this INODE <--------------------------------------------------------------------------------------------DO THIS?
+=======
+  //Use mip->ino to compute 
+  //blk containing this INODE <-----------------------------------------------------------------------Is this right?
+>>>>>>> origin/master
   //disp of INODE in blk
+  blk  = (mip->ino-1)/8 + iblock;  // iblock = Inodes start block #
+  disp = (mip->ino-1) % 8;
 
-  get_block(mip->dev, block, buf);
+  get_block(mip->dev, blk, buf);
 
   ip = (INODE *)buf + disp;
   *ip = mip->INODE;
 
-  put_block(mip->dev, block, buf);
+  put_block(mip->dev, blk, buf);
 } 
 
 // Vars for search
 char dbuf[1024];
+<<<<<<< HEAD
 // Searches through data blocks to find entry specified by pathname
 int search(MINODE *mip, char *name) {
   printf("\nSEARCHING FOR: %s", name);
   for (int i = 0; i < 12; i++) {
+=======
+int i = 0;
+// Searches through data blocks to find entry specified by pathname
+int search(INODE * mip, char * name) {
+  printf("\nSEARCHING FOR: %s", name);
+    for (int i = 0; i < 12; i++) {
+>>>>>>> origin/master
     if (mip->i_block[i] == 0)
       return 0;
     get_block(fd, mip->i_block[i], dbuf);  // char dbuf[1024]
@@ -220,11 +269,16 @@ int getino(int *dev, char *pathname)
      mip = iget(running->cwd->dev, running->cwd->ino);
 
   strcpy(buf, pathname);
-  tokenize(buf); // n = number of token strings
+
+  
+  //int n = 0;
+  //n = tokenize(buf); // n = number of token strings
+  pname = pathname;
+  get_tokens_from_pathname();
 
   for (i=0; i < n; i++){
       printf("===========================================\n");
-      printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
+      printf("getino: i=%d name[%d]=%s\n", i, i, name[i]);
  
       ino = search(mip, name[i]);
 
