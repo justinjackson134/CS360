@@ -190,7 +190,10 @@ int chdir(pathname)
     }*/
 }   
  
-//int pwd(running->cwd): YOU WRITE CODE FOR THIS ONE!!!
+int pwd(running->cwd)
+{
+  //: YOU WRITE CODE FOR THIS ONE!!!
+}
 
 int quit()
 {
