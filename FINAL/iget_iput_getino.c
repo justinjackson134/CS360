@@ -280,8 +280,3 @@ int getino(int *dev, char *pathname)
    }
    return ino;
 }
-
-main(int argc, char *argv[ ])   // run as a.out [diskname]
-{
-  
-}
