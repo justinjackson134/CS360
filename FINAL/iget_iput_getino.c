@@ -281,6 +281,6 @@ int getino(int *dev, char *pathname)
    return ino;
 }
 
-int main(void) {
+main(void) {
   //Happy main. needed for compilation
 }
