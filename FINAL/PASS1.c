@@ -24,8 +24,10 @@ OBJECTIVE: mount root to start the PROJECT; ls, cd, pwd to show FS contents
 
 #include "type.h"
 
-// global variables
+#include "iget_iput_getino.c"  // YOUR iget_iput_getino.c file with
+                               // get_block/put_block, tst/set/clr bit functions
 
+// global variablesw
 MINODE minode[NMINODE];        // global minode[ ] array           
 MINODE *root;                  // root pointer: the /    
 PROC   proc[NPROC], *running;  // PROC; using only proc[0]
@@ -33,8 +35,6 @@ PROC   proc[NPROC], *running;  // PROC; using only proc[0]
 int fd, dev;                               // file descriptor or dev
 int nblocks, ninodes, bmap, imap, iblock;  // FS constants
 
-#include "iget_iput_getino.c"  // YOUR iget_iput_getino.c file with
-                               // get_block/put_block, tst/set/clr bit functions
 
 char *disk = "mydisk";
 char line[128], cmd[64], pathname[64];
