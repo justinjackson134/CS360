@@ -56,7 +56,7 @@ int clr_bit(char *buf, int bit) {
 // Vars for get_tokens
 char *name[128];
 char *pname = "/";
-int i = 0, n = 0;
+int j = 0, n = 0;
 
 get_tokens_from_pathname() {
   printf("\nPathname: %s\n", pname);
@@ -66,13 +66,13 @@ get_tokens_from_pathname() {
   name[0] = strtok(pname, "/");
   printf(" - name[0]: %s\n", name[0]);
 
-  while (name[i] != NULL) {
-    i++;
-    name[i] = strtok(NULL, "/");
-    printf(" - name[%d]: %s\n", i, name[i]);
+  while (name[j] != NULL) {
+    j++;
+    name[j] = strtok(NULL, "/");
+    printf(" - name[%d]: %s\n", j, name[j]);
   }
 
-  n = i;
+  n = j;
   printf(" - n = %d\n", n);
 }
 
