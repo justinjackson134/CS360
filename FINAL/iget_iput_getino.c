@@ -266,7 +266,7 @@ int getino(int *dev, char *pathname)
 
   for (i=0; i < n; i++){
       printf("===========================================\n");
-      printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
+      printf("getino: i=%d name[%d]=%s\n", i, i, name[i]);
  
       ino = search(mip, name[i]);
 
