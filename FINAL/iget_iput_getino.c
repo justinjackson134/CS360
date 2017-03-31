@@ -52,6 +52,30 @@ int clr_bit(char *buf, int bit) {
   buf[i] &= ~(1 << j);
 }
 
+///////////////////////////////////////////////////////////////
+// Vars for get_tokens
+char *name[128];
+char *pname = "/";
+int i = 0, n = 0;
+
+get_tokens_from_pathname() {
+  printf("\nPathname: %s\n", pname);
+
+  // May have to remove an initial '/'
+  // Get first token
+  name[0] = strtok(pname, "/");
+  printf(" - name[0]: %s\n", name[0]);
+
+  while (name[i] != NULL) {
+    i++;
+    name[i] = strtok(NULL, "/");
+    printf(" - name[%d]: %s\n", i, name[i]);
+  }
+
+  n = i;
+  printf(" - n = %d\n", n);
+}
+
 /*
 3. FS Level-1 Data Structures
 
@@ -234,9 +258,11 @@ int getino(int *dev, char *pathname)
 
   strcpy(buf, pathname);
 
-  int n =0;
-
-  n = tokenize(buf); // n = number of token strings
+  
+  //int n = 0;
+  //n = tokenize(buf); // n = number of token strings
+  pname = pathname;
+  get_tokens_from_pathname();
 
   for (i=0; i < n; i++){
       printf("===========================================\n");
