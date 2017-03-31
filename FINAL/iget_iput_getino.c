@@ -189,13 +189,8 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
   //(3).  /* write INODE back to disk */
   printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino); 
 
-<<<<<<< HEAD
-  //Use mip->ino to compute;
-  //blk containing this INODE <--------------------------------------------------------------------------------------------DO THIS?
-=======
   //Use mip->ino to compute 
   //blk containing this INODE <-----------------------------------------------------------------------Is this right?
->>>>>>> origin/master
   //disp of INODE in blk
   blk  = (mip->ino-1)/8 + iblock;  // iblock = Inodes start block #
   disp = (mip->ino-1) % 8;
@@ -210,18 +205,11 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 
 // Vars for search
 char dbuf[1024];
-<<<<<<< HEAD
-// Searches through data blocks to find entry specified by pathname
-int search(MINODE *mip, char *name) {
-  printf("\nSEARCHING FOR: %s", name);
-  for (int i = 0; i < 12; i++) {
-=======
 int i = 0;
 // Searches through data blocks to find entry specified by pathname
 int search(INODE * mip, char * name) {
   printf("\nSEARCHING FOR: %s", name);
     for (int i = 0; i < 12; i++) {
->>>>>>> origin/master
     if (mip->i_block[i] == 0)
       return 0;
     get_block(fd, mip->i_block[i], dbuf);  // char dbuf[1024]
@@ -292,6 +280,5 @@ int getino(int *dev, char *pathname)
    }
    return ino;
 }
-
 
 
