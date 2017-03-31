@@ -22,7 +22,7 @@ OBJECTIVE: mount root to start the PROJECT; ls, cd, pwd to show FS contents
 #include <sys/stat.h>
 #include <ext2fs/ext2_fs.h> 
 
-#include "type.h"
+//#include "type.h" // ALREADY INCLUDED IN IGET
 
 #include "iget_iput_getino.c"  // YOUR iget_iput_getino.c file with
                                // get_block/put_block, tst/set/clr bit functions
