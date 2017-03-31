@@ -233,7 +233,10 @@ int getino(int *dev, char *pathname)
      mip = iget(running->cwd->dev, running->cwd->ino);
 
   strcpy(buf, pathname);
-  tokenize(buf); // n = number of token strings
+
+  int n =0;
+
+  n = tokenize(buf); // n = number of token strings
 
   for (i=0; i < n; i++){
       printf("===========================================\n");
