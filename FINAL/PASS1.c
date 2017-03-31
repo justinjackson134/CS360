@@ -40,6 +40,29 @@ char *disk = "mydisk";
 char line[128], cmd[64], pathname[64];
 char buf[BLKSIZE];              // define buf1[ ], buf2[ ], etc. as you need
 
+
+
+///////////////////////////////////////////////////////////////
+// Checks to make sure that the open fs is ext2
+verifyext2fs() {
+  // read SUPER block
+  get_block(fd, 1, buf);  
+  sp = (SUPER *)buf;
+
+  // check for EXT2 magic number:
+  printf("VALID EXT2 FS: s_magic = %x\n", sp->s_magic);
+  if (sp->s_magic != 0xEF53) {
+    printf("NOT an EXT2 FS\n");
+    exit(1);
+  }
+
+  //With the SuperBlock read in, you might as well print... nblocks, ninodes, ngroups, inodes_per_group, number of free inodes and blocks, etc.
+  printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
+          sp->s_blocks_count, sp->s_inodes_count, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
+}
+
+
+
 main(int argc, char *argv[ ])   // run as a.out [diskname]
 {
   if (argc > 1)
@@ -50,51 +73,51 @@ main(int argc, char *argv[ ])   // run as a.out [diskname]
      exit(1);
   }
   //print fd or dev to see its value!!!
+  printf("dev = %d\n", dev);
 
-/*(1). printf("checking EXT2 FS\n");
-
-     Write C code to check EXT2 FS; if not EXT2 FS: exit
-
-     get ninodes, nblocks (and print their values)
-
-
-(2). Read GD block to get bmap, imap, iblock (and print their values)
-
-(3). init();         // write C code 
-
-(4). mount_root();   // write C code
-
-(5). printf("creating P0 as running process\n");
-
-     WRITE C code to do these:     
-       set running pointer to point at proc[0];
-       set running's cwd   to point at / in memory;
+  //(1). printf("checking EXT2 FS\n");
+  verifyext2fs();
+     //Write C code to check EXT2 FS; if not EXT2 FS: exit
+     //get ninodes, nblocks (and print their values)
 
 
-(6). while(1){       // command processing loop
-       printf("input command : [ls|cd|pwd|quit] ");
+  //(2). Read GD block to get bmap, imap, iblock (and print their values)
 
-     WRITE C code to do these:
+  //(3). init();         // write C code 
 
-       use fgets() to get user inputs into line[128]
-       kill the \r at end 
-       if (line is an empty string) // if user entered only \r
-          continue;
+  //(4). mount_root();   // write C code
 
-       Use sscanf() to extract cmd[ ] and pathname[] from line[128]
-       printf("cmd=%s pathname=%s\n", cmd, pathname);
+  //(5). printf("creating P0 as running process\n");
 
-       // execute the cmd
-       if (strcmp(cmd, "ls")==0)
-          ls(pathname);
-       if (strcmp(cmd, "cd")==0)
-          chdir(pathname);
-       if (strcmp(cmd, "pwd")==0)
-          pwd(running->cwd);
-       if (strcmp(cmd, "quit")==0)
-          quit();
-     }
-}*/
+    //WRITE C code to do these:     
+      //set running pointer to point at proc[0];
+      //set running's cwd   to point at / in memory;
+
+
+  //(6). while(1){       // command processing loop
+  //printf("input command : [ls|cd|pwd|quit] ");
+
+  //WRITE C code to do these:
+
+  //use fgets() to get user inputs into line[128]
+  //kill the \r at end 
+  //if (line is an empty string) // if user entered only \r
+      //continue;
+
+  //Use sscanf() to extract cmd[ ] and pathname[] from line[128]
+  //printf("cmd=%s pathname=%s\n", cmd, pathname);
+
+  // execute the cmd
+  if (strcmp(cmd, "ls")==0)
+      ls(pathname);
+  if (strcmp(cmd, "cd")==0)
+      chdir(pathname);
+  if (strcmp(cmd, "pwd")==0)
+      pwd(running->cwd);
+  if (strcmp(cmd, "quit")==0)
+      quit();
+}
+
 
 int init()
 {
