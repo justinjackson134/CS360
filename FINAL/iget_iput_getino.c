@@ -22,6 +22,10 @@ int imap;
 int iblock;
 
 /********** Functions as BEFORE ***********/
+// Vars for getblock()
+char buf[BLKSIZE];
+int fd;
+
 int get_block(int dev, int blk, char buf[ ]){
   lseek(fd, (long)blk*BLKSIZE, 0);
   read(fd, buf, BLKSIZE);
@@ -75,6 +79,7 @@ PROC* running           MINODE *root
     cwd ----> root minode        |==========|  
 */
 
+/*
 init() // Initialize data structures of LEVEL-1:
  {
   //(1). 2 PROCs, P0 with uid=0, P1 with uid=1, all PROC.cwd = 0
@@ -88,7 +93,7 @@ init() // Initialize data structures of LEVEL-1:
   proc[1]->pid = 0;
   proc[1]->cwd = 0;
 
-  //(2). MINODE minode[100]; all with refCount=0
+  //(2). MINODE minode[100]; all with refCount=0 <----------------------------------------MOVED TO PASS1
   int i = 0;
   for (i = 0; i < 100; i++) {
     minode[i] = malloc(sizeof(MINODE));
@@ -98,6 +103,7 @@ init() // Initialize data structures of LEVEL-1:
   //(3). MINODE *root = 0;
   root = 0;
  }
+ */
 
 //4.1 Write C code for
 //         MINODE *mip = iget(dev, ino)
@@ -122,7 +128,7 @@ MINODE *iget(int dev, int ino)
        printf("allocating NEW minode[%d] for [%d %d]\n", i, dev, ino);
        mip->refCount = 1;
        mip->dev = dev; mip->ino = ino;  // assing to (dev, ino)
-       mip->dirty = mip->mounted = mip->mountPtr = 0;
+       mip->dirty = mip->mounted = mip->mptr = 0;
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
@@ -165,12 +171,12 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
   blk  = (mip->ino-1)/8 + iblock;  // iblock = Inodes start block #
   disp = (mip->ino-1) % 8;
 
-  get_block(mip->dev, block, buf);
+  get_block(mip->dev, blk, buf);
 
   ip = (INODE *)buf + disp;
   *ip = mip->INODE;
 
-  put_block(mip->dev, block, buf);
+  put_block(mip->dev, blk, buf);
 } 
 
 // Vars for search

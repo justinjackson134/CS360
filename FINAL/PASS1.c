@@ -126,6 +126,26 @@ int init()
    (1).All minode's refCount=0;
    (2).proc[0]'s pid=1, uid=0, cwd=0, fd[ ]=0;
        proc[1]'s pid=2, uid=1, cwd=0, fd[ ]=0;*/
+  //(1). 2 PROCs, P0 with uid=0, P1 with uid=1, all PROC.cwd = 0
+  proc[0] = malloc(sizeof(PROC));
+  proc[0]->uid = 0;
+  proc[0]->pid = 0;
+  proc[0]->cwd = 0;
+
+  proc[1] = malloc(sizeof(PROC));
+  proc[1]->uid = 1;
+  proc[1]->pid = 0;
+  proc[1]->cwd = 0;
+
+  //(2). MINODE minode[100]; all with refCount=0
+  int i = 0;
+  for (i = 0; i < 100; i++) {
+    minode[i] = malloc(sizeof(MINODE));
+    minode[i]->refCount = 0;
+  }
+
+  //(3). MINODE *root = 0;
+  root = 0;  
 }
 
 // load root INODE and set root pointer to it
