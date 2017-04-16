@@ -177,7 +177,7 @@ OFT    *falloc();
 
 
 
-MINODE minode[NMINODE];
+MINODE minode[NMINODES];
 MINODE *root;
 PROC   proc[NPROC], *running;
 
@@ -203,7 +203,7 @@ void init()
   proc[1].pid = 0;
   proc[1].cwd = 0;
 
-  for(int i = 0; i < NMINODE; i++)
+  for(int i = 0; i < NMINODES; i++)
      minode[i].refCount = 0;
 
   root = 0;
@@ -270,7 +270,7 @@ MINODE *iget(int dev, int ino)
   char buf[BLKSIZE];
   MINODE *mip;
   INODE *ip;
-  for (i=0; i < NMINODE; i++){
+  for (i=0; i < NMINODES; i++){
     mip = &minode[i];
     if (mip->refCount && mip->dev == dev && mip->ino == ino){
        mip->refCount++;
@@ -278,13 +278,13 @@ MINODE *iget(int dev, int ino)
        return mip;
     }
   }
-  for (i=0; i < NMINODE; i++){
+  for (i=0; i < NMINODES; i++){
     mip = &minode[i];
     if (mip->refCount == 0){
        printf("allocating NEW minode[%d] for [%d %d]\n", i, dev, ino);
        mip->refCount = 1;
        mip->dev = dev; mip->ino = ino;  // assing to (dev, ino)
-       mip->dirty = mip->mounted = mip->mptr = 0;
+       mip->dirty = mip->mounted = mip->mountptr = 0;
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
@@ -302,27 +302,27 @@ MINODE *iget(int dev, int ino)
 
 int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 {
-  int nodeIn,blockIn;
-  mip->refCount--;
-  if (mip->refCount > 0) return;
-  if (!mip->dirty)       return;
+	char buf[BLKSIZE];
+	int nodeIn,blockIn;
+	mip->refCount--;
+	if (mip->refCount > 0) return;
+	if (!mip->dirty)       return;
   
-  printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino);
+	printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino);
 
-  nodeIn = (mip->ino -1 ) % INODES_PER_BLOCK; // Mailman's Algorithm
-  blockIn = (mip->ino -1) / INODES_PER_BLOCK + InodesBeginBlock; // Mailman's Algorithm
-
-  get_block(mip->dev,blockIn, buf);
-  ip = (INODE *)buf;
-  ip += nodeIn;
-  *ip = mip->INODE;
-  put_block(mip->dev,blockIn,buf); // save the minode!
+	nodeIn = (mip->ino -1 ) % INODES_PER_BLOCK; // Mailman's Algorithm
+	blockIn = (mip->ino -1) / INODES_PER_BLOCK + InodesBeginBlock; // Mailman's Algorithm
+	get_block(mip->dev,blockIn, buf);
+	ip = (INODE *)buf;
+	ip += nodeIn;
+	*ip = mip->INODE;
+	put_block(mip->dev,blockIn,buf); // save the minode!
 }
   
 
 int getino(int *dev, char *pathname)
 {
-  int i, ino, blk, disp;
+  int i, ino, blk, disp,n;
   char buf[BLKSIZE];
   INODE *ip;
   MINODE *mip;
@@ -337,11 +337,11 @@ int getino(int *dev, char *pathname)
      mip = iget(running->cwd->dev, running->cwd->ino);
 
   strcpy(buf, pathname);
-  tokenize(buf); // n = number of token strings
+  n = tokenize(buf); // n = number of token strings
 
   for (i=0; i < n; i++){
-      printf("===========================================\n");
-      printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
+      //printf("===========================================\n");
+      //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
  
       ino = search(mip, name[i]);
 
@@ -360,7 +360,25 @@ void execute_command(char *cmd)
 {
 
 }
+int tokenize(char buf[BLKSIZE])
+{
+	char temp[BLKSIZE];
+	int j = 0;
+	// May have to remove an initial '/'
+	// Get first token
+	temp[0] = strtok(buf, "/");
+	
 
+	while (temp[j] != NULL) {
+		j++;
+		temp[j] = strtok(NULL, "/");
+		
+	}
+
+	
+	return j;
+
+}
 
 
 
