@@ -94,6 +94,10 @@ DIR   *dp;
 #define BLKSIZE           1024
 #define BITS_PER_BLOCK    (8*BLOCK_SIZE)
 #define INODES_PER_BLOCK  (BLOCK_SIZE/sizeof(INODE))
+//bool type declaration
+typedef int bool;
+#define true 1
+#define false 0
 
 // Block number of EXT2 FS on FD
 #define SUPERBLOCK        1
@@ -181,6 +185,7 @@ MINODE minode[NMINODES];
 MINODE *root;
 PROC   proc[NPROC], *running;
 
+char *name[32];
 int dev;
 int nblocks;
 int ninodes;
@@ -319,7 +324,34 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 	put_block(mip->dev,blockIn,buf); // save the minode!
 }
   
+int tokenize(char buf[BLKSIZE])
+{
 
+	int j = 0;
+	// May have to remove an initial '/'
+	// Get first token
+	name[0] = strtok(buf, "/");
+
+
+	while (name[j] != NULL) {
+		j++;
+		name[j] = strtok(NULL, "/");
+
+	}
+
+
+	return j;
+
+}
+void delete_name()
+{
+	int i;
+	for (i = 0; i < 32; i++)
+	{
+		name[i] = 0;
+	}
+	return;
+}
 int getino(int *dev, char *pathname)
 {
   int i, ino, blk, disp,n;
@@ -354,31 +386,14 @@ int getino(int *dev, char *pathname)
       mip = iget(*dev, ino);
   }
   iput(mip);
+  delete_name();
   return ino;
 }
 void execute_command(char *cmd)
 {
 
 }
-int tokenize(char buf[BLKSIZE])
-{
-	char temp[BLKSIZE];
-	int j = 0;
-	// May have to remove an initial '/'
-	// Get first token
-	temp[0] = strtok(buf, "/");
-	
 
-	while (temp[j] != NULL) {
-		j++;
-		temp[j] = strtok(NULL, "/");
-		
-	}
-
-	
-	return j;
-
-}
 
 
 
