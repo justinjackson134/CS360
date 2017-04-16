@@ -75,6 +75,15 @@ int ninodes;
 int bmap;
 int imap;
 int iblock;
+int InodesBeginBlock;
+
+get_group_descriptor_get_inodebegin() {
+	get_block(fd, 2, buf);
+	gp = (SUPER *)buf;
+
+	InodesBeginBlock = gp->bg_inode_table;
+	//printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
+}
 
 void init()
 {
@@ -92,6 +101,7 @@ void init()
 
   root = 0;
   running = &proc[0];
+  get_group_descriptor_get_inodebegin();
 
 }
 
@@ -117,12 +127,12 @@ void mountRoot(char *name)
 	   get_block(dev, 2, buf);
 	   gp = (SUPER *)buf;
 	   root = iget(dev, 2);
-	   root->mountptr = (MOUNT *)malloc(sizeof(MOUNT));
-	   root->mountptr->ninodes = ninodes;
-	   root->mountptr->nblocks = nblocks;
-	   root->mountptr->dev = dev;
-	   root->mountptr->busy = 1;
-	   root->mountptr->mounted_inode = root;
+	   root->mptr = (MOUNT *)malloc(sizeof(MOUNT));
+	   root->mptr->ninodes = ninodes;
+	   root->mptr->nblocks = nblocks;
+	   root->mptr->dev = dev;
+	   root->mptr->busy = 1;
+	   root->mptr->mounted_inode = root;
    }
 }
 
@@ -160,7 +170,7 @@ MINODE *iget(int dev, int ino)
        printf("allocating NEW minode[%d] for [%d %d]\n", i, dev, ino);
        mip->refCount = 1;
        mip->dev = dev; mip->ino = ino;  // assing to (dev, ino)
-       mip->dirty = mip->mounted = mip->mountPtr = 0;
+       mip->dirty = mip->mounted = mip->mptr = 0;
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
@@ -186,7 +196,7 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
   printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino);
 
   nodeIn = (mip->ino -1 ) % INODES_PER_BLOCK; // Mailman's Algorithm
-  blockIn = (mip->ino -1) / INODES_PER_BLOCK + INODEBLOCK; // Mailman's Algorithm
+  blockIn = (mip->ino -1) / INODES_PER_BLOCK + InodesBeginBlock; // Mailman's Algorithm
 
   get_block(mip->dev,blockIn, buf);
   ip = (INODE *)buf;
