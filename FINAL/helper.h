@@ -76,14 +76,9 @@ int bmap;
 int imap;
 int iblock;
 int InodesBeginBlock;
+int fd;
 
-get_group_descriptor_get_inodebegin() {
-	get_block(fd, 2, buf);
-	gp = (SUPER *)buf;
 
-	InodesBeginBlock = gp->bg_inode_table;
-	//printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
-}
 
 void init()
 {
@@ -109,7 +104,7 @@ void mountRoot(char *name)
 {
 
    char buf[BLKSIZE];
-   int fd = open("mydisk",O_RDWR);
+   fd = open("mydisk",O_RDWR);
    if(fd < 0)//error opening
    {
       printf("Error opening disk for reading\n\n");
@@ -135,7 +130,14 @@ void mountRoot(char *name)
 	   root->mptr->mounted_inode = root;
    }
 }
+get_group_descriptor_get_inodebegin() {
+	char buf[BLKSIZE];
+	get_block(fd, 2, buf);
+	gp = (SUPER *)buf;
 
+	InodesBeginBlock = gp->bg_inode_table;
+	//printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
+}
 // read the block of data from the file device (fd) into the buffer (buf).
 void get_block(int fd,int block, char *buf)
 {
