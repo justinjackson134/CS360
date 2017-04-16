@@ -103,16 +103,16 @@ void mountRoot(char *name)
    }
    else
    {
-      get_block(dev,2,buf);
-      gp=(SUPER *)buf;
-      root = iget(dev,2);
-      root->mountptr = (MOUNT *)malloc(sizeof(MOUNT));
-      root->mountptr->ninodes = ninodes;
-      root->mountptr->nblocks = nblocks;
-      root->mountptr->dev = dev;
-      root->mountptr->busy = 1;
-      root->mountptr->mounted_inode = root;
-
+	   get_block(dev, 2, buf);
+	   gp = (SUPER *)buf;
+	   root = iget(dev, 2);
+	   root->mountptr = (MOUNT *)malloc(sizeof(MOUNT));
+	   root->mountptr->ninodes = ninodes;
+	   root->mountptr->nblocks = nblocks;
+	   root->mountptr->dev = dev;
+	   root->mountptr->busy = 1;
+	   root->mountptr->mounted_inode = root;
+   }
 }
 
 // read the block of data from the file device (fd) into the buffer (buf).
@@ -220,6 +220,9 @@ int getino(int *dev, char *pathname)
   }
   iput(mip);
   return ino;
+}
+void execute_command(char *cmd)
+{
 }
 
 
