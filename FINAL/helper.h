@@ -26,8 +26,8 @@ DIR   *dp;
 #define NFD           16
 #define NPROC          4
 
-#define BITS_PER_BLOCK    (8*BLOCK_SIZE)
-#define INODES_PER_BLOCK  (BLOCK_SIZE/sizeof(INODE))
+#define BITS_PER_BLOCK    (8*BLKSIZE)
+#define INODES_PER_BLOCK  (BLKSIZE/sizeof(INODE))
 
 
 typedef struct minode{
@@ -54,6 +54,17 @@ typedef struct proc{
   OFT         *fd[NFD];
 }PROC;
 
+typedef struct Mount {
+	int  ninodes;
+	int  nblocks;
+	int  bmap;
+	int  imap;
+	int  iblock;
+	int  dev, busy;
+	struct Minode *mounted_inode;
+	char   name[256];
+	char   mount_name[64];
+} MOUNT;
 MINODE minode[NMINODE];
 MINODE *root;
 PROC   proc[NPROC], *running;
@@ -76,7 +87,7 @@ void init()
   proc[1].pid = 0;
   proc[1].cwd = 0;
 
-  for(int i = 0; i < NMINODES; i++)
+  for(int i = 0; i < NMINODE; i++)
      minode[i].refCount = 0;
 
   root = 0;
@@ -87,7 +98,7 @@ void init()
 void mountRoot(char *name)
 {
 
-   char buf[BLOCK_SIZE];
+   char buf[BLKSIZE];
    int fd = open("mydisk",O_RDWR);
    if(fd < 0)//error opening
    {
@@ -118,15 +129,15 @@ void mountRoot(char *name)
 // read the block of data from the file device (fd) into the buffer (buf).
 void get_block(int fd,int block, char *buf)
 {
-  lseek(fd,(long)(BLOCK_SIZE*block),0);
-  read(fd,buf,BLOCK_SIZE); 
+  lseek(fd,(long)(BLKSIZE*block),0);
+  read(fd,buf, BLKSIZE);
 }
 
 // put the block of data from the buffer (buf) into the file device (fd)
 void put_block(int fd, int block, char *buf)
 {
-  lseek(fd, (long)(BLOCK_SIZE*block),0);
-  write(fd, buf, BLOCK_SIZE);
+  lseek(fd, (long)(BLKSIZE*block),0);
+  write(fd, buf, BLKSIZE);
 }
 
 MINODE *iget(int dev, int ino)
@@ -223,6 +234,7 @@ int getino(int *dev, char *pathname)
 }
 void execute_command(char *cmd)
 {
+
 }
 
 
