@@ -29,14 +29,16 @@ DIR   *dp;
 #define BITS_PER_BLOCK    (8*BLKSIZE)
 #define INODES_PER_BLOCK  (BLKSIZE/sizeof(INODE))
 
-
+typedef int bool;
+#define true 1
+#define false 0
 typedef struct minode{
   INODE INODE;
   int dev, ino;
   int refCount;
   int dirty;
   int mounted;
-  struct mntable *mptr;
+  struct MOUNT *mptr;
 }MINODE;
 
 typedef struct oft{
