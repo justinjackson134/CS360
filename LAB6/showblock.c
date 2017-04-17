@@ -67,6 +67,7 @@ void get_inode(int fd, int ino, int inode_table,INODE *inode) {
 verifyext2fs() {
 
   printf("!!!!!!!!!!!!!!!!!!! FILE descriptor: %d", fd);
+  printf("buf: %d", buf);
 
   // read SUPER block
   get_block(fd, 1, buf);  
