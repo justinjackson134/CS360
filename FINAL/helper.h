@@ -232,6 +232,7 @@ void mountRoot(char *name)
    get_block(fd,1,buf);
    sp=(SUPER *)buf;
    
+   printf("Mounting: %s", name);
    printf("MY MAGIC NUMBER: %x", sp->s_magic);
    printf("FD: %d", fd);
    printf("Buf: %d", buf);
