@@ -1,21 +1,8 @@
 #include "helper.h"
 
-
-
-
-
-
-
-
-
-
-
 //Level 1 function
-
 bool my_mkdir(char *name) {
 	//make a dir
-
-
 }
 
 bool my_rmdir(char *name) {
@@ -194,7 +181,7 @@ void startMenu() {
 	char *command;
 	printf("Welcome to our EXT2 file system\n\n");
 	printf("Mounting root...\n\n");
-	init();
+	//init();
 	mountRoot("mydisk");
 	printf("DONE! Please enter a command, listed below\n\n");
 	printf("mkdir, rmdir, ls, cd, pwd, creat, link,  unlink, 		symlink, stat,  chmod, touch\n\n");
