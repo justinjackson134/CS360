@@ -65,6 +65,9 @@ void get_inode(int fd, int ino, int inode_table,INODE *inode) {
 ///////////////////////////////////////////////////////////////
 // Checks to make sure that the open fs is ext2
 verifyext2fs() {
+
+  printf("!!!!!!!!!!!!!!!!!!! FILE descriptor: %d", fd);
+
   // read SUPER block
   get_block(fd, 1, buf);  
   sp = (SUPER *)buf;
