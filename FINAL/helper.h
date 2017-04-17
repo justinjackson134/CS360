@@ -223,7 +223,7 @@ void init()
 
 void mountRoot(char *name)
 {   
-   fd = open("mydisk",O_RDWR);
+   fd = open("mydisk",O_RDONLY);
    if(fd < 0)//error opening
    {
       printf("Error opening disk for reading\n\n");
@@ -232,10 +232,10 @@ void mountRoot(char *name)
    get_block(fd,1,buf);
    sp=(SUPER *)buf;
    
-   printf("Mounting: %s", name);
-   printf("MY MAGIC NUMBER: %x", sp->s_magic);
-   printf("FD: %d", fd);
-   printf("Buf: %d", buf);
+   printf("Mounting: %s\n", name);
+   printf("MY MAGIC NUMBER: %d\n", sp->s_magic);
+   printf("FD: %d\n", fd);
+   printf("Buf: %d\n", buf);
 
 
    if(sp->s_magic != 0xEF53)
