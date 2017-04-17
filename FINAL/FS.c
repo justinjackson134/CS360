@@ -22,6 +22,7 @@
 #define BLKSIZE           1024
 #define BITS_PER_BLOCK    (8*BLOCK_SIZE)
 #define INODES_PER_BLOCK  (BLOCK_SIZE/sizeof(INODE))
+
 //bool type declaration
 typedef int bool;
 #define true 1
@@ -132,8 +133,23 @@ char buf[BLKSIZE];
 int fd;
 // Location of Inodes Beging Block
 int InodesBeginBlock = 0;
+// Array of MINODES
+MINODE minode[NMINODES];
 // This is the root minode
 MINODE *root;
+// Array of Procs and the running proc
+PROC   proc[NPROC], *running;
+// Used for the tokenizer
+char *name[32];
+
+
+// Unknown, copied from original main
+int dev;
+int nblocks;
+int ninodes;
+int bmap;
+int imap;
+int iblock;
 
 
 
