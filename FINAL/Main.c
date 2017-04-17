@@ -205,7 +205,7 @@ void startMenu() {
 		//getline(&command, BLKSIZE, stdin);
 		//execute_command(command);
 		my_ls("/");
-		System("pause");
+		getchar();
 		if (strcmp(command, "quit") == 0)
 			break;
 		else
