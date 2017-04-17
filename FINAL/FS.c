@@ -141,7 +141,8 @@ MINODE *root;
 PROC   proc[NPROC], *running;
 // Used for the tokenizer
 char *name[32];
-
+// Command tokenizer! (May be unneded but i,m drinking at this point)
+char *command[32];
 
 // Unknown, copied from original main
 int dev;
@@ -309,4 +310,16 @@ main(int argc, char *argv[ ]) {
 
   // Get commands from stdin
   //MAGIC LOOP    
+  while(1)
+  {
+    printf("J&J EXT2FS: ");
+    
+    if (strcmp(command[0], "quit") == 0)
+    {
+      //User entered Quit, we should probably exit
+      break;
+    }
+  }
+
+  printf("Exiting J&J EXT2FS program! Have a nice day!");
 }
