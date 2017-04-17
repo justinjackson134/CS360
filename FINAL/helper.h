@@ -71,7 +71,7 @@ typedef struct Mount {
 */
 #ifndef HELPER_H
 #define HELPER_H
-#endif
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -408,3 +408,5 @@ bool search(char *filename){
 
 
 //we can add the rest as we need it
+
+#endif
