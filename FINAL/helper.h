@@ -189,6 +189,7 @@ MINODE *root;
 PROC   proc[NPROC], *running;
 
 char *name[32];
+char buf[BLKSIZE];
 int dev;
 int nblocks;
 int ninodes;
@@ -221,9 +222,7 @@ void init()
 }
 
 void mountRoot(char *name)
-{
-
-   char buf[BLKSIZE];
+{   
    fd = open("mydisk",O_RDWR);
    if(fd < 0)//error opening
    {
