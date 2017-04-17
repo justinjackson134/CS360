@@ -195,7 +195,7 @@ void startMenu() {
 	printf("Welcome to our EXT2 file system\n\n");
 	printf("Mounting root...\n\n");
 	init();
-	mountRoot("MyDisk");
+	mountRoot("mydisk");
 	printf("DONE! Please enter a command, listed below\n\n");
 	printf("mkdir, rmdir, ls, cd, pwd, creat, link,  unlink, 		symlink, stat,  chmod, touch\n\n");
 	printf("open, close, read, write, lseek, cat, cp, mv\n\n");
@@ -204,7 +204,7 @@ void startMenu() {
 		printf("Enter command:    ");
 		getline(&command, BLKSIZE, stdin);
 		execute_command(command);
-		my_ls();
+		my_ls("/");
 		if (strcmp(command, "quit") == 0)
 			break;
 		else
