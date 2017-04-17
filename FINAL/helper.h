@@ -232,7 +232,7 @@ void mountRoot(char *name)
    }
    get_block(fd,1,buf);
    sp=(SUPER *)buf;
-   printf("MY MAGIC NUMBER: %d", sp->s_magic);
+   printf("MY MAGIC NUMBER: %x", sp->s_magic);
    if(sp->s_magic != 0xEF53)
    {
       printf("NOT EXT2 FILESYSTEM!\n\n");
