@@ -229,7 +229,8 @@ void mountRoot(char *name)
       printf("Error opening disk for reading\n\n");
       exit(1);
    }
-   get_block(fd,1,buf);
+   root = iget(fd, 2);
+   /*get_block(fd,1,buf);
    sp=(SUPER *)buf;
    
    printf("Mounting: %s\n", name);
@@ -254,7 +255,7 @@ void mountRoot(char *name)
 	   root->mountptr->dev = dev;
 	   root->mountptr->busy = 1;
 	   root->mountptr->mounted_inode = root;
-   }
+   }*/
 }
 get_group_descriptor_get_inodebegin() {
 	char buf[BLKSIZE];
@@ -281,7 +282,7 @@ void put_block(int fd, int block, char *buf)
 MINODE *iget(int dev, int ino)
 {
   int i, blk, disp;
-  char buf[BLKSIZE];
+  char buf2[BLKSIZE];
   MINODE *mip;
   INODE *ip;
   for (i=0; i < NMINODES; i++){
@@ -303,8 +304,8 @@ MINODE *iget(int dev, int ino)
        blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
        //printf("iget: ino=%d blk=%d disp=%d\n", ino, blk, disp);
-       get_block(dev, blk, buf);
-       ip = (INODE *)buf + disp;
+       get_block(dev, blk, buf2);
+       ip = (INODE *)buf2 + disp;
        // copy INODE to mp->INODE
        mip->INODE = *ip;
        return mip;
