@@ -169,7 +169,7 @@ MINODE *iget(int dev, int ino)
   char buf[BLKSIZE];
   MINODE *mip;
   INODE *ip;
-  for (i=0; i < NMINODE; i++){
+  for (i=0; i < NMINODES; i++){
     mip = &minode[i];
     if (mip->dev == dev && mip->ino == ino){
        mip->refCount++;
