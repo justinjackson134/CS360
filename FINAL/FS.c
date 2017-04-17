@@ -28,6 +28,31 @@ typedef struct ext2_super_block SUPER;
 typedef struct ext2_inode       INODE;
 typedef struct ext2_dir_entry_2 DIR;    // need this for new version of e2fs
 
+// Open File Table
+typedef struct Oft {
+  int   mode;
+  int   refCount;
+  struct Minode *inodeptr;
+  long  offset;
+} OFT;
+
+// PROC structure
+typedef struct Proc {
+  int   uid;
+  int   pid;
+  int   gid;
+  int   ppid;
+  int   status;
+
+  struct Minode *cwd;
+  OFT   *fd[NFD];
+
+  struct Proc *next;
+  struct Proc *parent;
+  struct Proc *child;
+  struct Proc *sibling;
+} PROC;
+
 // In-memory inodes structure
 typedef struct Minode {
   INODE   INODE;               // disk inode
@@ -39,6 +64,19 @@ typedef struct Minode {
   struct  Mount *mountptr;
   char    name[128];           // name string of file
 } MINODE;
+
+// Mount Table structure
+typedef struct Mount {
+  int    ninodes;
+  int    nblocks;
+  int    bmap;
+  int    imap;
+  int    iblock;
+  int    dev, busy;
+  struct Minode *mounted_inode;
+  char   name[256];
+  char   mount_name[64];
+} MOUNT;
 
 
 ////////////////////////////////////////////////////////////////////
