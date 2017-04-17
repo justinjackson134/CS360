@@ -223,7 +223,7 @@ void init()
 
 void mountRoot(char *name)
 {   
-   fd = open("mydisk",O_RDONLY);
+   fd = open("mydisk",O_RDWR);
    if(fd < 0)//error opening
    {
       printf("Error opening disk for reading\n\n");
@@ -238,13 +238,13 @@ void mountRoot(char *name)
    printf("Buf: %d\n", buf);
 
 
-   if(sp->s_magic != 0xEF53)
-   {
+   //if(sp->s_magic != 0xEF53)
+   //{
       printf("NOT EXT2 FILESYSTEM!\n\n");
-      exit(1);
-   }
-   else
-   {
+   //   exit(1);
+   //}
+   //else
+   //{
 	   get_block(dev, 2, buf);
 	   gp = (SUPER *)buf;
 	   root = iget(dev, 2);
@@ -254,7 +254,7 @@ void mountRoot(char *name)
 	   root->mountptr->dev = dev;
 	   root->mountptr->busy = 1;
 	   root->mountptr->mounted_inode = root;
-   }
+   //}
 }
 get_group_descriptor_get_inodebegin() {
 	char buf[BLKSIZE];
