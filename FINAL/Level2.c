@@ -1,6 +1,6 @@
 #include "helper.h"
 
-int open(char *name){
+int my_open(char *name){
 //open file and return file decriptor
 }
 
@@ -16,7 +16,7 @@ void write(int fd, const void *buf, size_t count){
 //writes count bytes from buf into fd
 }
 
-void lseek(...){
+void lseek(){
 //offsets the fd by a certain byte
 }
 
