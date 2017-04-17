@@ -281,7 +281,20 @@ void mountRoot(char *disk)
 }
 
 
+void tokenizeCommmand()
+{
+  char readLine[1024];
+  int j = 0;
+  // May have to remove an initial '/'
+  // Get first token
+  command[0] = strtok(buf, "/");
 
+
+  while (name[j] != NULL) {
+    j++;
+    name[j] = strtok(NULL, "/");
+
+}
 
 
 
@@ -313,11 +326,15 @@ main(int argc, char *argv[ ]) {
   while(1)
   {
     printf("J&J EXT2FS: ");
-
+    tokenizeCommmand();
     if (strcmp(command[0], "quit") == 0)
     {
       //User entered Quit, we should probably exit
       break;
+    }
+    else
+    {
+      printf("YOU ENTERED: %s", command[0]);
     }
   }
 
