@@ -45,40 +45,24 @@ SUPER *sp;
 INODE *ip;
 DIR   *dp; 
 
+// Buffer used in getblock
 char buf[BLKSIZE];
+// File Descriptor int
 int fd;
-
+// Location of Inodes Beging Block
+int InodesBeginBlock = 0;
 
 
 
 ////////////////////////////////////////////////////////////////////
 // FUNCTIONS                                                      //
 ////////////////////////////////////////////////////////////////////
-
 // Gets a block from the file descriptor
 int get_block(int fd, int blk, char buf[ ]) {
   lseek(fd, (long)blk*BLKSIZE, 0);
   read(fd, buf, BLKSIZE);
 }
 
-
-
-
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////
-// Checks to make sure that the open fs is ext2
-verifyext2fs() {
-  
-
-  //With the SuperBlock read in, you might as well print... nblocks, ninodes, ngroups, inodes_per_group, number of free inodes and blocks, etc.
-  printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
-          sp->s_blocks_count, sp->s_inodes_count, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
-}
 
 
 
