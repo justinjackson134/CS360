@@ -178,7 +178,30 @@ int main() {
 }
 
 void startMenu() {
-	char *command;
+	fd = open("mydisk", O_RDONLY);
+	if (fd < 0) {
+		printf("Open failed\n");
+		exit(1);
+	}
+	printf("Opened '%s' for RDONLY\n", "mydisk";
+
+		// read SUPER block
+  	get_block(fd, 1, buf);  
+  	sp = (SUPER *)buf;
+
+  	// check for EXT2 magic number:
+  	printf("VALID EXT2 FS: s_magic = %x\n", sp->s_magic);
+  	if (sp->s_magic != 0xEF53) {
+	    printf("NOT an EXT2 FS\n");
+    	exit(1);
+  	}
+
+  	//With the SuperBlock read in, you might as well print... nblocks, ninodes, ngroups, inodes_per_group, number of free inodes and blocks, etc.
+  	printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
+    sp->s_blocks_count, sp->s_inodes_count, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
+
+
+	/*char *command;
 	printf("Welcome to our EXT2 file system\n\n");
 	printf("Mounting root...\n\n");
 	//init();
@@ -197,7 +220,7 @@ void startMenu() {
 			break;
 		else
 			continue;
-	}
+	}*/
 
 	//simple function to display menu and accept command
 
