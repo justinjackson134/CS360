@@ -173,16 +173,19 @@ MINODE *iget(int dev, int ino)
     mip = &minode[i];
     if (mip->dev == dev && mip->ino == ino){
        mip->refCount++;
-       printf("found [%d %d] as minode[%d] in core\n", dev, ino, i);
+       printf("\nfound [%d %d] as minode[%d] in core\n", dev, ino, i);
        return mip;
     }
   }
   for (i=0; i < NMINODES; i++){
     mip = &minode[i];
     if (mip->refCount == 0){
-       printf("allocating NEW minode[%d] for [%d %d]\n", i, dev, ino);
+       printf("\nallocating NEW minode[%d] for [%d %d]\n", i, dev, ino);  // WHAT IS DEV? EARLIER WE GET GROUP DESCRIPTOR, IT USED TO SAY DEV, BUT THAT DIDNT WORK SO I MADE IT FD
+       // Increment ref count as we are using it
        mip->refCount = 1;
+       // I DONT KNOW WHAT THIS DOES <--------------------------------------------------------------------------------------------------------------------
        mip->dev = dev; mip->ino = ino;  // assing to (dev, ino)
+       // WHAT DOES DIRTY MEAN <--------------------------------------------------------------------------------------------------------------------------
        mip->dirty = mip->mounted = mip->mountptr = 0;
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
@@ -195,15 +198,30 @@ MINODE *iget(int dev, int ino)
        return mip;
     }
   }   
-  printf("PANIC: no more free minodes\n");
+  // If this fails, there must be no more minodes, thus, inform the user
+  printf("\nPANIC: no more free minodes\n");
   return 0;
 }
 
+// Initializes Procs and root+running
+void init()
+{
+  proc[0].uid = 0;
+  proc[0].pid = 0;
+  proc[0].cwd = 0;
 
+  proc[1].uid = 1;
+  proc[1].pid = 0;
+  proc[1].cwd = 0;
 
+  for(int i = 0; i < NMINODES; i++)
+     minode[i].refCount = 0;
 
+  root = 0;
+  running = &proc[0];
+}
 
-
+// Mounts the root in order to start the program
 void mountRoot(char *disk)
 {   
   // Open disk for read/write
@@ -278,12 +296,17 @@ char *disk = "mydisk";
 
 // Mainline handles opening of disk, then calls showblock()
 main(int argc, char *argv[ ]) { 
-    // If given a diskname, use it instead of mydisk - DEFAULT: "mydisk"
-    if (argc > 1) {
-      disk = argv[1];
-    }
-    // MOUNT ROOT
-    mountRoot(disk);
+  printf("Initializing J&J EXT2 file system\n\n");
+  // Initialize the Program
+  init();
 
-    
+  // If given a diskname, use it instead of mydisk - DEFAULT: "mydisk"
+  if (argc > 1) {
+    disk = argv[1];
+  }
+  // MOUNT ROOT
+  mountRoot(disk);
+
+  // Get commands from stdin
+  //MAGIC LOOP    
 }
