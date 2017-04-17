@@ -270,7 +270,7 @@ void mountRoot(char *disk)
     if(isDebug) printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
 
     // WHAT DOES THIS DO?
-    root = iget(dev, 2);
+    root = iget(fd, 2); // NOTE!!! THIS USED TO SAY "iget(dev,2)" BUT IVE BEEN REPLACING dev WITH fd EVERYWEHER, SO, WHAT??? <--------------------------------------------------------------------
     root->mountptr = (MOUNT *)malloc(sizeof(MOUNT));
     root->mountptr->ninodes = ninodes;
     root->mountptr->nblocks = nblocks;
@@ -313,7 +313,7 @@ main(int argc, char *argv[ ]) {
   while(1)
   {
     printf("J&J EXT2FS: ");
-    
+
     if (strcmp(command[0], "quit") == 0)
     {
       //User entered Quit, we should probably exit
