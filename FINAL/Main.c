@@ -202,7 +202,7 @@ void startMenu() {
 	printf("mount, unmount\n\n");
 	while (1) {
 		printf("Enter command:    ");
-		//getline(&command, BLKSIZE, stdin);
+		getline(&command, BLKSIZE, stdin);
 		//execute_command(command);
 		//my_ls("/");
 		if (strcmp(command, "quit") == 0)
