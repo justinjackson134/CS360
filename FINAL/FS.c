@@ -28,6 +28,18 @@ typedef struct ext2_super_block SUPER;
 typedef struct ext2_inode       INODE;
 typedef struct ext2_dir_entry_2 DIR;    // need this for new version of e2fs
 
+// In-memory inodes structure
+typedef struct Minode {
+  INODE   INODE;               // disk inode
+  int     dev, ino;
+
+  int     refCount;
+  int     dirty;
+  int     mounted;
+  struct  Mount *mountptr;
+  char    name[128];           // name string of file
+} MINODE;
+
 
 ////////////////////////////////////////////////////////////////////
 // DEFINES                                                        //
@@ -51,6 +63,8 @@ char buf[BLKSIZE];
 int fd;
 // Location of Inodes Beging Block
 int InodesBeginBlock = 0;
+// This is the root minode
+MINODE *root;
 
 
 
@@ -61,6 +75,43 @@ int InodesBeginBlock = 0;
 int get_block(int fd, int blk, char buf[ ]) {
   lseek(fd, (long)blk*BLKSIZE, 0);
   read(fd, buf, BLKSIZE);
+}
+
+// load INODE at (dev,ino) into a minode[]; return mip->minode[]
+MINODE *iget(int dev, int ino)
+{
+  int i, blk, disp;
+  char buf[BLKSIZE];
+  MINODE *mip;
+  INODE *ip;
+  for (i=0; i < NMINODE; i++){
+    mip = &minode[i];
+    if (mip->dev == dev && mip->ino == ino){
+       mip->refCount++;
+       printf("found [%d %d] as minode[%d] in core\n", dev, ino, i);
+       return mip;
+    }
+  }
+  for (i=0; i < NMINODE; i++){
+    mip = &minode[i];
+    if (mip->refCount == 0){
+       printf("allocating NEW minode[%d] for [%d %d]\n", i, dev, ino);
+       mip->refCount = 1;
+       mip->dev = dev; mip->ino = ino;  // assing to (dev, ino)
+       mip->dirty = mip->mounted = mip->mptr = 0;
+       // get INODE of ino into buf[ ]      
+       blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
+       disp = (ino-1) % 8;
+       //printf("iget: ino=%d blk=%d disp=%d\n", ino, blk, disp);
+       get_block(dev, blk, buf);
+       ip = (INODE *)buf + disp;
+       // copy INODE to mp->INODE
+       mip->INODE = *ip;
+       return mip;
+    }
+  }   
+  printf("PANIC: no more free minodes\n");
+  return 0;
 }
 
 
@@ -114,7 +165,7 @@ void mountRoot(char *disk)
     InodesBeginBlock = gp->bg_inode_table;
     if(isDebug) printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
 
-    /*// WHAT DOES THIS DO?
+    // WHAT DOES THIS DO?
     root = iget(dev, 2);
     root->mountptr = (MOUNT *)malloc(sizeof(MOUNT));
     root->mountptr->ninodes = ninodes;
@@ -122,7 +173,6 @@ void mountRoot(char *disk)
     root->mountptr->dev = dev;
     root->mountptr->busy = 1;
     root->mountptr->mounted_inode = root;
-    */
   }
 }
 
