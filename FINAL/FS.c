@@ -105,7 +105,7 @@ void mountRoot(char *disk)
     printf("VALID EXT2 FS: s_magic = %x\n", sp->s_magic);
 
     // Read Group Descriptor block
-    get_block(dev, 2, buf);
+    get_block(fd, 2, buf);
     
     // Set the Group Descriptor pointer == buf
     gp = (SUPER *)buf;
