@@ -14,7 +14,7 @@ void startMenu(){
 	printf("Welcome to our EXT2 file system\n\n");
 	printf("Mounting root...\n\n");
 	init();
-	mountRoot();
+	mountRoot("MyDisk");
 	printf("DONE! Please enter a command, listed below\n\n");
 	printf("mkdir, rmdir, ls, cd, pwd, creat, link,  unlink, 		symlink, stat,  chmod, touch\n\n");
 	printf("open, close, read, write, lseek, cat, cp, mv\n\n");

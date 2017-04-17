@@ -1,17 +1,17 @@
 #include "helper.h"
 
 
-bool mkdir(char *name,...){
+bool my_mkdir(char *name){
 //make a dir
 
 
 }
 
-bool rmdir(char *name,...){
+bool my_rmdir(char *name){
 //remove dir
 }
 
-void ls(char *name){
+void my_ls(char *name){
 //print directory contents 
 	int i;
 	MINODE *mip;
@@ -53,7 +53,7 @@ void ls(char *name){
 				{
 					printf("%s ", dir->name);
 					cp += dir->rec_len;
-					dir = (DIR *)cp
+					dir = (DIR *)cp;
 				}
 			}
 		}
@@ -69,35 +69,35 @@ bool cd_path(char *name){
 //change directory to certain path
 }
 
-void pwd(){
+void my_pwd(){
 //print the full path name for the working directory 
 }
 
-bool creat(char *name){
+bool my_creat(char *name){
 //create a file with the given name
 }
 
-bool link(){
+bool my_link(){
 //not sure what this actually does, maybe just links two files?
 }
 
-bool unlink(){
+bool my_unlink(){
 //removes a link?
 }
 
-bool symlink(){
+bool my_symlink(){
 //creates symbolic link
 }
 
-bool stat(char *name,...){
+bool my_stat(char *name,...){
 //shows relevant information on the given inode
 }
 
-bool chmod(char *name, char permissions[]){
+bool my_chmod(char *name, char permissions[]){
 //changes the permissions of the file
 }
 
-bool touch(char *name){
+bool my_touch(char *name){
 //isnt this the same as creat?
 }
 

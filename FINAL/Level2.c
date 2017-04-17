@@ -8,15 +8,15 @@ int close(int fd){
 //closes the file opened that is stored in the fd
 }
 
-?? read(int fd, void *buf, size_t count){
+void read(int fd, void *buf, size_t count){
 //reads count bytes from fd into buf
 }
 
-?? write(int fd, const void *buf, size_t count){
+void write(int fd, const void *buf, size_t count){
 //writes count bytes from buf into fd
 }
 
-?? lseek(...){
+void lseek(...){
 //offsets the fd by a certain byte
 }
 
