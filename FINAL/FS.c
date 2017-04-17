@@ -16,6 +16,44 @@
 #include <sys/stat.h> // Used for S_ISDIR
 
 ////////////////////////////////////////////////////////////////////
+// DEFINES                                                        //
+////////////////////////////////////////////////////////////////////
+#define BLOCK_SIZE        1024
+#define BLKSIZE           1024
+#define BITS_PER_BLOCK    (8*BLOCK_SIZE)
+#define INODES_PER_BLOCK  (BLOCK_SIZE/sizeof(INODE))
+//bool type declaration
+typedef int bool;
+#define true 1
+#define false 0
+
+// Block number of EXT2 FS on FD
+#define SUPERBLOCK        1
+#define GDBLOCK           2
+#define BBITMAP           3
+#define IBITMAP           4
+#define INODEBLOCK        5
+#define ROOT_INODE        2
+
+// Default dir and regulsr file modes
+#define DIR_MODE          0040777 
+#define FILE_MODE         0100644
+#define SUPER_MAGIC       0xEF53
+#define SUPER_USER        0
+
+// Proc status
+#define FREE              0
+#define BUSY              1
+#define KILLED            2
+
+// Table sizes
+#define NMINODES          50
+#define NMOUNT            10
+#define NPROC             10
+#define NFD               10
+#define NOFT              50
+
+////////////////////////////////////////////////////////////////////
 // TYPEDEFS                                                       //
 ////////////////////////////////////////////////////////////////////
 typedef unsigned char  u8;
@@ -77,13 +115,6 @@ typedef struct Mount {
   char   name[256];
   char   mount_name[64];
 } MOUNT;
-
-
-////////////////////////////////////////////////////////////////////
-// DEFINES                                                        //
-////////////////////////////////////////////////////////////////////
-#define BLKSIZE 1024
-
 
 ////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES                                               //
