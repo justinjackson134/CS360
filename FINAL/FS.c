@@ -177,13 +177,13 @@ MINODE *iget(int dev, int ino)
        return mip;
     }
   }
-  for (i=0; i < NMINODE; i++){
+  for (i=0; i < NMINODES; i++){
     mip = &minode[i];
     if (mip->refCount == 0){
        printf("allocating NEW minode[%d] for [%d %d]\n", i, dev, ino);
        mip->refCount = 1;
        mip->dev = dev; mip->ino = ino;  // assing to (dev, ino)
-       mip->dirty = mip->mounted = mip->mptr = 0;
+       mip->dirty = mip->mounted = mip->mountptr = 0;
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
