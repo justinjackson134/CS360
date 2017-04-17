@@ -69,6 +69,8 @@ typedef struct Mount {
 	char   mount_name[64];
 }MOUNT;
 */
+#ifndef HELPER_H
+#define HELPER_H
 
 #include <stdio.h>
 #include <stdlib.h>
