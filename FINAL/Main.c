@@ -183,7 +183,7 @@ void startMenu() {
 		printf("Open failed\n");
 		exit(1);
 	}
-	printf("Opened '%s' for RDONLY\n", "mydisk";
+	printf("Opened '%s' for RDONLY\n", "mydisk");
 
 		// read SUPER block
   	get_block(fd, 1, buf);  
