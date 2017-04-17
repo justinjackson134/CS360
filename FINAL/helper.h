@@ -71,6 +71,7 @@ typedef struct Mount {
 */
 #ifndef HELPER_H
 #define HELPER_H
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
