@@ -23,7 +23,7 @@ void startMenu(){
 		printf("Enter command:    ");
 		getline(&command, BLKSIZE, stdin);
 		execute_command(command);
-		bool temp = my_ls()
+		bool temp = my_ls();
 		if (strcmp(command, "quit") == 0)
 			break;
 		else
