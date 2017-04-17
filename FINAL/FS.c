@@ -68,7 +68,7 @@ int get_block(int fd, int blk, char buf[ ]) {
 
 
 
-void mountRoot(char *name)
+void mountRoot(char *disk)
 {   
   // Open disk for read/write
   fd = open(disk, O_RDWR);
