@@ -265,7 +265,7 @@ get_group_descriptor_get_inodebegin() {
 	//printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
 }
 // read the block of data from the file device (fd) into the buffer (buf).
-void get_block(int fd,int block, char *buf)
+void get_block(int fd,int block, char buf[ ])
 {
   lseek(fd,(long)(BLKSIZE*block),0);
   read(fd,buf, BLKSIZE);
