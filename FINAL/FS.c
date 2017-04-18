@@ -327,7 +327,7 @@ int getino(int *dev, char *pathname)
          return 0;
       }
       iput(mip);
-      mip = iget(*dev, ino);
+      mip = iget(dev, ino);//need to delete * 
   }
   iput(mip);
   return ino;
@@ -428,12 +428,11 @@ int tokenizePathname()
   // Reset j
   j = 0;
 
-  // Read line from console
-  getline(&readLine, &len, stdin);
+  
 
   // May have to remove an initial '/'
   // Get first token
-  path[0] = strtok(readLine, "/");
+  path[0] = strtok(command[1], "/");
 
 
   while (path[j] != NULL) {
@@ -498,7 +497,7 @@ void my_ls(char *name) {
   mip = iget(fd, i); ///changed from dev to fd
 
 
-  if (mip->ino == 0x8000)
+  if (mip->ino == 0x8000)//
   {
     printf("%s", basename(name));
   }
