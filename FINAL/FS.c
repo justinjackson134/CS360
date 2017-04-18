@@ -477,8 +477,8 @@ void my_ls(char *name) {
   DIR *dir;
   char buf[BLKSIZE], *cp;
 
-  fflush();
-  printf("Moved the print up here");
+  //fflush();
+  printf("Moved the print up here\n");
 
   if (name[0] == '/')
   {
