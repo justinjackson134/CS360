@@ -532,14 +532,22 @@ void my_ls(char *name) {
   //fflush();
   printf("Moved the print up here\n");
   
-  if (name[0] == '/')
+  if(name[0] != NULL)
   {
-    fd = root->dev;
-    if(isDebug) printf("LS from root->dev: fd = %d\n", fd);
+	if (name[0] == '/')
+	{
+	  fd = root->dev;
+	  if(isDebug) printf("LS from root->dev: fd = %d\n", fd);
+	}
+	else
+	{
+	  fd = running->cwd->dev; ////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
+	  if(isDebug) printf("LS from running->cwd->dev: fd = %d\n", fd);
+	}
   }
   else
   {
-    fd = running->cwd->dev; //////////////////////////////////////////////////////// Doesn't currently get updated, thus causes a segfault
+	fd = running->cwd->dev; //////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
     if(isDebug) printf("LS from running->cwd->dev: fd = %d\n", fd);
   }
 
