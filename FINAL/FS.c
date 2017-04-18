@@ -22,6 +22,7 @@
 #define BLKSIZE           1024
 #define BITS_PER_BLOCK    (8*BLOCK_SIZE)
 #define INODES_PER_BLOCK  (BLOCK_SIZE/sizeof(INODE))
+#define BLOC_OFFSET(block) (BLKSIZE + block-1)*BLKSIZE // Used for getino
 
 //bool type declaration
 typedef int bool;
@@ -167,6 +168,13 @@ int iblock;
 int get_block(int fd, int blk, char buf[ ]) {
   lseek(fd, (long)blk*BLKSIZE, 0);
   read(fd, buf, BLKSIZE);
+}
+
+
+// This is used in my_ls()
+void get_inode(int fd, int ino, int inode_table,INODE *inode) {
+  lseek(fd, BLOC_OFFSET(inode_table) + (ino - 1) * sizeof(INODE), 0);
+  read(fd, inode, sizeof(INODE));
 }
 
 // load INODE at (dev,ino) into a minode[]; return mip->minode[]
