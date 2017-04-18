@@ -542,14 +542,14 @@ void my_ls(char *name) {
 	else
 	{
 	  fd = running->cwd->dev; ////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
-	  if(isDebug) printf("LS from running->cwd->dev: fd = %d\n", fd);
+	  if(isDebug) printf("LS from running->cwd->dev: fd = %d & name = %s\n", fd, name);
 	}
   }
   else
   {
 	fd = running->cwd->dev; //////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
 	name = running->cwd->name;
-    if(isDebug) printf("LS from running->cwd->dev: fd = %d\n", fd);
+    if(isDebug) printf("LS (NO PARAMS) from running->cwd->dev: fd = %d & name = %s\n", fd, name);
   }
 
   i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
