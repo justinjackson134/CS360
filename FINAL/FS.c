@@ -332,14 +332,15 @@ int tokenizeCommmand()
   return j;
 }
 
-void my_ls(char *name) {
+//void my_ls(char *name) {
+void my_ls() { //THIS LS USES THE path[]!
   //print directory contents 
   int i;
   MINODE *mip;
   DIR *dir;
   char buf[BLKSIZE], *cp;
 
-  if (name[0] == '/')
+  if (path[0] == '/')
   {
     dev = root->dev;
   }
