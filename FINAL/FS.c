@@ -349,6 +349,8 @@ int getino(int *dev, char *pathname)
 // Initializes Procs and root+running
 void init()
 {
+  char buf[BLKSIZE];
+  
   proc[0].uid = 0;
   proc[0].pid = 0;
   proc[0].cwd = 0;
@@ -362,6 +364,21 @@ void init()
 
   root = 0;
   running = &proc[0];
+
+  // Read in the inodes from begin block
+  printf("\nPrinting InodeBeginBlock:\n-------------------------\n - InodesBeginBlock=%d\n", InodesBeginBlock);
+
+  // get inode start block     
+  get_block(fd, InodesBeginBlock, buf);
+
+  ip = (INODE *)buf + 1;         // ip points at 2nd INODE
+  
+  printf(" - mode=%4x ", ip->i_mode);
+  printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
+  printf(" - size=%d\n", ip->i_size);
+  printf(" - time=%s", ctime(&ip->i_ctime));
+  printf(" - link=%d\n", ip->i_links_count);
+  printf(" - i_block[0]=%d\n", ip->i_block[0]);
 }
 
 // Mounts the root in order to start the program
