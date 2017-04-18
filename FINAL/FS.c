@@ -264,10 +264,10 @@ int search(MINODE *minodePtr, char *name) {
 	  }*/
 
 	 // get_block(fd, minodePtr->INODE.i_block[i], dbuf);  // char dbuf[1024]
-	  printf("Before if(minodePtr->INODE.i_block[i]\n");
+	  printf("Before if(minodePtr->INODE.i_block[%d])\n", i);
 	  if (minodePtr->INODE.i_block[i])
 	  {
-		  printf("inside if(minodePtr->INODE.i_block[i]\n");
+		  printf("inside if(minodePtr->INODE.i_block[%d])\n", i);
 		  get_block(minodePtr->dev, minodePtr->INODE.i_block[i], dbuf);  // char dbuf[1024]
 		  DIR *dp = (SUPER *)dbuf;
 		  char *cp = dbuf;
