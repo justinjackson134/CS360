@@ -528,7 +528,7 @@ void my_ls(char *name) {
   }
 
   i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
-  printf("\ni = %d", i);
+  printf("\ni = %d\n", i);
 
   if (!i)
   {
