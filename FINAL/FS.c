@@ -329,7 +329,7 @@ int getino(int *dev, char *pathname)
          return 0;
       }
       iput(mip);
-      mip = iget(dev, ino);//need to delete * 
+      mip = iget(*dev, ino);//need to delete * 
   }
   iput(mip);
   return ino;
@@ -408,7 +408,7 @@ void mountRoot(char *disk)
     root->mountptr = (MOUNT *)malloc(sizeof(MOUNT));
     root->mountptr->ninodes = ninodes;
     root->mountptr->nblocks = nblocks;
-    root->mountptr->dev = dev;
+    root->mountptr->dev = fd;
     root->mountptr->busy = 1;
     root->mountptr->mounted_inode = root;
   }
