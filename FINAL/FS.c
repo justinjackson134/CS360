@@ -536,7 +536,7 @@ void my_ls(char *name) {
     return;
   }
   printf("mip = iget(%d, %d)", fd, i);
-  mip = iget(*fd, i); ///changed from dev to fd
+  mip = iget(fd, i); ///changed from dev to fd
 
   if (mip->ino == 0x8000)//
   {
