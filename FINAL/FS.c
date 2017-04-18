@@ -365,7 +365,7 @@ main(int argc, char *argv[ ]) {
   {
     printf("J&J EXT2FS: ");
     numberOfCommands = tokenizeCommmand();
-    if (strcmp(command[0], "quit") == 0)
+    if (strcmp(command[0], "quit\n") == 0)
     {
       //User entered Quit, we should probably exit
       break;
@@ -378,7 +378,7 @@ main(int argc, char *argv[ ]) {
         i = 0;
         while(i < numberOfCommands)
         {
-          printf("%s", command[i]);
+          printf("'%s' ", command[i]);
           i++;
         }
       }
