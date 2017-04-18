@@ -304,7 +304,7 @@ int getino(int *dev, char *pathname)
   INODE *gip;
   MINODE *mip;
 
-  printf("getino: pathname=%s\n", pathname);
+  printf("getino: dev=%d pathname=%s\n", dev, pathname);
   printf("Right before strcmp1\n");                /////////////////////////////// Going
   if (strcmp(pathname, "/")==0)
   {
@@ -518,13 +518,13 @@ void my_ls(char *name) {
 
   if (name[0] == '/')
   {
-    if(isDebug) printf("LS from root->dev\n");
     fd = root->dev;
+    if(isDebug) printf("LS from root->dev: fd = %d\n", fd);
   }
   else
   {
-    if(isDebug) printf("LS from running->cwd->dev\n");
     fd = running->cwd->dev;
+    if(isDebug) printf("LS from running->cwd->dev: fd = %d\n", fd);
   }
 
   i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
