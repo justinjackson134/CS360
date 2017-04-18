@@ -357,7 +357,7 @@ void my_ls() { //THIS LS USES THE path[]!
     dev = running->cwd->dev;
   }
 
-  i = getino(dev, name);
+  i = get_inode(dev, name);
   if (!i)
   {
     printf("Error file not found \n\n\n");
