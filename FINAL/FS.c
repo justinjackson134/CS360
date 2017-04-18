@@ -292,9 +292,10 @@ int getino(int *dev, char *pathname)
   MINODE *mip;
 
   printf("getino: pathname=%s\n", pathname);
+  printf("Right before strcmp1\n");
   if (strcmp(pathname, "/")==0)
       return 2;
-
+  printf("Right before strcmp2\n");
   if (pathname[0]=='/')
      mip = iget(*dev, 2);
   else
