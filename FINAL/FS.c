@@ -465,7 +465,7 @@ int tokenizePathname()
 	j = 0;
 
 
-	if (numberOfCommands = 1)
+	if (numberOfCommands == 1)
 	{
 
 		// May have to remove an initial '/'
