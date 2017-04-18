@@ -548,6 +548,7 @@ void my_ls(char *name) {
   else
   {
 	fd = running->cwd->dev; //////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
+	name = running->cwd->name;
     if(isDebug) printf("LS from running->cwd->dev: fd = %d\n", fd);
   }
 
