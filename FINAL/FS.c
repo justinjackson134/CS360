@@ -341,7 +341,10 @@ main(int argc, char *argv[ ]) {
     }
     else
     {
-      printf("YOU ENTERED: %s", command[0]);
+      if(isDebug)
+      {
+        printf("YOU ENTERED: %s (Note, this is only the first command, no params)", command[0]);
+      }
     }
   }
 
