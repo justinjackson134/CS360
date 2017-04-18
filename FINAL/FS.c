@@ -488,7 +488,7 @@ void my_ls(char *name) {
     fd = running->cwd->dev;
   }
 
-  printf("i = getino(&fd, name) -> ");
+  printf("i = ");
   i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
   printf("\ni = %d", i);
 
