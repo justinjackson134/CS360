@@ -281,10 +281,14 @@ void mountRoot(char *disk)
 }
 
 
-void tokenizeCommmand()
+int tokenizeCommmand()
 {
   char readLine[1024];
   int j = 0;
+  
+  getline(&readLine, BLOCK_SIZE, stdin);
+
+
   // May have to remove an initial '/'
   // Get first token
   command[0] = strtok(buf, "/");
@@ -293,7 +297,9 @@ void tokenizeCommmand()
   while (name[j] != NULL) {
     j++;
     name[j] = strtok(NULL, "/");
+  }
 
+  return j;
 }
 
 
