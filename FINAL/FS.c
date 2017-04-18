@@ -139,10 +139,16 @@ MINODE minode[NMINODES];
 MINODE *root;
 // Array of Procs and the running proc
 PROC   proc[NPROC], *running;
-// Used for the tokenizer
+// Used for the tokenizer //////////////////////////////////////////////I dont think this is used anywhere
 char *name[32];
-// Command tokenizer! (May be unneded but i,m drinking at this point)
+// Command tokenizer!
 char *command[32];
+// Number of commands returned by the command tokenizer
+int numberOfCommands = 0;
+// Used for path tokenizer
+char *path[32];
+// Number of path items returned by path tokenizer
+int numberOfPathItems = 0;
 
 // Unknown, copied from original main
 int dev;
@@ -280,7 +286,30 @@ void mountRoot(char *disk)
   }
 }
 
+// Splits pathname into items, stores in path[], returns number of path items
+int tokenizePathname()
+{
+  char *readLine = NULL;
+  size_t len = BLOCK_SIZE;
+  int j = 0;
+  
+  getline(&readLine, &len, stdin);
 
+
+  // May have to remove an initial '/'
+  // Get first token
+  path[0] = strtok(readLine, "/");
+
+
+  while (path[j] != NULL) {
+    j++;
+    path[j] = strtok(NULL, "/");
+  }
+
+  return j;
+}
+
+// Splits command into items, stores in command[], returns number of path items
 int tokenizeCommmand()
 {
   char *readLine = NULL;
@@ -292,12 +321,12 @@ int tokenizeCommmand()
 
   // May have to remove an initial '/'
   // Get first token
-  command[0] = strtok(readLine, "/");
+  command[0] = strtok(readLine, " ");
 
 
   while (command[j] != NULL) {
     j++;
-    command[j] = strtok(NULL, "/");
+    command[j] = strtok(NULL, " ");
   }
 
   return j;
@@ -314,6 +343,8 @@ int tokenizeCommmand()
 // Vars for mainline
 // Name of disk to open
 char *disk = "mydisk";
+// Used for iterating over while loops
+int i = 0;
 
 // Mainline handles opening of disk, then calls showblock()
 main(int argc, char *argv[ ]) { 
@@ -333,7 +364,7 @@ main(int argc, char *argv[ ]) {
   while(1)
   {
     printf("J&J EXT2FS: ");
-    tokenizeCommmand();
+    numberOfCommands = tokenizeCommmand();
     if (strcmp(command[0], "quit") == 0)
     {
       //User entered Quit, we should probably exit
@@ -343,7 +374,13 @@ main(int argc, char *argv[ ]) {
     {
       if(isDebug)
       {
-        printf("YOU ENTERED: %s (Note, this is only the first command, no params)", command[0]);
+        printf("Debug Echo: ");
+        i = 0;
+        while(i < numberOfCommands)
+        {
+          printf("%s", command[i]);
+          i++;
+        }
       }
     }
   }
