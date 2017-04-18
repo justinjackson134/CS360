@@ -386,7 +386,7 @@ void mountRoot(char *disk)
   else
   {  
     printf("VALID EXT2 FS: s_magic = %x\n", sp->s_magic);
-	int nblocks, ninodes, bfreee, ifree;
+	int nblocks, ninodes, bfree, ifree;
 	nblocks = sp->s_blocks_count;
 	bfree = sp->s_free_blocks_count;
 	ninodes = sp->s_inodes_count;
