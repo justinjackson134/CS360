@@ -289,9 +289,10 @@ int search(MINODE *minodePtr, char *name) {
 			  //getchar();
 		  }
 	  }
-	  printf(" - Not Found\n");
-	  return 0;
+	 
   }
+  printf(" - Not Found\n");
+  return 0;
 }
 
 // Given by KC
