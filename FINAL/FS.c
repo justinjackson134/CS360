@@ -178,44 +178,7 @@ void get_inode(int fd, int ino, int inode_table,INODE *inode) {
   read(fd, inode, sizeof(INODE));
 }
 
-// Given by KC
-int getino(int *dev, char *pathname)
-{
-  int i, ino, blk, disp,n;
-  char buf[BLKSIZE];
-  INODE *ip;
-  MINODE *mip;
 
-  printf("getino: pathname=%s\n", pathname);
-  if (strcmp(pathname, "/")==0)
-      return 2;
-
-  if (pathname[0]=='/')
-     mip = iget(*dev, 2);
-  else
-     mip = iget(running->cwd->dev, running->cwd->ino);
-
-  strcpy(buf, pathname);
-  n = tokenize(buf); // n = number of token strings
-
-  for (i=0; i < n; i++){
-      //printf("===========================================\n");
-      //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
- 
-      ino = search(mip, name[i]);
-
-      if (ino==0){
-         iput(mip);
-         printf("name %s does not exist\n", name[i]);
-         return 0;
-      }
-      iput(mip);
-      mip = iget(*dev, ino);
-  }
-  iput(mip);
-  delete_name();
-  return ino;
-}
 
 // load INODE at (dev,ino) into a minode[]; return mip->minode[]
 MINODE *iget(int dev, int ino)
@@ -256,6 +219,45 @@ MINODE *iget(int dev, int ino)
   // If this fails, there must be no more minodes, thus, inform the user
   printf("\nPANIC: no more free minodes\n");
   return 0;
+}
+
+// Given by KC
+int getino(int *dev, char *pathname)
+{
+  int i, ino, blk, disp,n;
+  char buf[BLKSIZE];
+  INODE *ip;
+  MINODE *mip;
+
+  printf("getino: pathname=%s\n", pathname);
+  if (strcmp(pathname, "/")==0)
+      return 2;
+
+  if (pathname[0]=='/')
+     mip = iget(*dev, 2);
+  else
+     mip = iget(running->cwd->dev, running->cwd->ino);
+
+  strcpy(buf, pathname);
+  n = tokenize(buf); // n = number of token strings
+
+  for (i=0; i < n; i++){
+      //printf("===========================================\n");
+      //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
+ 
+      ino = search(mip, name[i]);
+
+      if (ino==0){
+         iput(mip);
+         printf("name %s does not exist\n", name[i]);
+         return 0;
+      }
+      iput(mip);
+      mip = iget(*dev, ino);
+  }
+  iput(mip);
+  delete_name();
+  return ino;
 }
 
 // Initializes Procs and root+running
