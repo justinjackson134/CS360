@@ -304,7 +304,7 @@ int getino(int *dev, char *pathname)
   if (pathname[0]=='/')
   {
     printf("Right before iget(*dev, 2)\n");                /////////////////////// With
-    mip = iget(dev, 2); ///// taking out the damn * for dev
+    mip = iget(&dev, 2); ///// taking out the damn * for dev
   }
   else    
   {
