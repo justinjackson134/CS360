@@ -556,7 +556,7 @@ main(int argc, char *argv[ ]) {
       {
         printf("Debug Echo: ");
         i = 0;
-        while(i < numberOfCommands-1) ///////////////////////////////////////////////////////////////Believe this is an off by one as commandTokenize returns the number of commands, not max index.
+        while(i < numberOfCommands)
         {
           printf("'%s' ", command[i]);
           i++;
