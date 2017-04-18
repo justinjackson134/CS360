@@ -304,7 +304,7 @@ int getino(int *dev, char *pathname)
   INODE *gip;
   MINODE *mip;
 
-  printf("getino: dev=%d pathname=%s\n", &dev, pathname);
+  printf("getino: dev=%d pathname=%s\n", *dev, pathname);
   printf("Right before strcmp1\n");                /////////////////////////////// Going
   if (strcmp(pathname, "/")==0)
   {
