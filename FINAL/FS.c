@@ -464,7 +464,7 @@ int tokenizePathname()
 	// Reset j
 	j = 0;
 
-	printf("This is pathname to be tokenized, stored in command[1]: %s", command[1]);
+	printf("This is pathname to be tokenized, stored in command[1]: %s, this is the number of commmands: %d", command[1], numberOfCommands);
 	if (numberOfCommands == 1)
 	{
 
