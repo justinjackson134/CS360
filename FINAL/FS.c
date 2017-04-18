@@ -318,7 +318,7 @@ int getino(int *dev, char *pathname)
       //printf("===========================================\n");
       //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
  
-      ino = search(mip, name[i]);
+      ino = search(mip->INODE, path[i]);
 
       if (ino==0){
          iput(mip);
