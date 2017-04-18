@@ -544,10 +544,10 @@ void my_ls(char *name) {
   }
   else
   {
-  	printf("Before Print For Loop\n");
+  	printf("ACTUAL OUTPUT:\n");
     for (int i = 0; i <= 11; i++)
     {    	
-  	  printf("if(mip->INODE.i_block[%d])\n", i);
+  	  //printf("if(mip->INODE.i_block[%d])\n", i);
       if (mip->INODE.i_block[i])
       {
         get_block(fd, mip->INODE.i_block[i], buf);
