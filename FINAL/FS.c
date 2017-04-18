@@ -535,7 +535,7 @@ void my_ls(char *name) {
     printf("Error file not found \n\n\n");
     return;
   }
-  printf("mip = iget(%d, %d)", fd, i);
+  printf("mip = iget(%d, %d)\n", fd, i);
   mip = iget(fd, i); ///changed from dev to fd
 
   if (mip->ino == 0x8000)//
@@ -544,11 +544,13 @@ void my_ls(char *name) {
   }
   else
   {
+  	printf("Before Print For Loop\n")
     for (int i = 0; i <= 11; i++)
-    {
+    {    	
+  	  printf("if(mip->INODE.i_block[%d])\n", i);
       if (mip->INODE.i_block[i])
       {
-        get_block(dev, mip->INODE.i_block[i], buf);
+        get_block(fd, mip->INODE.i_block[i], buf);
         cp = buf;
         dir = (DIR *)buf;
         while (cp < &buf[BLKSIZE])
