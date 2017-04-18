@@ -438,7 +438,7 @@ int tokenizeCommmand()
   
   getline(&readLine, &len, stdin);
   // Remove newline from end of command string if string is longer than size 0
-  if(strlen(readLine) > 0)
+  if(strlen(readLine) > 1)
   {
     readLine[strlen(readLine)-1] = '\0';
   }
