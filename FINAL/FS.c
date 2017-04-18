@@ -477,6 +477,8 @@ void my_ls(char *name) {
   DIR *dir;
   char buf[BLKSIZE], *cp;
 
+  printf("Moved the print up here");
+
   if (name[0] == '/')
   {
     if(isDebug) printf("LS from root->dev\n");
@@ -488,7 +490,6 @@ void my_ls(char *name) {
     fd = running->cwd->dev;
   }
 
-  printf("i = ");
   i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
   printf("\ni = %d", i);
 
