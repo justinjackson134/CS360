@@ -253,36 +253,38 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 // Vars for search
 char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
-int search(INODE * inodePtr, char * name) {
+int search(MINODE *minodePtr, char *name) {
   printf("In search-> This is what is in inodePtr: '%d,%d'", inodePtr->i_mode, inodePtr->i_uid);
   printf("\nSEARCHING FOR: %s", name);
   for (int i = 0; i < 12; i++) {
-    if (inodePtr->i_block[i] == 0)
-      printf("This is where we return 0");
-      return 0;
-    get_block(fd, inodePtr->i_block[i], dbuf);  // char dbuf[1024]
+	  if (minodePtr->INODE.i_block[i] == 0)
+	  {
+		  printf("This is where we return 0");
+		  return 0;
+	  }
+	 // get_block(fd, minodePtr->INODE.i_block[i], dbuf);  // char dbuf[1024]
 
-    DIR *dp = (SUPER *)dbuf;
-    char *cp = dbuf;
+	  DIR *dp = (SUPER *)dbuf;
+	  char *cp = dbuf;
 
-    while (cp < &dbuf[1024])
-    {
-      //use dp-> to print the DIR entries as  [inode rec_len name_len name]
-      printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
-      if (strcmp(name, dp->name) == 0)
-      {
-        printf("\n - Name: %s == %s", name, dp->name);
-        printf("\n - Found at INODE: %d\n", dp->inode);
-        return dp->inode;
-      }
-      printf("\n - Name: %s != %s", name, dp->name);
-      cp += dp->rec_len;
-      dp = (DIR *)cp;
+	  while (cp < &dbuf[1024])
+	  {
+		  //use dp-> to print the DIR entries as  [inode rec_len name_len name]
+		  printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
+		  if (strcmp(name, dp->name) == 0)
+		  {
+			  printf("\n - Name: %s == %s", name, dp->name);
+			  printf("\n - Found at INODE: %d\n", dp->inode);
+			  return dp->inode;
+		  }
+		  printf("\n - Name: %s != %s", name, dp->name);
+		  cp += dp->rec_len;
+		  dp = (DIR *)cp;
 
-      //getchar();
-    }
-    printf(" - Not Found\n");
-    return 0;
+		  //getchar();
+	  }
+	  printf(" - Not Found\n");
+	  return 0;
   }
 }
 
@@ -322,7 +324,7 @@ int getino(int *dev, char *pathname)
 	  gip = &mip->INODE;
 	  printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in mip: '%d,%d'\n\n", path[0], mip->dev, mip->ino);
 	  printf("This is what is in gip: '%d,%d'\n\n", gip->i_mode, gip->i_uid);
-      ino = search(gip, path[i]);
+      ino = search(mip, path[i]);
 
       if (ino==0){
          iput(mip);
