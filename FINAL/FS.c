@@ -532,7 +532,7 @@ void my_ls(char *name) {
   //fflush();
   printf("Moved the print up here\n");
   
-  if(name[0] != NULL)
+  if(name != NULL)
   {
 	if (name[0] == '/')
 	{
