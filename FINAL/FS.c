@@ -526,12 +526,9 @@ void my_ls(char *name) {
   DIR *dir;
   char buf[BLKSIZE], *cp;
 
-  //fflush();
-  printf("Moved the print up here\n");
 
-  //fflush();
-  printf("Moved the print up here\n");
-  
+
+ 
   if(name != NULL)
   {
 	if (name[0] == '/')
@@ -544,49 +541,77 @@ void my_ls(char *name) {
 	  fd = running->cwd->dev; ////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
 	  if(isDebug) printf("LS from running->cwd->dev: fd = %d & name = %s\n", fd, name);
 	}
+
+	i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
+	printf("\ni = %d\n", i);
+
+	if (!i)
+	{
+		printf("Error file not found \n\n\n");
+		return;
+	}
+	printf("mip = iget(%d, %d)\n", fd, i);
+	mip = iget(fd, i); ///changed from dev to fd
+
+	if (mip->ino == 0x8000)//
+	{
+		printf("%s", basename(name));
+	}
+	else
+	{
+		printf("ACTUAL OUTPUT:\n");
+		for (int i = 0; i <= 11; i++)
+		{
+			//printf("if(mip->INODE.i_block[%d])\n", i);
+			if (mip->INODE.i_block[i])
+			{
+				get_block(fd, mip->INODE.i_block[i], buf);
+				cp = buf;
+				dir = (DIR *)buf;
+				while (cp < &buf[BLKSIZE])
+				{
+					printf("%s ", dir->name);
+					cp += dir->rec_len;
+					dir = (DIR *)cp;
+				}
+			}
+		}
+	}
   }
   else
   {
 	fd = running->cwd->dev; //////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
-	name = running->cwd->name;
+	name = running->cwd->name;//i dont think we need this but i will leave it for now
     if(isDebug) printf("LS (NO PARAMS) from running->cwd->dev: fd = %d & name = %s\n", fd, name);
+	mip = iget(fd, running->cwd->ino);
+
+	if (mip->ino == 0x8000)//this needs to be changed 
+	{
+		printf("%s", basename(name));
+	}
+	else
+	{
+		printf("ACTUAL OUTPUT:\n");
+		for (int i = 0; i <= 11; i++)
+		{
+			//printf("if(mip->INODE.i_block[%d])\n", i);
+			if (mip->INODE.i_block[i])
+			{
+				get_block(fd, mip->INODE.i_block[i], buf);
+				cp = buf;
+				dir = (DIR *)buf;
+				while (cp < &buf[BLKSIZE])
+				{
+					printf("%s ", dir->name);
+					cp += dir->rec_len;
+					dir = (DIR *)cp;
+				}
+			}
+		}
+	}
   }
 
-  i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
-  printf("\ni = %d\n", i);
 
-  if (!i)
-  {
-    printf("Error file not found \n\n\n");
-    return;
-  }
-  printf("mip = iget(%d, %d)\n", fd, i);
-  mip = iget(fd, i); ///changed from dev to fd
-
-  if (mip->ino == 0x8000)//
-  {
-    printf("%s", basename(name));
-  }
-  else
-  {
-  	printf("ACTUAL OUTPUT:\n");
-    for (int i = 0; i <= 11; i++)
-    {    	
-  	  //printf("if(mip->INODE.i_block[%d])\n", i);
-      if (mip->INODE.i_block[i])
-      {
-        get_block(fd, mip->INODE.i_block[i], buf);
-        cp = buf;
-        dir = (DIR *)buf;
-        while (cp < &buf[BLKSIZE])
-        {
-          printf("%s ", dir->name);
-          cp += dir->rec_len;
-          dir = (DIR *)cp;
-        }
-      }
-    }
-  }
 }
 
 void commandTable()
