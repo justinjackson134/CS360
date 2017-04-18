@@ -332,7 +332,63 @@ int tokenizeCommmand()
   return j;
 }
 
+void my_ls(char *name) {
+  //print directory contents 
+  int i;
+  MINODE *mip;
+  DIR *dir;
+  char buf[BLKSIZE], *cp;
 
+  if (name[0] == '/')
+  {
+    dev = root->dev;
+  }
+  else
+  {
+    dev = running->cwd->dev;
+  }
+
+  i = getino(dev, name);
+  if (!i)
+  {
+    printf("Error file not found \n\n\n");
+    return;
+  }
+  mip = iget(dev, i);
+
+
+  if (mip->ino == 0x8000)
+  {
+    printf("%s", basename(name));
+  }
+  else
+  {
+    for (int i = 0; i <= 11; i++)
+    {
+      if (mip->INODE.i_block[i])
+      {
+        get_block(dev, mip->INODE.i_block[i], buf);
+        cp = buf;
+        dir = (DIR *)buf;
+        while (cp < &buf[BLKSIZE])
+        {
+          printf("%s ", dir->name);
+          cp += dir->rec_len;
+          dir = (DIR *)cp;
+        }
+      }
+    }
+  }
+}
+
+void commandTable()
+{
+  if(strcmp(command[0], "ls") == 0)
+  {
+    //This is ls
+    my_ls();
+  }
+}
 
 
 
@@ -363,9 +419,11 @@ main(int argc, char *argv[ ]) {
   //MAGIC LOOP    
   while(1)
   {
+    // Print prompt for user command entry
     printf("J&J EXT2FS: ");
+    // Read in and tokenize Command
     numberOfCommands = tokenizeCommmand();
-    if (strcmp(command[0], "quit\n") == 0)
+    if (strcmp(command[0], "quit\n") == 0)  /////////////////////////////////////////////////Should probably make this quit not have a newline after it
     {
       //User entered Quit, we should probably exit
       break;
@@ -383,6 +441,9 @@ main(int argc, char *argv[ ]) {
         }
       }
     }
+    // If we have reached here, the command is not quit
+    // Call command table, looks up the command in command[0] and executes
+    commandTable();
   }
 
   printf("Exiting J&J EXT2FS program! Have a nice day!");
