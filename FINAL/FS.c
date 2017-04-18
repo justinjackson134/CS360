@@ -255,7 +255,7 @@ char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
 int search(MINODE *minodePtr, char *name) {
   printf("In search-> This is what is in minodePtr: '%d,%d'", minodePtr->dev, minodePtr->ino);
-  printf("\nSEARCHING FOR: %s", name);
+  printf("\nSEARCHING FOR: %s\n", name);
   for (int i = 0; i < 12; i++) {
 	 /* if (minodePtr->INODE.i_block[i] == 0)
 	  {
@@ -263,7 +263,7 @@ int search(MINODE *minodePtr, char *name) {
 		  return 0;
 	  }*/
 
-	 // get_block(fd, minodePtr->INODE.i_block[i], dbuf);  // char dbuf[1024]
+	  // get_block(fd, minodePtr->INODE.i_block[i], dbuf);  // char dbuf[1024]
 	  printf("Before if(minodePtr->INODE.i_block[%d])\n", i);
 	  if (minodePtr->INODE.i_block[i])
 	  {
