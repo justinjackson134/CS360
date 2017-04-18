@@ -171,6 +171,13 @@ int get_block(int fd, int blk, char buf[ ]) {
   read(fd, buf, BLKSIZE);
 }
 
+// put the block of data from the buffer (buf) into the file device (fd)
+void put_block(int fd, int block, char *buf)
+{
+  lseek(fd, (long)(BLKSIZE*block),0);
+  write(fd, buf, BLKSIZE);
+}
+
 
 // This is used in my_ls()
 void get_inode(int fd, int ino, int inode_table,INODE *inode) {
