@@ -291,7 +291,7 @@ int getino(int *dev, char *pathname)
 {
   int i, ino, blk, disp,n;
   char buf[BLKSIZE];
-  INODE *ip;
+  INODE *gip;
   MINODE *mip;
 
   printf("getino: pathname=%s\n", pathname);
@@ -319,9 +319,9 @@ int getino(int *dev, char *pathname)
   for (i=0; i < n; i++){
       //printf("===========================================\n");
       //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
-	  ip = &mip->INODE;
+	  gip = &mip->INODE;
 	  printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in ip: '%d,%d'", path[0], mip->dev, mip->ino);
-      ino = search(ip, path[i]);
+      ino = search(gip, path[i]);
 
       if (ino==0){
          iput(mip);
