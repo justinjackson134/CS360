@@ -292,16 +292,18 @@ int getino(int *dev, char *pathname)
   MINODE *mip;
 
   printf("getino: pathname=%s\n", pathname);
-  printf("Right before strcmp1\n");
+  printf("Right before strcmp1\n");                /////////////////////////////// Going
   if (strcmp(pathname, "/")==0)
       return 2;
-  printf("Right before strcmp2\n");
+  printf("Right before strcmp2\n");                /////////////////////////////// Hard
   if (pathname[0]=='/')
-     mip = iget(*dev, 2);
-  else
-     mip = iget(running->cwd->dev, running->cwd->ino);
+    printf("Right before iget(*dev, 2)\n");                /////////////////////// With
+    mip = iget(*dev, 2);
+  else    
+    printf("Right before iget(running->cwd->dev, running->cwd->ino)\n");   /////// The
+    mip = iget(running->cwd->dev, running->cwd->ino);
 
-  printf("Right before strcpy\n");
+  printf("Right before strcpy\n"); /////////////////////////////////////////////// Prints
   strcpy(buf, pathname);
   n = tokenizePathname(buf); // n = number of token strings
 
