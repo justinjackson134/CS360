@@ -488,23 +488,28 @@ int tokenizeCommmand()
   if(strcmp(readLine, "\n") == 0)
   {
   	readLine = '\0';
+  	command[0] = "";
+  	return 1;
   }
-  else if(strlen(readLine) > 1) /////////////////////////////////////////////////////Still weird when you enter just a newline
+  else
   {
-    readLine[strlen(readLine)-1] = '\0';
+	if(strlen(readLine) > 1) /////////////////////////////////////////////////////Still weird when you enter just a newline
+	{
+	  readLine[strlen(readLine)-1] = '\0';
+	}
+
+	// May have to remove an initial '/'
+	// Get first token
+	command[0] = strtok(readLine, " ");
+
+
+	while (command[j] != NULL) {
+	  j++;
+	  command[j] = strtok(NULL, " ");
+	}
+
+	return j;
   }
-
-  // May have to remove an initial '/'
-  // Get first token
-  command[0] = strtok(readLine, " ");
-
-
-  while (command[j] != NULL) {
-    j++;
-    command[j] = strtok(NULL, " ");
-  }
-
-  return j;
 }
 
 void my_ls(char *name) {
