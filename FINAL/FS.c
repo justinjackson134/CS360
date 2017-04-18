@@ -484,7 +484,7 @@ void my_ls(char *name) {
     dev = running->cwd->dev;
   }
 
-  i = getino(dev, name);
+  i = getino(fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
   if (!i)
   {
     printf("Error file not found \n\n\n");
