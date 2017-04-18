@@ -535,7 +535,7 @@ void my_ls(char *name) {
     printf("Error file not found \n\n\n");
     return;
   }
-  printf("mip = iget(%d, %d)", *fd, i);
+  printf("mip = iget(%d, %d)", fd, i);
   mip = iget(*fd, i); ///changed from dev to fd
 
   if (mip->ino == 0x8000)//
