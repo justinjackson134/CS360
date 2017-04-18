@@ -294,7 +294,7 @@ int getino(int *dev, char *pathname)
      mip = iget(running->cwd->dev, running->cwd->ino);
 
   strcpy(buf, pathname);
-  n = tokenize(buf); // n = number of token strings
+  n = tokenizePathname(buf); // n = number of token strings
 
   for (i=0; i < n; i++){
       //printf("===========================================\n");
@@ -311,7 +311,6 @@ int getino(int *dev, char *pathname)
       mip = iget(*dev, ino);
   }
   iput(mip);
-  delete_name();
   return ino;
 }
 
@@ -398,8 +397,17 @@ int tokenizePathname()
   size_t len = BLOCK_SIZE;
   int j = 0;
   
-  getline(&readLine, &len, stdin);
+  // Reset path
+  while(j<32)
+  {
+    path[j] = NULL;
+    j++;
+  }
+  // Reset j
+  j = 0;
 
+  // Read line from console
+  getline(&readLine, &len, stdin);
 
   // May have to remove an initial '/'
   // Get first token
