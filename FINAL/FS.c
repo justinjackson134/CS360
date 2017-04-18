@@ -215,7 +215,7 @@ MINODE *iget(int dev, int ino)
        // WHAT DOES DIRTY MEAN <--------------------------------------------------------------------------------------------------------------------------
        mip->dirty = mip->mounted = mip->mountptr = 0;
        // get INODE of ino into buf[ ]      
-       blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
+       blk  = (ino-1)/8 + InodesBeginBlock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
        printf("allocating new Minode: iget: ino=%d blk=%d disp=%d\n", ino, blk, disp);
        get_block(dev, blk, buf);
