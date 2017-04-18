@@ -451,32 +451,36 @@ void mountRoot(char *disk)
 // Splits pathname into items, stores in path[], returns number of path items
 int tokenizePathname()
 {
-  char *readLine = NULL;
-  size_t len = BLOCK_SIZE;
-  int j = 0;
-  
-  // Reset path
-  while(j<32)
-  {
-    path[j] = NULL;
-    j++;
-  }
-  // Reset j
-  j = 0;
+	char *readLine = NULL;
+	size_t len = BLOCK_SIZE;
+	int j = 0;
 
-  
-
-  // May have to remove an initial '/'
-  // Get first token
-  path[0] = strtok(command[1], "/");
+	// Reset path
+	while (j < 32)
+	{
+		path[j] = NULL;
+		j++;
+	}
+	// Reset j
+	j = 0;
 
 
-  while (path[j] != NULL) {
-    j++;
-    path[j] = strtok(NULL, "/");
-  }
+	if (numberOfCommands = 1)
+	{
 
-  return j;
+		// May have to remove an initial '/'
+		// Get first token
+		path[0] = strtok(command[1], "/");
+
+
+		while (path[j] != NULL) {
+			j++;
+			path[j] = strtok(NULL, "/");
+		}
+
+		
+	}
+	return j;
 }
 
 // Splits command into items, stores in command[], returns number of path items
@@ -527,7 +531,7 @@ void my_ls(char *name) {
 
   //fflush();
   printf("Moved the print up here\n");
-
+  
   if (name[0] == '/')
   {
     fd = root->dev;
