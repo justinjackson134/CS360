@@ -318,11 +318,12 @@ int getino(int *dev, char *pathname)
       //printf("===========================================\n");
       //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
 	  ip = &mip->INODE;
+	  printf("THIS IS WHAT IS IN PATH[0]    %s", path[0]);
       ino = search(ip, path[i]);
 
       if (ino==0){
          iput(mip);
-         printf("name %s does not exist\n", name[i]);
+         printf("name %s does not exist\n", path[i]);
          return 0;
       }
       iput(mip);
