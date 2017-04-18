@@ -295,9 +295,9 @@ int tokenizeCommmand()
   command[0] = strtok(buf, "/");
 
 
-  while (name[j] != NULL) {
+  while (command[j] != NULL) {
     j++;
-    name[j] = strtok(NULL, "/");
+    command[j] = strtok(NULL, "/");
   }
 
   return j;
