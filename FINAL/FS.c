@@ -483,8 +483,6 @@ void my_ls(char *name) {
   //fflush();
   printf("Moved the print up here\n");
 
-
->>>>>>> origin/master
   if (name[0] == '/')
   {
     if(isDebug) printf("LS from root->dev\n");
