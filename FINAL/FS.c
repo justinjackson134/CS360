@@ -544,7 +544,7 @@ void my_ls(char *name) {
   }
   else
   {
-  	printf("Before Print For Loop\n")
+  	printf("Before Print For Loop\n");
     for (int i = 0; i <= 11; i++)
     {    	
   	  printf("if(mip->INODE.i_block[%d])\n", i);
@@ -629,5 +629,5 @@ main(int argc, char *argv[ ]) {
     commandTable();
   }
 
-  printf("Exiting J&J EXT2FS program! Have a nice day!");
+  printf("Exiting J&J EXT2FS program! Have a nice day!\n");
 }
