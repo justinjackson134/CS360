@@ -438,7 +438,7 @@ int tokenizeCommmand()
   
   getline(&readLine, &len, stdin);
   // Remove newline from end of command string
-  readLine[strlen(readLine)] = '/0';
+  readLine[strlen(readLine)-1] = '\0';
 
 
   // May have to remove an initial '/'
@@ -547,7 +547,7 @@ main(int argc, char *argv[ ]) {
     printf("J&J EXT2FS: ");
     // Read in and tokenize Command
     numberOfCommands = tokenizeCommmand();
-    if (strcmp(command[0], "quit\n") == 0)  /////////////////////////////////////////////////Should probably make this quit not have a newline after it
+    if (strcmp(command[0], "quit") == 0)
     {
       //User entered Quit, we should probably exit
       break;
