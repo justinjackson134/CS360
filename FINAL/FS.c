@@ -438,11 +438,10 @@ int tokenizeCommmand()
   
   getline(&readLine, &len, stdin);
   // Remove newline from end of command string if string is longer than size 0
-  if(strlen(readLine) > 1)
+  if(strlen(readLine) > 1) /////////////////////////////////////////////////////Still weird when you enter just a newline
   {
     readLine[strlen(readLine)-1] = '\0';
   }
-
 
   // May have to remove an initial '/'
   // Get first token
@@ -513,7 +512,7 @@ void commandTable()
   if(strcmp(command[0], "ls") == 0)
   {
     //This is ls
-    my_ls(path[1]); ///////////////////////////////////////// Should pass in the entire path, as long as it is arg 2
+    my_ls(command[1]); ///////////////////////////////////////// Should pass in the entire path, as long as it is arg 2
   }
 }
 
