@@ -292,7 +292,7 @@ int tokenizeCommmand()
 
   // May have to remove an initial '/'
   // Get first token
-  command[0] = strtok(buf, "/");
+  command[0] = strtok(readLine, "/");
 
 
   while (command[j] != NULL) {
