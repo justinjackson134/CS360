@@ -485,7 +485,11 @@ int tokenizeCommmand()
   
   getline(&readLine, &len, stdin);
   // Remove newline from end of command string if string is longer than size 0
-  if(strlen(readLine) > 1) /////////////////////////////////////////////////////Still weird when you enter just a newline
+  if(strcmp(readLine, "\n") == 0)
+  {
+  	readLine = '\0';
+  }
+  else if(strlen(readLine) > 1) /////////////////////////////////////////////////////Still weird when you enter just a newline
   {
     readLine[strlen(readLine)-1] = '\0';
   }
@@ -523,7 +527,7 @@ void my_ls(char *name) {
   }
   else
   {
-    fd = running->cwd->dev;
+    fd = running->cwd->dev; //////////////////////////////////////////////////////// Doesn't currently get updated, thus causes a segfault
     if(isDebug) printf("LS from running->cwd->dev: fd = %d\n", fd);
   }
 
@@ -603,7 +607,7 @@ main(int argc, char *argv[ ]) {
   while(1)
   {
     // Print prompt for user command entry
-    printf("J&J EXT2FS: ");
+    printf("\nJ&J EXT2FS: ");
     // Read in and tokenize Command
     numberOfCommands = tokenizeCommmand();
     if (strcmp(command[0], "quit") == 0)
