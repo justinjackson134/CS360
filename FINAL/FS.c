@@ -148,6 +148,7 @@ char *command[32];
 int numberOfCommands = 0;
 // Used for path tokenizer
 char *path[32];
+char *fullpath;
 // Number of path items returned by path tokenizer
 int numberOfPathItems = 0;
 
@@ -175,6 +176,45 @@ int get_block(int fd, int blk, char buf[ ]) {
 void get_inode(int fd, int ino, int inode_table,INODE *inode) {
   lseek(fd, BLOC_OFFSET(inode_table) + (ino - 1) * sizeof(INODE), 0);
   read(fd, inode, sizeof(INODE));
+}
+
+// Given by KC
+int getino(int *dev, char *pathname)
+{
+  int i, ino, blk, disp,n;
+  char buf[BLKSIZE];
+  INODE *ip;
+  MINODE *mip;
+
+  printf("getino: pathname=%s\n", pathname);
+  if (strcmp(pathname, "/")==0)
+      return 2;
+
+  if (pathname[0]=='/')
+     mip = iget(*dev, 2);
+  else
+     mip = iget(running->cwd->dev, running->cwd->ino);
+
+  strcpy(buf, pathname);
+  n = tokenize(buf); // n = number of token strings
+
+  for (i=0; i < n; i++){
+      //printf("===========================================\n");
+      //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
+ 
+      ino = search(mip, name[i]);
+
+      if (ino==0){
+         iput(mip);
+         printf("name %s does not exist\n", name[i]);
+         return 0;
+      }
+      iput(mip);
+      mip = iget(*dev, ino);
+  }
+  iput(mip);
+  delete_name();
+  return ino;
 }
 
 // load INODE at (dev,ino) into a minode[]; return mip->minode[]
@@ -349,14 +389,16 @@ void my_ls(char *name) {
 
   if (name[0] == '/')
   {
+    if(isDebug) printf("LS from root->dev");
     dev = root->dev;
   }
   else
   {
+    if(isDebug) printf("LS from running->cwd->dev");
     dev = running->cwd->dev;
   }
 
-  i = get_inode(dev, name, InodesBeginBlock, &ip); /////////////Edited this from getino(dev,name);
+  i = getino(dev, name);
   if (!i)
   {
     printf("Error file not found \n\n\n");
@@ -394,7 +436,7 @@ void commandTable()
   if(strcmp(command[0], "ls") == 0)
   {
     //This is ls
-    my_ls(path[0]); ///////////////////////////////////////// Wrong
+    my_ls(path[1]); ///////////////////////////////////////// Should pass in the entire path, as long as it is arg 2
   }
 }
 
