@@ -257,6 +257,7 @@ int search(INODE * inodePtr, char * name) {
   printf("\nSEARCHING FOR: %s", name);
   for (int i = 0; i < 12; i++) {
     if (inodePtr->i_block[i] == 0)
+      printf("This is where we return 0");
       return 0;
     get_block(fd, inodePtr->i_block[i], dbuf);  // char dbuf[1024]
 
@@ -318,7 +319,7 @@ int getino(int *dev, char *pathname)
       //printf("===========================================\n");
       //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
 	  ip = &mip->INODE;
-	  printf("THIS IS WHAT IS IN PATH[0]    %s", path[0]);
+	  printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in ip: '(WE DONT KNOW HOW TO PRINT THIS)'", path[0]);
       ino = search(ip, path[i]);
 
       if (ino==0){
