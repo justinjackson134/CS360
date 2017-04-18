@@ -190,11 +190,13 @@ void get_inode(int fd, int ino, int inode_table,INODE *inode) {
 // load INODE at (dev,ino) into a minode[]; return mip->minode[]
 MINODE *iget(int dev, int ino)
 {
+	printf("We are in the iget function \n");
   int i, blk, disp;
   char buf[BLKSIZE];
   MINODE *mip;
   INODE *ip;
   for (i=0; i < NMINODES; i++){
+	  printf("In for loop i < NMINODES \n\n");
     mip = &minode[i];
     if (mip->dev == dev && mip->ino == ino){
        mip->refCount++;
