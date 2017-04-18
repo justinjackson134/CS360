@@ -340,15 +340,14 @@ int tokenizeCommmand()
   return j;
 }
 
-//void my_ls(char *name) {
-void my_ls() { //THIS LS USES THE path[]!
+void my_ls(char *name) {
   //print directory contents 
   int i;
   MINODE *mip;
   DIR *dir;
   char buf[BLKSIZE], *cp;
 
-  if (path[0] == '/')
+  if (name[0] == '/')
   {
     dev = root->dev;
   }
@@ -357,7 +356,7 @@ void my_ls() { //THIS LS USES THE path[]!
     dev = running->cwd->dev;
   }
 
-  i = get_inode(dev, name);
+  i = get_inode(dev, name, InodesBeginBlock, &ip); /////////////Edited this from getino(dev,name);
   if (!i)
   {
     printf("Error file not found \n\n\n");
@@ -395,7 +394,7 @@ void commandTable()
   if(strcmp(command[0], "ls") == 0)
   {
     //This is ls
-    my_ls();
+    my_ls(path[0]); ///////////////////////////////////////// Wrong
   }
 }
 
