@@ -324,7 +324,7 @@ int getino(int *dev, char *pathname)
 
   printf("Right before strcpy\n"); /////////////////////////////////////////////// Prints
   strcpy(buf, pathname);
-  n = tokenizePathname(buf); // n = number of token strings
+  n = tokenizePathname(); // n = number of token strings
 
   for (i=0; i < n; i++){
       //printf("===========================================\n");
