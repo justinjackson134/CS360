@@ -254,7 +254,7 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
 int search(INODE * inodePtr, char * name) {
-  printf("In search-> This is what is in inodePtr: '%d,%d'", inodePtr->i_mode, inodePtr->uid);
+  printf("In search-> This is what is in inodePtr: '%d,%d'", inodePtr->i_mode, inodePtr->i_uid);
   printf("\nSEARCHING FOR: %s", name);
   for (int i = 0; i < 12; i++) {
     if (inodePtr->i_block[i] == 0)
@@ -320,7 +320,7 @@ int getino(int *dev, char *pathname)
       //printf("===========================================\n");
       //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
 	  ip = &mip->INODE;
-	  printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in ip: '%d,%d'", path[0], mip->dev, mip->ino->uid);
+	  printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in ip: '%d,%d'", path[0], mip->dev, mip->ino.i_uid);
       ino = search(ip, path[i]);
 
       if (ino==0){
