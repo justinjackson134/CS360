@@ -320,7 +320,7 @@ int getino(int *dev, char *pathname)
       //printf("===========================================\n");
       //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
 	  ip = &mip->INODE;
-	  printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in ip: '%d,%d'", path[0], mip->dev, mip->ino.i_uid);
+	  printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in ip: '%d,%d'", path[0], mip->dev, mip->ino);
       ino = search(ip, path[i]);
 
       if (ino==0){
