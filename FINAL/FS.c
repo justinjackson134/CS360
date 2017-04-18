@@ -154,8 +154,7 @@ int numberOfPathItems = 0;
 
 // Unknown, copied from original main
 int dev;
-int nblocks;
-int ninodes;
+
 int bmap;
 int imap;
 int iblock;
@@ -387,7 +386,10 @@ void mountRoot(char *disk)
   else
   {  
     printf("VALID EXT2 FS: s_magic = %x\n", sp->s_magic);
-
+	int nblocks, ninodes, bfreee, ifree;
+	nblocks = sp->s_blocks_count;
+	bfree = sp->s_free_blocks_count;
+	ninodes = sp->s_inodes_count;
     // Read Group Descriptor block
     get_block(fd, 2, buf);
     
@@ -486,13 +488,13 @@ void my_ls(char *name) {
     fd = running->cwd->dev;
   }
 
-  i = getino(fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
+  i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
   if (!i)
   {
     printf("Error file not found \n\n\n");
     return;
   }
-  mip = iget(dev, i);
+  mip = iget(fd, i); ///changed from dev to fd
 
 
   if (mip->ino == 0x8000)
