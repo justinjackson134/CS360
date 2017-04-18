@@ -283,10 +283,10 @@ void mountRoot(char *disk)
 
 int tokenizeCommmand()
 {
-  char readLine[1024];
+  char *readLine = NULL;
   int j = 0;
   
-  getline(&readLine, BLOCK_SIZE, stdin);
+  getline(&readLine, &BLOCK_SIZE, stdin);
 
 
   // May have to remove an initial '/'
