@@ -444,7 +444,7 @@ void mountRoot(char *disk)
     root->mountptr->mounted_inode = root;
 	//setting running->cwd to root
 
-	running->cwd = &root;
+	running->cwd = root;
   }
 }
 
