@@ -300,6 +300,7 @@ int getino(int *dev, char *pathname)
   else
      mip = iget(running->cwd->dev, running->cwd->ino);
 
+  printf("Right before strcpy\n");
   strcpy(buf, pathname);
   n = tokenizePathname(buf); // n = number of token strings
 
@@ -465,12 +466,12 @@ void my_ls(char *name) {
 
   if (name[0] == '/')
   {
-    if(isDebug) printf("LS from root->dev");
+    if(isDebug) printf("LS from root->dev\n");
     dev = root->dev;
   }
   else
   {
-    if(isDebug) printf("LS from running->cwd->dev");
+    if(isDebug) printf("LS from running->cwd->dev\n");
     dev = running->cwd->dev;
   }
 
