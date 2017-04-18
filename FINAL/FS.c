@@ -217,7 +217,7 @@ MINODE *iget(int dev, int ino)
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + iblock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
-       //printf("iget: ino=%d blk=%d disp=%d\n", ino, blk, disp);
+       printf("allocating new Minode: iget: ino=%d blk=%d disp=%d\n", ino, blk, disp);
        get_block(dev, blk, buf);
        ip = (INODE *)buf + disp;
        // copy INODE to mp->INODE
