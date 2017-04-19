@@ -725,11 +725,15 @@ void commandTable()
   if(strcmp(command[0], "ls") == 0)
   {
     //This is ls
-    my_ls(command[1]); ///////////////////////////////////////// Should pass in the entire path, as long as it is arg 2
+    my_ls(command[1]); // Should pass in the entire path, as long as it is arg 2
   }
   else if(strcmp(command[0], "pwd") == 0)
   {
     my_pwd();
+  }
+  else if(strcmp(command[0], "cd") == 0)
+  {
+  	my_cd(command[1]); // Should pass in the entire path, as long as it is arg 2
   }
 }
 
