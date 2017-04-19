@@ -659,7 +659,7 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 		while(dp->inode != child_ino)
 		{
 			// Iterate over the current directory entry
-			cp += dir->rec_len;
+			cp += dp->rec_len;
 			dp = (DIR *)cp;
 		}
 
