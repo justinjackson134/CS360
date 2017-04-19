@@ -692,7 +692,7 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 	cp += dir->rec_len;
 	// Set dp = '..' (This lets us go up a level)
 	dir = (DIR *)cp;
-	printf("DP CURRENTLY: '%s'\n", dir->name);
+	//printf("DP CURRENTLY: '%s'\n", dir->name);
 	
 	// If we have not reached the root directory
 	if(cwd->ino != root->ino)
