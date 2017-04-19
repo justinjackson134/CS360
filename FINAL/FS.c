@@ -674,7 +674,7 @@ void my_pwd()
 void recursive_pwd(MINODE *cwd, int child_ino)
 {
   	char buf[BLKSIZE], *cp, name[128];
-	//DIR *dp;
+  	DIR *dir;
 	int ino;
 	MINODE *parentMinodePtr;
 
@@ -687,18 +687,18 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 	// Get the directorory block for the current directory
 	get_block(fd, cwd->INODE.i_block[0], buf);
 	// Set dp = '.'
-	dp = (DIR *)buf;
+	dir = (DIR *)buf;
 	// Advance one record
-	cp += dp->rec_len;
+	cp += dir->rec_len;
 	// Set dp = '..' (This lets us go up a level)
-	dp = (DIR *)cp;
-	printf("DP CURRENTLY: '%s'\n", dp);
+	dir = (DIR *)cp;
+	printf("DP CURRENTLY: '%s'\n", dir->name);
 	
 	// If we have not reached the root directory
 	if(cwd->ino != root->ino)
 	{
 		// Get the parents inode number
-		ino = dp->inode;
+		ino = dir->inode;
 		// Load the parents inode into a MINODE
 		parentMinodePtr = iget(fd, ino);
 		// Recurse up to the parent
@@ -711,17 +711,17 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 	if(child_ino != 0)
 	{
 		// loop until we find the correct child inode in the directory
-		while(dp->inode != child_ino)
+		while(dir->inode != child_ino)
 		{
 			// Iterate over the current directory entry
-			cp += dp->rec_len;
-			dp = (DIR *)cp;
+			cp += dir->rec_len;
+			dir = (DIR *)cp;
 		}
 
 		// Copy the found name into the name var for printing
-		strncpy(name, dp->name, dp->name_len);
+		strncpy(name, dir->name, dir->name_len);
 		// Set the string to be null terminated
-		name[dp->name_len] = '\0';
+		name[dir->name_len] = '\0';
 		// Print out the name in "name/" format
 		printf("%s/", name);
 	}
