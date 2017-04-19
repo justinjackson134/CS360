@@ -674,7 +674,7 @@ void my_pwd()
 void recursive_pwd(MINODE *cwd, int child_ino)
 {
   	char buf[BLKSIZE], *cp, name[128];
-	DIR *dp;
+	//DIR *dp;
 	int ino;
 	MINODE *parentMinodePtr;
 
