@@ -729,6 +729,109 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 	return;
 }
 
+///////////////////////////////////////////////////////////////////////////////////// ALL COPIED FROM LAB 6
+
+int tst_bit(char *buf, int bit)
+{
+  int i, j;
+  i = bit/8; j=bit%8;
+  if (buf[i] & (1 << j))
+     return 1;
+  return 0;
+}
+
+int set_bit(char *buf, int bit)
+{
+  int i, j;
+  i = bit/8; j=bit%8;
+  buf[i] |= (1 << j);
+}
+
+int clr_bit(char *buf, int bit)
+{
+  int i, j;
+  i = bit/8; j=bit%8;
+  buf[i] &= ~(1 << j);
+}
+
+int decFreeInodes(int dev)
+{
+  char buf[BLKSIZE];
+
+  // dec free inodes count in SUPER and GD
+  get_block(dev, SUPERBLOCK, buf);
+  sp = (SUPER *)buf;
+  sp->s_free_inodes_count--;
+  put_block(dev, SUPERBLOCK, buf);
+
+  get_block(dev, GDBLOCK, buf);
+  gp = (GD *)buf;
+  gp->bg_free_inodes_count--;
+  put_block(dev, GDBLOCK, buf);
+}
+
+int ialloc(int dev)
+{
+  int  i;
+  char buf[BLKSIZE];
+
+  // read inode_bitmap block
+  get_block(dev, imap, buf);
+
+  for (i=0; i < ninodes; i++){
+    if (tst_bit(buf, i)==0){
+       set_bit(buf,i);
+       decFreeInodes(dev);
+
+       put_block(dev, imap, buf);
+
+       return i+1;
+    }
+  }
+  printf("ialloc(): no more free inodes\n");
+  return 0;
+}
+
+int decFreeBlocks(int dev)
+{
+  char buf[BLKSIZE];
+
+  // dec free inodes count in SUPER and GD
+  get_block(dev, SUPERBLOCK, buf);
+  sp = (SUPER *)buf;
+  sp->s_free_blocks_count--;
+  put_block(dev, SUPERBLOCK, buf);
+
+  get_block(dev, GDBLOCK, buf);
+  gp = (GD *)buf;
+  gp->bg_free_blocks_count--;
+  put_block(dev, GDBLOCK, buf);
+}
+
+int balloc(int dev)
+{
+  int  i;
+  char buf[BLKSIZE];
+
+  // read block_bitmap
+  get_block(dev, bmap, buf);
+
+  for (i=0; i < ninodes; i++){
+    if (tst_bit(buf, i)==0){
+       set_bit(buf,i);
+       decFreeBlocks(dev);
+
+       put_block(dev, imap, buf);
+
+       return i+1;
+    }
+  }
+  printf("balloc(): no more free blocks\n");
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
+
 void commandTable()
 {
   if(strcmp(command[0], "ls") == 0)
