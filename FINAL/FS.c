@@ -613,6 +613,8 @@ void my_cd(char *pathname)
 {
 	MINODE *mip, *oldMip;
 	int ino;
+
+	printf("In my_cd(%s)\n", pathname);
 	
 	// Store a handle to our current MINODE before changing cwd
 	oldMip = running->cwd;
