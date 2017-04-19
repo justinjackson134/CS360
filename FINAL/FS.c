@@ -636,7 +636,7 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 	get_block(fd, cwd->INODE.i_block[0], buf);
 	// Set dp = the read in directory
 	dp = (DIR *)buf;
-	cp += dir->rec_len;
+	cp += dp->rec_len;
 	dp = (DIR *)cp;
 	
 	// If we have not reached the root directory
