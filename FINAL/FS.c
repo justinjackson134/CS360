@@ -607,7 +607,53 @@ void my_ls(char *name) {
 		}
 	}
   }
+}
 
+void my_cd(char *pathname)
+{
+	MINODE *mip, *oldMip;
+	int ino;
+	
+	// Store a handle to our current MINODE before changing cwd
+	oldMip = running->cwd;
+
+	// If we are told to cd to root, we dont need getino
+	if(pathname == NULL || strcmp(pathname, "/") == 0)
+	{
+		// Change cwd to root
+		running->cwd = iget(root->dev, ROOT_INODE);
+		// Return old MINODE to fd
+		iput(oldMip);
+	}
+	else
+	{
+		// Get inode from pathname
+		ino = getino(fd, pathname);
+		// Check if the given pathname was not found
+		if(ino == 0)
+		{
+			printf("The directory entered was not found\n");
+			// Break early as we should not change the cwd
+			return;
+		}
+
+		// Get the inode of pathname and store it in a new MINODE
+		mip = iget(root->dev, ino);
+
+		if(!S_ISDIR(mip->INODE.i_mode))
+		{
+			// This is not a directory, it cannot be cwd!
+			iput(mip);
+			printf("The entered file: '%s' is not a directory", pathname);
+			// Break early as we should not change the cwd
+			return;
+		}
+
+		// Change the running process cwd to our new MINODE
+		running->cwd = mip;
+		// Return old MINODE to fd 
+		iput(mip);
+	}
 
 }
 
