@@ -622,6 +622,8 @@ void my_cd(char *pathname)
 	// If we are told to cd to root, we dont need getino
 	if(pathname == NULL || strcmp(pathname, "/") == 0)
 	{
+		printf("We were given the root, so, set cwd to root");
+
 		// Change cwd to root
 		running->cwd = iget(root->dev, ROOT_INODE);
 		// Return old MINODE to fd
