@@ -614,10 +614,12 @@ void my_cd(char *pathname)
 	MINODE *mip, *oldMip;
 	int ino;
 
-	printf("In my_cd(%s)\n", pathname);
+	printf("\nIn my_cd(%s)\n", pathname);
 	
 	// Store a handle to our current MINODE before changing cwd
+	printf("begining storing running->cwd in oldMip\n");
 	oldMip = running->cwd;
+	printf("completed storing running->cwd in oldMip\n");
 
 	// If we are told to cd to root, we dont need getino
 	if(pathname == NULL || strcmp(pathname, "/") == 0)
