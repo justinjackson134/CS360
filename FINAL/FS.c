@@ -685,11 +685,11 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 	}
 	
 	// Get the directorory block for the current directory
-	get_block(fd, cwd->INODE.i_block[0], buf);
+	get_block(root->dev, cwd->INODE.i_block[0], buf);
 	// Set dp = '.'
 	dir = (DIR *)buf;
 	// Advance one record
-	cp += dir->rec_len;
+	cp = buf + dir->rec_len;
 	// Set dp = '..' (This lets us go up a level)
 	dir = (DIR *)cp;
 	//printf("DP CURRENTLY: '%s'\n", dir->name);
