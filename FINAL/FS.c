@@ -613,10 +613,10 @@ void my_ls(char *name) {
 
 void my_pwd()
 {
+	// Print a newline as the pathname does not begin with a \n
+	printf("\n");
 	// Call the recursive_pwd function --- climb upto root, then print back down
 	recursive_pwd(running->cwd, 0);
-	// Print a newline as the pathname does not end with a \n
-	printf("\n");
 }
 
 void recursive_pwd(MINODE *cwd, int child_ino)
