@@ -629,6 +629,7 @@ void my_cd(char *pathname)
 	}
 	else
 	{
+		printf("We are now checking if pathname exists");
 		// Get inode from pathname
 		ino = getino(fd, pathname);
 		// Check if the given pathname was not found
