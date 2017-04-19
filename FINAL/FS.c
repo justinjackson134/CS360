@@ -661,7 +661,6 @@ void my_cd(char *pathname)
 		// Return old MINODE to fd 
 		iput(mip);
 	}
-
 }
 
 void my_pwd()
@@ -685,12 +684,15 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 		printf("/");
 	}
 	
-	// Get the directorory block fo the current directory
+	// Get the directorory block for the current directory
 	get_block(fd, cwd->INODE.i_block[0], buf);
-	// Set dp = the read in directory
+	// Set dp = '.'
 	dp = (DIR *)buf;
+	// Advance one record
 	cp += dp->rec_len;
+	// Set dp = '..' (This lets us go up a level)
 	dp = (DIR *)cp;
+	printf("DP CURRENTLY: '%s'\n", dp);
 	
 	// If we have not reached the root directory
 	if(cwd->ino != root->ino)
