@@ -1146,7 +1146,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 				cp = buf;
 				dp = (DIR *)buf;
 
-				printf("step to LAST entry in data block %d\n", blk);
+				printf("step to LAST entry in data block %d\n", buf);
 				while (cp + dp->rec_len < buf + BLKSIZE)
 				{
 					cp += dp->rec_len;
@@ -1183,7 +1183,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 
 	parentMinodePtr->dirty = 1;
 	parentMinodePtr->refCount++;
-	parentMinodePtr->INODE->i_atime = time(0L);
+	parentMinodePtr->INODE.i_atime = time(0L);
 	iput(parentMinodePtr);
 
 	return myino;
