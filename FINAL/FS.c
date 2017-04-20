@@ -263,7 +263,8 @@ char dbuf[1024];
 int search(MINODE *minodePtr, char *name) {
   printf("In search-> This is what is in minodePtr: '%d,%d'", minodePtr->dev, minodePtr->ino);
   printf("\nSEARCHING FOR: %s\n", name);
-  for (int i = 0; i < 12; i++) {
+  int i;
+  for (i = 0; i < 12; i++) {
 	 /* if (minodePtr->INODE.i_block[i] == 0)
 	  {
 		  printf("This is where we return 0");
@@ -369,8 +370,8 @@ void init()
   proc[1].uid = 1;
   proc[1].pid = 0;
   proc[1].cwd = 0;
-
-  for(int i = 0; i < NMINODES; i++)
+  int i;
+  for(i = 0; i < NMINODES; i++)
      minode[i].refCount = 0;
 
   root = 0;
@@ -582,7 +583,8 @@ void my_ls(char *name) {
 	else
 	{
 		printf("ACTUAL OUTPUT:\n");
-		for (int i = 0; i <= 11; i++)
+		int i;
+		for (i = 0; i <= 11; i++)
 		{
 			//printf("if(mip->INODE.i_block[%d])\n", i);
 			if (mip->INODE.i_block[i])
@@ -617,7 +619,8 @@ void my_ls(char *name) {
 	else
 	{
 		printf("ACTUAL OUTPUT:\n");
-		for (int i = 0; i <= 11; i++)
+		int i;
+		for (i = 0; i <= 11; i++)
 		{
 			//printf("if(mip->INODE.i_block[%d])\n", i);
 			if (mip->INODE.i_block[i])
