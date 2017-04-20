@@ -875,7 +875,7 @@ int dirname(char *pathname)
 		i++;
 	}
 
-	printf("Setting dirname_value = %s\n", dirname_value);
+	printf("Setting dirname_value = %s\n", out);
 	dirname_value = out;
 
 }
