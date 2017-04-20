@@ -922,6 +922,7 @@ int my_make_dir(char *pathname)
 	// Set the parent and child equal to the new dirname/basename globals
 	parent = dirname_value;
 	child = basename_value;
+	printf("Parent: %s\nChild: %s\n", parent, child);
 
   }
 }
