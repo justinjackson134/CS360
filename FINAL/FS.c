@@ -563,7 +563,7 @@ void my_ls(char *name) {
 	if (mip->ino == 0x8000)//
 	{
 		// This sets a global named basename!
-		basename(name);
+		setDirnameBasename(name);
 		// Print the global basename
 		printf("%s", basename_value);
 	}
@@ -598,7 +598,7 @@ void my_ls(char *name) {
 	if (mip->ino == 0x8000)//this needs to be changed 
 	{
 		// This sets a global named basename!
-		basename(name);
+		setDirnameBasename(name);
 		// Print the global basename
 		printf("%s", basename_value);
 	}
@@ -916,8 +916,7 @@ int my_make_dir(char *pathname)
 	}
 
 	// Set dirname and basename globals given pathname
-	dirname(pathname);
-	basename(pathname);
+	setDirnameBasename(pathname);
 
 	// Set the parent and child equal to the new dirname/basename globals
 	parent = dirname_value;
