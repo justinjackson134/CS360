@@ -942,7 +942,7 @@ int my_make_dir(char *pathname)
 	// Get the inode number of the parent MINODE
 	parentMinodePtr = iget(root->dev, parentMinodePtr);
 
-	if(S_ISDIR(parentMinodePtr->INODE.i_mode)
+	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
 	{
 		// Make sure the child does not already exist
 		if(search(parentMinodePtr, child) == 0)
