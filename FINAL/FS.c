@@ -1065,6 +1065,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	strncpy(dp->name, ".", 1);
 	dp->name_len = 1;
 	dp->rec_len = 12;
+	printf("Results: dp->inode = %d, dp->name = %s, dp->name_len = %d, dp->rec_len = %d\n", dp->inode, dp->name, dp->name_len, dp->rec_len);
 
 	// advance one dir place
 	cp = buf;
@@ -1077,6 +1078,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	strncpy(dp->name, "..", 2);
 	dp->name_len = 1;
 	dp->rec_len = 12;
+	printf("Results: dp->inode = %d, dp->name = %s, dp->name_len = %d, dp->rec_len = %d\n", dp->inode, dp->name, dp->name_len, dp->rec_len);
 
 	// Put the block into the file system
 	put_block(fd, bno, buf);
