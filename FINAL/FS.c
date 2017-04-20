@@ -464,6 +464,8 @@ int tokenizePathname()
 	int j = 0;
 	char copyOfPathname[128];
 
+	printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
+
 	// Save a copy of the pathname as we will eat it via tokenizer
 	strcpy(copyOfPathname, command[1]);
 	printf("Copy of Pathname: %s\n", copyOfPathname);
@@ -477,10 +479,8 @@ int tokenizePathname()
 	// Reset j
 	j = 0;
 
-	printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
 	if (numberOfCommands > 1)
 	{
-		// May have to remove an initial '/'
 		// Get first token
 		path[0] = strtok(copyOfPathname, "/");
 
