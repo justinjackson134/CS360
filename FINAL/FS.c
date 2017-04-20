@@ -1112,7 +1112,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	printf("Ended on: %s\n", dp->name);
 
 	// Calculate needed length of the last record entry	
-	last_ideal = 4 * ( (8 + dp->rec_len + 3) / 4 ); 
+	last_ideal = 4*( (8 + dp->name_len + 3 ) / 4 ); 
 	printf("last_ideal = %d\n", last_ideal);
 	// Calculate and store the length of the new dir item
 	last_length = dp->rec_len - last_ideal; // Last_length = current record length - its ideal length = the amount left after changing it to ideal length
