@@ -1076,8 +1076,8 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	printf("Adding '..' directory to new dir\n");
 	dp->inode = parentMinodePtr->ino;
 	strncpy(dp->name, "..", 2);
-	dp->name_len = 1;
-	dp->rec_len = 12;
+	dp->name_len = 2;
+	dp->rec_len = BLOCK_SIZE - 12; // This needs to be equal to the remaining space on the block!
 	printf("Results: dp->inode = %d, dp->name = %s, dp->name_len = %d, dp->rec_len = %d\n", dp->inode, dp->name, dp->name_len, dp->rec_len);
 
 	// Put the block into the file system
