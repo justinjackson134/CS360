@@ -1000,7 +1000,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
   	char buf[BLKSIZE];
   	char *cp;
 
-  	printf("Allocating ino and bno\n");
+  	printf("Allocating ino and bno on fd = %d\n", fd);
 	ino = ialloc(fd);
 	bno = balloc(fd);
 	printf("After allocation, ino = %d, bno = %d\n", ino, bno);
@@ -1011,7 +1011,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	mip->INODE.i_block[0] = bno;
 
 	ip = &mip->INODE;
-	printf("ip points at &mip->INODE, mip->ino = %d", mip->ino);
+	printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
 
 	// Use ip-> to acess the INODE fields:
 	ip->i_mode = 0x41ED;		      // OR 040755: DIR type and permissions
