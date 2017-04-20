@@ -432,6 +432,12 @@ void mountRoot(char *disk)
     
     // Set InodesBeginBlock
     InodesBeginBlock = gp->bg_inode_table;
+    // Added this from the ialloc.c of lab 6, I believe we need it in order for ialloc and balloc to work correctly --- This may need to be something else however!
+    imap = gp->bg_inode_bitmap;
+  	printf("imap = %d\n", imap);
+  	
+
+
     if(isDebug) 
     {
       printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
@@ -801,20 +807,20 @@ int decFreeInodes(int dev)
   put_block(dev, GDBLOCK, buf);
 }
 
-int ialloc(int dev)
+int ialloc(int mydev)
 {
   int  i;
   char buf[BLKSIZE];
 
   // read inode_bitmap block
-  get_block(dev, imap, buf);
+  get_block(mydev, imap, buf);
 
   for (i=0; i < ninodes; i++){
     if (tst_bit(buf, i)==0){
        set_bit(buf,i);
-       decFreeInodes(dev);
+       decFreeInodes(mydev);
 
-       put_block(dev, imap, buf);
+       put_block(mydev, imap, buf);
 
        return i+1;
     }
