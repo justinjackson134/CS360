@@ -157,8 +157,8 @@ int ninodes;
 // Device number
 int dev;
 // dirname variable
-char *dirname_value;
-char *basename_value;
+char dirname_value[128];
+char basename_value[128];
 
 // Unknown, copied from original main
 int bmap;
