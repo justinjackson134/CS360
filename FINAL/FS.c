@@ -850,16 +850,17 @@ int balloc(int dev)
 // Set both dirnmae and basename
 int setDirnameBasename(char *pathname)
 {
-	basename(pathname, dirname(pathname));
+	int j = 0;
+	j = tokenizePathname();
+	dirname(pathname, j);
+	basename(pathname, j);
 }
 
 // Sets dirname global to the directory name upto but not including the final '/'
-int dirname(char *pathname)
+int dirname(char *pathname, int j)
 {
-	int i = 0, j;
-	char out[128];
-
-	j = tokenizePathname();
+	int i = 0;
+	char out[128];	
 
 	if(pathname != NULL)
 	{
@@ -889,12 +890,12 @@ int dirname(char *pathname)
 // Sets basename global to everything after the final '/' of pathname
 int basename(char *pathname, int j)
 {
-	char baseOut[128];
+	char out[128];
 
-	strcat(baseOut, path[j-1]);
+	strcat(out, path[j-1]);
 
-	printf("Setting basename_value = %s\n", baseOut);
-	basename_value = baseOut;
+	printf("Setting basename_value = %s\n", out);
+	basename_value = out;
 }
 
 int my_make_dir(char *pathname)
