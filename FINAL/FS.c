@@ -892,7 +892,11 @@ int basename(char *pathname, int j)
 {
 	char out[128];
 
-	strcpy(out, path[j-1]);
+	// If the path is not null, set basename
+	if(path[j-1] != NULL)
+	{
+		strcpy(out, path[j-1]);
+	}
 
 	printf("Setting basename_value = %s\n", out);
 	strcpy(basename_value, out);
@@ -923,6 +927,11 @@ int my_make_dir(char *pathname)
 	parent = dirname_value;
 	child = basename_value;
 	printf("Parent: %s\nChild: %s\n", parent, child);
+	if(strcmp(child, "") == 0 || child == NULL)
+	{
+		printf("Cannot Create Empty Directory!\n");
+		return;
+	}
 
   }
 }
