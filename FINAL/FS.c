@@ -963,11 +963,11 @@ int my_make_dir(char *pathname)
 	printf("Setting parentInode\n");
 	parentInode = getino(&root->dev, parent);
 	// Check if parent inode does not exist
-	if (parentInode == 0)
-	{
-		printf("The Given Path Contains a non-existant directory\n");
-		return;
-	}
+	//if (parentInode == 0)
+	//{		
+	//	printf("The Given Path Contains a non-existant directory\n");
+	//	return;
+	//}
 	
 	// Get the In_MEMORY minode of parent:
 	printf("Setting parentMinodePtr\n");
