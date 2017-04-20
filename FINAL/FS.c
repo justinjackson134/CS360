@@ -891,6 +891,7 @@ int dirname(char *pathname, int j)
 int basename(char *pathname, int j)
 {
 	char out[128];
+	strcpy(out, "");
 
 	// If the path is not null, set basename
 	if(path[j-1] != NULL)
