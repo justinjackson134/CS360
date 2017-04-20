@@ -462,16 +462,8 @@ int tokenizePathname()
 {
 	size_t len = BLOCK_SIZE;
 	int j = 0;
-	char copyOfPathname[128];
-
-	memset(copyOfPathname, '\0', sizeof(copyOfPathname));
-	strcpy(copyOfPathname, command[1]);
 
 	printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
-
-	// Save a copy of the pathname as we will eat it via tokenizer
-	strcpy(copyOfPathname, command[1]);
-	printf("Copy of Pathname: %s\n", copyOfPathname);
 
 	// Reset path
 	while (j < 32)
@@ -856,6 +848,21 @@ int balloc(int dev)
 
 //////////////////////////////////////////////////////////////////////////////////////// END COPY FROM LAB 6
 
+int reassemblePathname(int j)
+{
+	int i = 0;
+	char out[128];
+
+	while(i < j)
+	{
+		strcat(out, path[i]);
+		i++;
+	}
+
+	printf("Reassembling Pathname: %s\n", out);
+	command[1] = out;
+}
+
 // Sets dirname global to the directory name upto but not including the final '/'
 int dirname(char *pathname)
 {
@@ -882,6 +889,9 @@ int dirname(char *pathname)
 		}
 		i++;
 	}
+
+	// Tokenizer breaks the pathname, fix it
+	reassemblePathname(j);
 
 	printf("Setting dirname_value = %s\n", out);
 	dirname_value = out;
