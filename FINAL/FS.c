@@ -958,7 +958,10 @@ int my_make_dir(char *pathname)
 			printf("\nTarget Already Exists, cannot mkdir\n");
 		}
 	}
-
+	else
+	{
+		printf("\nCannot mkdir, below a file\n");
+	}
   }
   else
   {
