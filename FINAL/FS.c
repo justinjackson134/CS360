@@ -856,7 +856,7 @@ int dirname(char *pathname)
 {
 	char *temp, *out;
 
-	printf("In dirname\n");
+	printf("In dirname: pathname = %s\n", pathname);
 
 	// If the pathname begins with a /, keep it
 	if(pathname[0] == '/')
