@@ -942,7 +942,7 @@ int my_make_dir(char *pathname)
 	parentInode = getino(root->dev, parent);
 	// Get the inode number of the parent MINODE
 	printf("Setting parentMinodePtr\n");
-	parentMinodePtr = iget(root->dev, parentMinodePtr);
+	parentMinodePtr = iget(root->dev, parentInode);
 
 	printf("Checking if S_ISDIR\n");
 	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
