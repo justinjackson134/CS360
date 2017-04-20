@@ -488,6 +488,8 @@ int tokenizePathname()
 		}		
 	}
 
+	// Reassign the full path to command[1]
+	strcpy(command[1], copyOfPathname);
 	return j;
 }
 
