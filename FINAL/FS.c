@@ -881,14 +881,20 @@ int dirname(char *pathname)
 
 	printf("Setting dirname_value = %s\n", out);
 	dirname_value = out;
-
 }
 
 // Sets basename global to everything after the final '/' of pathname
 int basename(char *pathname)
 {
-	printf("In basename\n");
+	int i = 0, j;
+	char out[128];
 
+	j = tokenizePathname();
+
+	strcat(out, path[j]);
+
+	printf("Setting basename_value = %s\n", out);
+	basename_value = out;
 }
 
 int my_make_dir(char *pathname)
