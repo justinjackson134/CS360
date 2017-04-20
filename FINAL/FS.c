@@ -42,6 +42,7 @@ typedef int bool;
 #define FILE_MODE         0100644
 #define SUPER_MAGIC       0xEF53
 #define SUPER_USER        0
+#define SYM_LINK          0120000
 
 // Proc status
 #define FREE              0
@@ -854,34 +855,14 @@ int balloc(int dev)
 // Sets dirname global to the directory name upto but not including the final '/'
 int dirname(char *pathname)
 {
-	char *temp, *out;
+	int i, j;
 
-	printf("In dirname: pathname = %s\n", pathname);
 
-	if(pathname != NULL)
-  	{
-	// If the pathname begins with a /, keep it
-		if(pathname[0] == '/')
-		{		
-			printf("pathname begins with '/'\n");
-			strcpy(out, "/");
-		}
-		else
-		{		
-			printf("pathname doesn't begins with '/'\n");
-		}
-	}
+	j = tokenizePathname();
 
-	// Get first token
-	printf("About to tokenize\n");
-	temp = strtok(pathname, "/");
-	printf("tokenized\n");
-	
-	while (temp != NULL) {
-		temp = strtok(NULL, "/");
-
-		strcat(out, temp);
-		printf("\nPathname: %s", pathname);
+	while(i = 0; i < j-1; i++)
+	{
+		printf("\nPiece: %s", path[j]);
 	}
 
 	dirname_value = out;
