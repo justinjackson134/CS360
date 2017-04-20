@@ -519,6 +519,13 @@ int tokenizeCommmand()
   }
 }
 
+void my_help()
+{
+	printf("------------- J&J EXT2FS HELP -------------\n
+			Commands: ls, cd, pwd, mkdir, rmdir, creat,\n
+			          link, unlink, symlink, readlink\n");
+}
+
 void my_ls(char *name) {
   //print directory contents 
   int i;
@@ -834,9 +841,12 @@ int balloc(int dev)
 
 void commandTable()
 {
+  if(strcmp(command[0], "help") == 0)
+  {
+  	my_help();
+  }
   if(strcmp(command[0], "ls") == 0)
   {
-    //This is ls
     my_ls(command[1]); // Should pass in the entire path, as long as it is arg 2
   }
   else if(strcmp(command[0], "pwd") == 0)
