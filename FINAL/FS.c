@@ -982,7 +982,7 @@ int my_make_dir(char *pathname)
 		if (isRootPath == 0)
 		{
 			// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
-			parentInode = cwd->ino;
+			parentInode = running->cwd->ino;
 		}
 	}
 
