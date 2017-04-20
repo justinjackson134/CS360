@@ -462,7 +462,10 @@ int tokenizePathname()
 {
 	size_t len = BLOCK_SIZE;
 	int j = 0;
+	char copyOfPathname[128];
 
+	strcpy(copyOfPathname, command[1]);
+	printf("copyOfPathname: %s == command[1]: %s\n", copyOfPathname, command[1]);
 	printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
 
 	// Reset path
