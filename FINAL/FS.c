@@ -480,7 +480,7 @@ int tokenizePathname()
 	if (numberOfCommands > 1)
 	{
 		// Get first token
-		path[0] = strtok(command[1], "/");
+		path[0] = strtok(copyOfPathname, "/");
 
 		while (path[j] != NULL) {
 			j++;
