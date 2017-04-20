@@ -1041,7 +1041,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	// Add '.' directory
 	// point to the inode we just allocated
 	dp->inode = ino;
-	strcpy(dp->name, ".", 1);
+	strncpy(dp->name, ".", 1);
 	dp->name_len = 1;
 	dp->rec_len = 12;
 
@@ -1062,7 +1062,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	// get the parent MINODES block into buf
 	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
-	enter_name(parentMinodePtr, mip->ino, mip->name)
+	enter_name(parentMinodePtr, mip->ino, mip->name);
 }
 
 int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
@@ -1076,11 +1076,11 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
 	// KC says do this
-	for (i = 0; i < 12; i++)
-	{
-		if(i_block[i] == 0)
-			break;
-	}
+	//for (i = 0; i < 12; i++)
+	//{
+	//	if(i_block[i] == 0)
+	//		break;
+	//}
 
 	// Calculate needed length to store our record
 	need_length = 4 * ( (8 + strlen(myname) + 3) / 4 );
@@ -1089,7 +1089,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	cp = buf;
 	dp = (DIR *)buf;
 	// Step to the end of the data block
-    printf("step to LAST entry in data block %d\n", blk);
+    printf("step to LAST entry in data block %d\n", buf);
 	while (cp + dp->rec_len < buf + BLKSIZE)
 	{
 		cp += dp->rec_len;
@@ -1183,7 +1183,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 
 	parentMinodePtr->dirty = 1;
 	parentMinodePtr->refCount++;
-	parentMinodePtr->i_atime = time(0L);
+	parentMinodePtr->INODE->i_atime = time(0L);
 	iput(parentMinodePtr);
 
 	return myino;
