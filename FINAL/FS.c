@@ -1126,6 +1126,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	// Otherwise, allocate a new block if needed
 	else
 	{
+		i = 0;
 		while(last_length < last_ideal)
 		{
 			i++;
