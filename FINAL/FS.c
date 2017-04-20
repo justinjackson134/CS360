@@ -930,6 +930,7 @@ int my_make_dir(char *pathname)
   MINODE *parentMinodePtr;
   char *parent, *child;
   int parentInode;
+  int isRootPath = 0;
  
   if(pathname != NULL)
   {
@@ -937,11 +938,13 @@ int my_make_dir(char *pathname)
 	{
 	  fd = root->dev;
 	  if(isDebug) printf("MKDIR from root->dev: fd = %d\n", fd);
+	  isRootPath = 1;
 	}
 	else
 	{
 	  fd = running->cwd->dev;
 	  if(isDebug) printf("MKDIR from running->cwd->dev: fd = %d\n", fd);
+	  isRootPath = 0;
 	}
 
 	// Set dirname and basename globals given pathname
@@ -950,7 +953,18 @@ int my_make_dir(char *pathname)
 	// Set the parent and child equal to the new dirname/basename globals
 	parent = dirname_value;
 	child = basename_value;
-	printf("Parent: %s\nChild: %s\n", parent, child);
+	printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+
+	if(strcmp(parent, "") == 0)
+	{
+		if(isRootPath == 1)
+		{
+			// Parent is null, but we are a root path, set parent == root
+			parent = "/";
+		}
+	}	
+
+	printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
 
 	// If the child is null, we cannot create this directory
 	if(strcmp(child, "") == 0 || child == NULL)
@@ -962,12 +976,22 @@ int my_make_dir(char *pathname)
 	// Get the inode number of the parent MINODE
 	printf("Setting parentInode\n");
 	parentInode = getino(&root->dev, parent);
+
+	if(strcmp(parent, "") == 0)
+	{		
+		if (isRootPath == 0)
+		{
+			// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+			parentInode = cwd->ino;
+		}
+	}
+
 	// Check if parent inode does not exist
-	//if (parentInode == 0)
-	//{		
-	//	printf("The Given Path Contains a non-existant directory\n");
-	//	return;
-	//}
+	if (parentInode == 0)
+	{		
+		printf("The Given Path Contains a non-existant directory\n");
+		return;
+	}
 	
 	// Get the In_MEMORY minode of parent:
 	printf("Setting parentMinodePtr\n");
