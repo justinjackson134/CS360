@@ -1081,8 +1081,8 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	// Put the block into the file system
 	put_block(fd, bno, buf);
 
-	// get the parent MINODES block into buf
-	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+	// get the parent MINODES block into buf (CALLED IN NEXT FUNCTION)
+	//get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
 	enter_name(parentMinodePtr, mip->ino, mip->name);
 }
@@ -1097,27 +1097,23 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
   	// get the parent MINODES block into buf
 	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
-	// KC says do this
-	//for (i = 0; i < 12; i++)
-	//{
-	//	if(i_block[i] == 0)
-	//		break;
-	//}
-
-	// Calculate needed length to store our record
-	need_length = 4 * ( (8 + strlen(myname) + 3) / 4 );
-
 	// Setup cp and dp
 	cp = buf;
 	dp = (DIR *)buf;
+
 	// Step to the end of the data block
     printf("step to LAST entry in data block %d\n", buf);
 	while (cp + dp->rec_len < buf + BLKSIZE)
 	{
+		printf("Stepping Over: %s\n", dp->name);
 		cp += dp->rec_len;
 		dp = (DIR *)cp;
-		printf("Stepping Over: %s\n", dp->name);
 	}
+
+	// Calculate needed length of the last record entry
+	need_length = 4 * ( (8 + dp->name_len + 3) / 4 );
+	
+	
 
 	// Calculate the length of the new last dir
 	last_ideal = 4 * ( (8 + dp->rec_len + 3) / 4 ); 
