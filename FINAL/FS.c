@@ -1085,9 +1085,8 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	//get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
 	// We never set mips name! We may not be initializing this as much as needed!!!!
-	mip->name = child;
-	printf("Going to Enter_Name: name = %s\n", mip->name);
-	enter_name(parentMinodePtr, mip->ino, mip->name);
+	printf("Going to Enter_Name: name = %s\n", name);
+	enter_name(parentMinodePtr, mip->ino, name);
 }
 
 int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
