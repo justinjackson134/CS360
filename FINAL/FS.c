@@ -854,16 +854,25 @@ int balloc(int dev)
 // Sets dirname global to the directory name upto but not including the final '/'
 int dirname(char *pathname)
 {
-	char temp[128], *out;
+	char *temp, *out;
+
+	// If the pathname begins with a /, keep it
+	if(pathname[0] == '/')
+	{		
+		strcpy(out, "/");
+	}
 
 	// Get first token
-	out = strtok(pathname, "/");
+	temp = strtok(pathname, "/");
 	
-	while ( != NULL) {
-		j++;
-		out = strtok(NULL, "/");
+	while (temp != NULL) {
+		temp = strtok(NULL, "/");
+
+		strcat(out, temp);
 		printf("\nPathname: %s", pathname);
 	}
+
+	dirname_value = out;
 }
 
 // Sets basename global to everything after the final '/' of pathname
