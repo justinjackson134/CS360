@@ -892,7 +892,7 @@ int basename(char *pathname, int j)
 {
 	char out[128];
 
-	strcat(out, path[j-1]);
+	strcpy(out, path[j-1]);
 
 	printf("Setting basename_value = %s\n", out);
 	basename_value = out;
