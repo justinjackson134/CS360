@@ -896,7 +896,7 @@ int my_make_dir(char *pathname)
 	else
 	{
 	  fd = running->cwd->dev;
-	  if(isDebug) printf("MKDIR from running->cwd->dev: fd = %d & name = %s\n", fd, name);
+	  if(isDebug) printf("MKDIR from running->cwd->dev: fd = %d\n", fd);
 	}
 
 	// Set dirname and basename globals given pathname
