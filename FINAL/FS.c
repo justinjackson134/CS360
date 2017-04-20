@@ -1008,7 +1008,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
   	char *cp;
 
   	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
-  	fd = parentMinodePtr=>dev;
+  	fd = parentMinodePtr->dev;
 
   	printf("Allocating ino and bno on fd = %d\n", fd);
 	ino = ialloc(fd);
