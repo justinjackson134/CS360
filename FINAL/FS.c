@@ -823,6 +823,7 @@ int ialloc(int mydev)
 
        put_block(mydev, imap, buf);
 
+       printf("!!! IALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
   }
