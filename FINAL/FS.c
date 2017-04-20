@@ -820,7 +820,7 @@ int ialloc(int mydev)
 
        put_block(mydev, imap, buf);
 
-       printf("!!! IALLOC returning i+1: %d\n", i+1);
+       //printf("!!! IALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
   }
@@ -859,7 +859,7 @@ int balloc(int mydev)
 
        put_block(mydev, bmap, buf);
 
-       printf("!!! BALLOC returning i+1: %d\n", i+1);
+       //printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
   }
