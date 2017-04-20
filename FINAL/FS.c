@@ -1008,8 +1008,10 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	printf("Pointing mip at ino\n");
 	mip = iget(fd,ino);
 	// WE NEED TO INITIALIZE MIP
+	mip->INODE.i_block[0] = bno;
+
 	ip = &mip->INODE;
-	printf("ip points at &mip->INODE, ip->ino = %d", ip->ino);
+	printf("ip points at &mip->INODE, mip->ino = %d", mip->ino);
 
 	// Use ip-> to acess the INODE fields:
 	ip->i_mode = 0x41ED;		      // OR 040755: DIR type and permissions
