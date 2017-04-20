@@ -854,12 +854,12 @@ int balloc(int dev)
 // Sets dirname global to the directory name upto but not including the final '/'
 int dirname(char *pathname)
 {
-	char temp[128], out[128];
+	char temp[128], *out;
 
 	// Get first token
 	out = strtok(pathname, "/");
 	
-	while (path[j] != NULL) {
+	while ( != NULL) {
 		j++;
 		out = strtok(NULL, "/");
 		printf("\nPathname: %s", pathname);
@@ -875,7 +875,7 @@ int basename(char *pathname)
 int my_make_dir(char *pathname)
 {
   MINODE *mip;
-  char parent[128], child[128];
+  char *parent, *child;
  
   if(name != NULL)
   {
