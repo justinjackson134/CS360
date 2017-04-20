@@ -151,10 +151,11 @@ char *path[32];
 char *fullpath;
 // Number of path items returned by path tokenizer
 int numberOfPathItems = 0;
+// Number of free inodes, gived by the SUPERBLOCK
+int ninodes;
 
 // Unknown, copied from original main
 int dev;
-int ninodes;
 
 int bmap;
 int imap;
@@ -361,9 +362,6 @@ void init()
   for(int i = 0; i < NMINODES; i++)
      minode[i].refCount = 0;
 
-  // Added this from the ialloc.c of lab 6, I believe we need it in order for ialloc and balloc to work correctly --- This may need to be something else however!
-  ninodes = sp->s_inodes_count;
-
   root = 0;
   running = &proc[0];  
 }
@@ -390,6 +388,9 @@ void mountRoot(char *disk)
 
   // Set the super pointer == buf
   sp = (SUPER *)buf;
+
+  // Added this from the ialloc.c of lab 6, I believe we need it in order for ialloc and balloc to work correctly --- This may need to be something else however!
+  ninodes = sp->s_inodes_count;
 
   if(isDebug)
   {
