@@ -156,8 +156,8 @@ int ninodes;
 // Device number
 int dev;
 // dirname variable
-char *dirname;
-char *basename;
+char *dirname_value;
+char *basename_value;
 
 // Unknown, copied from original main
 int bmap;
@@ -565,7 +565,10 @@ void my_ls(char *name) {
 
 	if (mip->ino == 0x8000)//
 	{
-		printf("%s", basename(name));
+		// This sets a global named basename!
+		basename(name);
+		// Print the global basename
+		printf("%s", basename_value);
 	}
 	else
 	{
@@ -597,7 +600,10 @@ void my_ls(char *name) {
 
 	if (mip->ino == 0x8000)//this needs to be changed 
 	{
-		printf("%s", basename(name));
+		// This sets a global named basename!
+		basename(name);
+		// Print the global basename
+		printf("%s", basename_value);
 	}
 	else
 	{
@@ -889,8 +895,8 @@ int my_make_dir(char *pathname)
 	basename(pathname);
 
 	// Set the parent and child equal to the new dirname/basename globals
-	parent = dirname;
-	child = basename;
+	parent = dirname_value;
+	child = basename_value;
 
   }
 }
