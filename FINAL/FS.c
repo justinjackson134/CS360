@@ -462,7 +462,7 @@ int tokenizePathname()
 {
 	size_t len = BLOCK_SIZE;
 	int j = 0;
-	char copyOfPathname[128];
+	char *copyOfPathname;
 
 	printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
 
