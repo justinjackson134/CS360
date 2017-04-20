@@ -870,7 +870,9 @@ int dirname(char *pathname)
 	}
 
 	// Get first token
+	printf("About to tokenize\n")
 	temp = strtok(pathname, "/");
+	printf("tokenized\n");
 	
 	while (temp != NULL) {
 		temp = strtok(NULL, "/");
