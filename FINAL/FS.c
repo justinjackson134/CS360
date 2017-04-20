@@ -905,8 +905,9 @@ int basename(char *pathname, int j)
 
 int my_make_dir(char *pathname)
 {
-  MINODE *mip;
+  MINODE *parentMinodePtr;
   char *parent, *child;
+  int parentInode;
  
   if(pathname != NULL)
   {
@@ -928,16 +929,37 @@ int my_make_dir(char *pathname)
 	parent = dirname_value;
 	child = basename_value;
 	printf("Parent: %s\nChild: %s\n", parent, child);
+
+	// If the child is null, we cannot create this directory
 	if(strcmp(child, "") == 0 || child == NULL)
 	{
 		printf("Cannot Create Empty Directory!\n");
 		return;
 	}
 
+	// Get the In_MEMORY minode of parent:
+	parentInode = getino(root->dev, parent);
+	// Get the inode number of the parent MINODE
+	parentMinodePtr = iget(root->dev, parentMinodePtr);
+
+	if(S_ISDIR(parentMinodePtr->INODE.i_mode)
+	{
+		// Make sure the child does not already exist
+		if(search(parentMinodePtr, child) == 0)
+		{	
+			// Call mkdir helper function
+			printf("Calling mkdir helper\n");
+		}
+		else
+		{
+			printf("\nTarget Already Exists, cannot mkdir\n");
+		}
+	}
+
   }
   else
   {
-  	printf("Mkdir missing pathname parameter\n");
+  	printf("\nMkdir missing pathname parameter\n");
   }
 }
 
