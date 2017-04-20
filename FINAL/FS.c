@@ -934,6 +934,10 @@ int my_make_dir(char *pathname)
 	}
 
   }
+  else
+  {
+  	printf("Mkdir missing pathname parameter\n");
+  }
 }
 
 /*
