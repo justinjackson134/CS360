@@ -1005,7 +1005,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	bno = balloc(fd);
 	printf("After allocation, ino = %d, bno = %d\n", ino, bno);
 
-	printf("Pointing mip at ino\n")
+	printf("Pointing mip at ino\n");
 	mip = iget(fd,ino);
 	// WE NEED TO INITIALIZE MIP
 	ip = &mip->INODE;
