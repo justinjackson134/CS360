@@ -183,14 +183,11 @@ void put_block(int fd, int block, char *buf)
   write(fd, buf, BLKSIZE);
 }
 
-
 // This is used in my_ls()
 void get_inode(int fd, int ino, int inode_table,INODE *inode) {
   lseek(fd, BLOC_OFFSET(inode_table) + (ino - 1) * sizeof(INODE), 0);
   read(fd, inode, sizeof(INODE));
 }
-
-
 
 // load INODE at (dev,ino) into a minode[]; return mip->minode[]
 MINODE *iget(int dev, int ino)
@@ -831,36 +828,36 @@ int ialloc(int mydev)
   return 0;
 }
 
-int decFreeBlocks(int dev)
+int decFreeBlocks(int mydev)
 {
   char buf[BLKSIZE];
 
   // dec free inodes count in SUPER and GD
-  get_block(dev, SUPERBLOCK, buf);
+  get_block(mydev, SUPERBLOCK, buf);
   sp = (SUPER *)buf;
   sp->s_free_blocks_count--;
   put_block(dev, SUPERBLOCK, buf);
 
-  get_block(dev, GDBLOCK, buf);
+  get_block(mydev, GDBLOCK, buf);
   gp = (GD *)buf;
   gp->bg_free_blocks_count--;
-  put_block(dev, GDBLOCK, buf);
+  put_block(mydev, GDBLOCK, buf);
 }
 
-int balloc(int dev)
+int balloc(int mydev)
 {
   int  i;
   char buf[BLKSIZE];
 
   // read block_bitmap
-  get_block(dev, bmap, buf);
+  get_block(mydev, bmap, buf);
 
   for (i=0; i < ninodes; i++){
     if (tst_bit(buf, i)==0){
        set_bit(buf,i);
        decFreeBlocks(dev);
 
-       put_block(dev, imap, buf);
+       put_block(mydev, bmap, buf);
 
        return i+1;
     }
