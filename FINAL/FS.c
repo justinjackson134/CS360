@@ -872,6 +872,10 @@ int dirname(char *pathname)
 	{
 		printf("Piece: %s\n", path[i]);
 		strcat(out, path[i]);
+		if (i != j-2)
+		{
+			strcat(out, "/");
+		}
 		i++;
 	}
 
