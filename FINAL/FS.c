@@ -927,6 +927,7 @@ int my_make_dir(char *pathname)
   }
 }
 
+/*
 void my_link(char *oldPath, char *newPath)
 {
 	MINODE *Omip = iget(fd, getino(fd, oldPath));
@@ -1031,7 +1032,7 @@ void read_link(char *linkedPath)
 	printf(mip->INODE.i_block[0]);//this isnt right but I believe its in Lab 6 stuff, printinf out the datablock ie the name of the symlink that we made above
 
 }
-
+*/
 
 
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
