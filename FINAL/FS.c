@@ -856,7 +856,7 @@ int balloc(int dev)
 int dirname(char *pathname)
 {
 	int i = 0, j;
-	char *out;
+	char out[128];
 
 	j = tokenizePathname();
 
