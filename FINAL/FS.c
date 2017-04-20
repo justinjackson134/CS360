@@ -886,9 +886,9 @@ int my_make_dir(char *pathname)
   MINODE *mip;
   char *parent, *child;
  
-  if(name != NULL)
+  if(pathname != NULL)
   {
-	if (name[0] == '/')
+	if (pathname[0] == '/')
 	{
 	  fd = root->dev;
 	  if(isDebug) printf("MKDIR from root->dev: fd = %d\n", fd);
