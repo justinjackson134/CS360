@@ -862,7 +862,7 @@ int dirname(char *pathname)
 
 	while(i < j-1)
 	{
-		printf("\nPiece: %s", path[j]);
+		printf("\nPiece: %s", path[i]);
 		i++;
 	}
 
