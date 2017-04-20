@@ -476,6 +476,7 @@ int reassemblePathname(int j, int isRoot)
 
 	printf("Reassembling Pathname: %s\n", out);
 	command[1] = out;
+	printf("Command[1] now: %s\n", command[1]);
 }
 
 // Splits pathname into items, stores in path[], returns number of path items
@@ -915,7 +916,7 @@ int dirname(char *pathname)
 // Sets basename global to everything after the final '/' of pathname
 int basename(char *pathname)
 {
-	int i = 0, j;
+	int j;
 	char out[128];
 
 	j = tokenizePathname();
