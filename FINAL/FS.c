@@ -460,9 +460,12 @@ void mountRoot(char *disk)
 // Splits pathname into items, stores in path[], returns number of path items
 int tokenizePathname()
 {
-	char *readLine = NULL;
 	size_t len = BLOCK_SIZE;
 	int j = 0;
+	char copyOfPathname[128];
+
+	// Save a copy of the pathname as we will eat it via tokenizer
+	strcpy(copyOfPathname, command[1]);
 
 	// Reset path
 	while (j < 32)
@@ -485,10 +488,12 @@ int tokenizePathname()
 		while (path[j] != NULL) {
 			j++;
 			path[j] = strtok(NULL, "/");
-		}
-
-		
+		}		
 	}
+
+	// Reset command[1] to the copy of the path that we kept
+	strcpy(command[1], copyOfPathname);
+
 	return j;
 }
 
