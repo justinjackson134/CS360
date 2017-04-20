@@ -435,7 +435,8 @@ void mountRoot(char *disk)
     // Added this from the ialloc.c of lab 6, I believe we need it in order for ialloc and balloc to work correctly --- This may need to be something else however!
     imap = gp->bg_inode_bitmap;
   	printf("imap = %d\n", imap);
-  	
+  	bmap = gp->bg_block_bitmap;
+  	printf("bmap = %d\n", bmap);
 
 
     if(isDebug) 
@@ -1006,6 +1007,9 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
   	char buf[BLKSIZE];
   	char *cp;
 
+  	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
+  	fd = parentMinodePtr=>dev;
+
   	printf("Allocating ino and bno on fd = %d\n", fd);
 	ino = ialloc(fd);
 	bno = balloc(fd);
@@ -1048,14 +1052,15 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	mip->dirty = 1;                   // mark minode dirty
 	iput(mip);                        // write INODE to disk
 
+	// Start creating the buf to be our new dir entry
 	// initialize buf to all 0's
 	memset(buf, 0, BLKSIZE);
-
 	// Setup dp pointer
 	dp = (DIR *)buf;
 
 	// Add '.' directory
 	// point to the inode we just allocated
+	printf("Adding '.' directory to new dir\n");
 	dp->inode = ino;
 	strncpy(dp->name, ".", 1);
 	dp->name_len = 1;
@@ -1066,7 +1071,8 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	cp += dp->rec_len;
 	dp = (DIR *) cp;
 
-	// Add '..' directory
+	// Add '..' directory	
+	printf("Adding '..' directory to new dir\n");
 	dp->inode = parentMinodePtr->ino;
 	strncpy(dp->name, "..", 2);
 	dp->name_len = 1;
