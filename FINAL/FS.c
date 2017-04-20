@@ -1128,7 +1128,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	// Check if we have enough space in this block to add our record
 	if(last_length >= last_ideal)
 	{
-		printf("We have enough space\n");
+		printf("NA: We have enough space\n");
 		// If we have space, change the last entries length to last_ideal
 		dp->rec_len = last_ideal;
 
@@ -1142,16 +1142,16 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 		dp->inode = myino;
 		strncpy(dp->name, myname, strlen(myname));
 
-		printf("Creating new dp->, rec_len = %d, name_len = %d, inode = %d, name = %s\n", dp->rec_len, dp->name_len, dp->inode, dp->name);
+		printf("NA: Creating new dp->, rec_len = %d, name_len = %d, inode = %d, name = %s\n", dp->rec_len, dp->name_len, dp->inode, dp->name);
 
 		// Write this block back to fd
-		printf("Writing this block to fd\n");
+		printf("NA: Writing this block to fd\n");
 		put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 	}
 	// Otherwise, allocate a new block if needed
 	else
 	{
-		printf("We do NOT have enough space\n");
+		printf("AL: We do NOT have enough space\n");
 		i = 0;
 		while(last_length < last_ideal)
 		{
@@ -1159,7 +1159,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 			// If this block == 0, allocate a new one
 			if(parentMinodePtr->INODE.i_block[i] == 0)
 			{
-				parentMinodePtr->INODE.i_block[i] = balloc(dev);
+				parentMinodePtr->INODE.i_block[i] = balloc(fd);
 				parentMinodePtr->refCount = 0;
 				// Now that we have a new block, the size is BLKSIZE
 				last_length = BLKSIZE;
@@ -1170,27 +1170,35 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 			}
 			else
 			{
-				// If we get here, we allocated a new block
+				// get the parent MINODES block into buf
 				get_block(fd, parentMinodePtr->INODE.i_block[i], buf);
+
 				// Setup cp and dp
 				cp = buf;
 				dp = (DIR *)buf;
 
-				printf("step to LAST entry in data block %d\n", buf);
+				// Step to the end of the data block
+			    printf("AL: step to LAST entry in data block %d\n", buf);
 				while (cp + dp->rec_len < buf + BLKSIZE)
 				{
+					printf("AL: Stepping Over: %s\n", dp->name);
 					cp += dp->rec_len;
 					dp = (DIR *)cp;
-					printf("Stepping Over: %s\n", dp->name);
 				}
+				printf("AL: Ended on: %s\n", dp->name);
 
-				// Calculate the length of the new last dir
-				last_ideal = 4 * ( (8 + dp->rec_len + 3) / 4 ); 
-				last_length = dp->rec_len - last_ideal;
+				// Calculate needed length of the last record entry	
+				last_ideal = 4*( (8 + dp->name_len + 3 ) / 4 ); 
+				printf("AL: last_ideal = %d\n", last_ideal);
+				// Calculate and store the length of the new dir item
+				last_length = dp->rec_len - last_ideal; // Last_length = current record length - its ideal length = the amount left after changing it to ideal length
+				printf("AL: last_length = %d\n", last_length);
 
+				printf("AL: Checking if we have enough space on the current block...\n");
 				// Check if we have enough space in this block to add our record
 				if(last_length >= last_ideal)
 				{
+					printf("AL: We have enough space\n");
 					// If we have space, change the last entries length to last_ideal
 					dp->rec_len = last_ideal;
 
@@ -1199,7 +1207,6 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 					dp = (DIR *)cp;
 				}
 			}
-		}
 
 		// Setup our DIR entry values
 		dp->rec_len = last_length;
@@ -1207,8 +1214,11 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 		dp->inode = myino;
 		strncpy(dp->name, myname, strlen(myname));
 
+		printf("AL: Creating new dp->, rec_len = %d, name_len = %d, inode = %d, name = %s\n", dp->rec_len, dp->name_len, dp->inode, dp->name);
+
 		// Write this block back to fd
-		put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+		printf("AL: Writing this block to fd\n");
+		put_block(fd, parentMinodePtr->INODE.i_block[i], buf);
 	}
 
 	parentMinodePtr->dirty = 1;
