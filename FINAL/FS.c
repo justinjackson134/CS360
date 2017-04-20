@@ -855,10 +855,11 @@ int balloc(int mydev)
   for (i=0; i < ninodes; i++){
     if (tst_bit(buf, i)==0){
        set_bit(buf,i);
-       decFreeBlocks(dev);
+       decFreeBlocks(bmap);
 
        put_block(mydev, bmap, buf);
 
+       printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
   }
