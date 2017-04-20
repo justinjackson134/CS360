@@ -997,10 +997,10 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
   	char buf[BLKSIZE];
   	char *cp;
 
-	ino = ialloc(root->dev);
-	bno = balloc(root->dev);
+	ino = ialloc(fd);
+	bno = balloc(fd);
 
-	mip = iget(dev,ino);
+	mip = iget(fd,ino);
 	ip = &mip->INODE;
 
 	// Use ip-> to acess the INODE fields:
