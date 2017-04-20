@@ -457,11 +457,33 @@ void mountRoot(char *disk)
   }
 }
 
+int reassemblePathname(int j, int isRoot)
+{
+	int i = 0;
+	char out[128];
+
+	if(isRoot)
+	{
+		strcat(out, "/");
+	}
+
+	while(i < j)
+	{
+		strcat(out, path[i]);
+		strcat(out, "/");
+		i++;
+	}
+
+	printf("Reassembling Pathname: %s\n", out);
+	command[1] = out;
+}
+
 // Splits pathname into items, stores in path[], returns number of path items
 int tokenizePathname()
 {
 	size_t len = BLOCK_SIZE;
 	int j = 0;
+	int isRoot = 0;
 
 	printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
 
@@ -474,6 +496,14 @@ int tokenizePathname()
 	// Reset j
 	j = 0;
 
+	if(command[1][0] != NULL)
+	{
+		if(command[1][0] == '/')
+		{
+			isRoot = 1;
+		}
+	}
+
 	if (numberOfCommands > 1)
 	{
 		// Get first token
@@ -484,6 +514,9 @@ int tokenizePathname()
 			path[j] = strtok(NULL, "/");
 		}		
 	}
+
+	// Tokenizer breaks the pathname, fix it
+	reassemblePathname(j, isRoot);
 
 	return j;
 }
@@ -848,21 +881,6 @@ int balloc(int dev)
 
 //////////////////////////////////////////////////////////////////////////////////////// END COPY FROM LAB 6
 
-int reassemblePathname(int j)
-{
-	int i = 0;
-	char out[128];
-
-	while(i < j)
-	{
-		strcat(out, path[i]);
-		i++;
-	}
-
-	printf("Reassembling Pathname: %s\n", out);
-	command[1] = out;
-}
-
 // Sets dirname global to the directory name upto but not including the final '/'
 int dirname(char *pathname)
 {
@@ -889,9 +907,6 @@ int dirname(char *pathname)
 		}
 		i++;
 	}
-
-	// Tokenizer breaks the pathname, fix it
-	reassemblePathname(j);
 
 	printf("Setting dirname_value = %s\n", out);
 	dirname_value = out;
