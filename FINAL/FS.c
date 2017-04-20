@@ -489,8 +489,11 @@ int tokenizePathname()
 	}
 
 	// Reassign the full path to command[1]
+	printf("Now Command[1] = %s\n", command[1]);
 	strcpy(command[1], "");
+	printf("Seeting Command[1] null = %s\n", command[1]);
 	strcpy(command[1], copyOfPathname);
+	printf("Setting Command[1] to original = %s\n", command[1]);
 	return j;
 }
 
