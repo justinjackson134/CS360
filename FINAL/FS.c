@@ -525,9 +525,7 @@ int tokenizeCommmand()
 
 void my_help()
 {
-	printf("------------- J&J EXT2FS HELP -------------\n
-			Commands: ls, cd, pwd, mkdir, rmdir, creat,\n
-			          link, unlink, symlink, readlink\n");
+	printf("------------- J&J EXT2FS HELP -------------\nCommands: ls, cd, pwd, mkdir, rmdir, creat,\n          link, unlink, symlink, readlink\n");
 }
 
 void my_ls(char *name) {
