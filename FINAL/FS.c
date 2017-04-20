@@ -1111,14 +1111,10 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	}
 	printf("Ended on: %s\n", dp->name);
 
-	// Calculate needed length of the last record entry
-	need_length = 4 * ( (8 + dp->name_len + 3) / 4 );
-	
-	
-
-	// Calculate the length of the new last dir
+	// Calculate needed length of the last record entry	
 	last_ideal = 4 * ( (8 + dp->rec_len + 3) / 4 ); 
-	last_length = dp->rec_len - last_ideal;
+	// Calculate and store the length of the new dir item
+	last_length = dp->rec_len - last_ideal; // Last_length = current record length - its ideal length = the amount left after changing it to ideal length
 
 	// Check if we have enough space in this block to add our record
 	if(last_length >= last_ideal)
@@ -1136,7 +1132,10 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 		dp->inode = myino;
 		strncpy(dp->name, myname, strlen(myname));
 
+		printf("Creating new dp->, rec_len = %d, name_len = %d, inode = %d, name = %s\n", dp->rec_len, dp->name_len, dp->inode, dp->name);
+
 		// Write this block back to fd
+		printf("Writing this block to fd\n");
 		put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 	}
 	// Otherwise, allocate a new block if needed
