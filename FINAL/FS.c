@@ -1084,6 +1084,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	// get the parent MINODES block into buf (CALLED IN NEXT FUNCTION)
 	//get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
+	printf("Going to Enter_Name: name = %s\n", mip->name);
 	enter_name(parentMinodePtr, mip->ino, mip->name);
 }
 
@@ -1093,6 +1094,8 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	int i = 0;
 	int need_length = 0, last_length = 0, last_ideal = 0;
   	char buf[BLKSIZE];
+
+	printf("Inside ofEnter_Name: name = %s\n", myname);
 
   	// get the parent MINODES block into buf
 	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
