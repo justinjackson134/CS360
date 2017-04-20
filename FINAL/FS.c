@@ -153,10 +153,13 @@ char *fullpath;
 int numberOfPathItems = 0;
 // Number of free inodes, gived by the SUPERBLOCK
 int ninodes;
+// Device number
+int dev;
+// dirname variable
+char *dirname;
+char *basename;
 
 // Unknown, copied from original main
-int dev;
-
 int bmap;
 int imap;
 int iblock;
@@ -840,6 +843,58 @@ int balloc(int dev)
   return 0;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////// END COPY FROM LAB 6
+
+// Sets dirname global to the directory name upto but not including the final '/'
+int dirname(char *pathname)
+{
+	char temp[128], out[128];
+
+	// Get first token
+	out = strtok(pathname, "/");
+	
+	while (path[j] != NULL) {
+		j++;
+		out = strtok(NULL, "/");
+		printf("\nPathname: %s", pathname);
+	}
+}
+
+// Sets basename global to everything after the final '/' of pathname
+int basename(char *pathname)
+{
+
+}
+
+int my_make_dir(char *pathname)
+{
+  MINODE *mip;
+  char parent[128], child[128];
+ 
+  if(name != NULL)
+  {
+	if (name[0] == '/')
+	{
+	  fd = root->dev;
+	  if(isDebug) printf("MKDIR from root->dev: fd = %d\n", fd);
+	}
+	else
+	{
+	  fd = running->cwd->dev;
+	  if(isDebug) printf("MKDIR from running->cwd->dev: fd = %d & name = %s\n", fd, name);
+	}
+
+	// Set dirname and basename globals given pathname
+	dirname(pathname);
+	basename(pathname);
+
+	// Set the parent and child equal to the new dirname/basename globals
+	parent = dirname;
+	child = basename;
+
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 
 void commandTable()
@@ -859,6 +914,10 @@ void commandTable()
   else if(strcmp(command[0], "cd") == 0)
   {
   	my_cd(command[1]); // Should pass in the entire path, as long as it is arg 2
+  }
+  else if(strcmp(command[0], "mkdir") == 0)
+  {
+  	my_make_dir(command[1]); // Should pass in the entire path, as long as it is arg 2
   }
 }
 
@@ -886,6 +945,9 @@ main(int argc, char *argv[ ]) {
   }
   // MOUNT ROOT
   mountRoot(disk);
+
+  // Print help menu
+  my_help();
 
   // Get commands from stdin
   //MAGIC LOOP    
