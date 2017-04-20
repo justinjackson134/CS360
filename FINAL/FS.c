@@ -1207,6 +1207,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 					dp = (DIR *)cp;
 				}
 			}
+		}
 
 		// Setup our DIR entry values
 		dp->rec_len = last_length;
