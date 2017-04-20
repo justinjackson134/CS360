@@ -972,6 +972,7 @@ int my_make_dir(char *pathname)
 		{	
 			// Call mkdir helper function
 			printf("Calling mkdir helper\n");
+			my_make_dir_Helper(parentMinodePtr, child);
 		}
 		else
 		{
@@ -987,6 +988,205 @@ int my_make_dir(char *pathname)
   {
   	printf("\nMkdir missing pathname parameter\n");
   }
+}
+
+int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
+{
+	int ino, bno;
+	MINODE *mip;
+  	char buf[BLKSIZE];
+  	char *cp;
+
+	ino = ialloc(root->dev);
+	bno = balloc(root->dev);
+
+	mip = iget(dev,ino);
+	ip = &mip->INODE;
+
+	// Use ip-> to acess the INODE fields:
+	ip->i_mode = 0x41ED;		      // OR 040755: DIR type and permissions
+	ip->i_uid  = running->uid;	      // Owner uid 
+	ip->i_gid  = running->gid;	      // Group Id
+	ip->i_size = BLKSIZE;		      // Size in bytes 
+	ip->i_links_count = 2;	          // Links count=2 because of . and ..
+	ip->i_atime = time(0L);           // set to current time 
+	ip->i_ctime = time(0L);           // set to current time 
+	ip->i_mtime = time(0L);           // set to current time
+	ip->i_blocks = 2;                 // LINUX: Blocks count in 512-byte chunks 
+	ip->i_block[0] = bno;             // new DIR has one data block   
+	ip->i_block[1] = 0;
+	ip->i_block[2] = 0;
+	ip->i_block[3] = 0;
+	ip->i_block[4] = 0;
+	ip->i_block[5] = 0;
+	ip->i_block[6] = 0;
+	ip->i_block[7] = 0;
+	ip->i_block[8] = 0;
+	ip->i_block[9] = 0;
+	ip->i_block[10] = 0;
+	ip->i_block[11] = 0;
+	ip->i_block[12] = 0;
+	ip->i_block[13] = 0;
+	ip->i_block[14] = 0;
+	 
+	mip->dirty = 1;                   // mark minode dirty
+	iput(mip);                        // write INODE to disk
+
+	// initialize buf to all 0's
+	memset(buf, 0, BLKSIZE);
+
+	// Setup dp pointer
+	dp = (DIR *)buf;
+
+	// Add '.' directory
+	// point to the inode we just allocated
+	dp->inode = ino;
+	strcpy(dp->name, ".", 1);
+	dp->name_len = 1;
+	dp->rec_len = 12;
+
+	// advance one dir place
+	cp = buf;
+	cp += dp->rec_len;
+	dp = (DIR *) cp;
+
+	// Add '..' directory
+	dp->inode = parentMinodePtr->ino;
+	strncpy(dp->name, "..", 2);
+	dp->name_len = 1;
+	dp->rec_len = 12;
+
+	// Put the block into the file system
+	put_block(fd, bno, buf);
+
+	// get the parent MINODES block into buf
+	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+
+	enter_name(parentMinodePtr, mip->ino, mip->name)
+}
+
+int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
+{
+	char *cp;
+	int i = 0;
+	int need_length = 0, last_length = 0, last_ideal = 0;
+  	char buf[BLKSIZE];
+
+  	// get the parent MINODES block into buf
+	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+
+	// KC says do this
+	for (i = 0; i < 12; i++)
+	{
+		if(i_block[i] == 0)
+			break;
+	}
+
+	// Calculate needed length to store our record
+	need_length = 4 * ( (8 + strlen(myname) + 3) / 4 );
+
+	// Setup cp and dp
+	cp = buf;
+	dp = (DIR *)buf;
+	// Step to the end of the data block
+    printf("step to LAST entry in data block %d\n", blk);
+	while (cp + dp->rec_len < buf + BLKSIZE)
+	{
+		cp += dp->rec_len;
+		dp = (DIR *)cp;
+		printf("Stepping Over: %s\n", dp->name);
+	}
+
+	// Calculate the length of the new last dir
+	last_ideal = 4 * ( (8 + strlen(dp->rec_len) + 3) / 4 ); 
+	last_length = dp->rec_len - need_length;
+
+	// Check if we have enough space in this block to add our record
+	if(last_length >= last_ideal)
+	{
+		// If we have space, change the last entries length to last_ideal
+		dp->rec_len = last_ideal;
+
+		// Advance one more position
+		cp += dp->rec_len;
+		dp = (DIR *)cp;
+
+		// Setup our DIR entry values
+		dp->rec_len = last_length;
+		dp->name_len = strlen(myname);
+		dp->inode = myino;
+		strncpy(dp->name, myname, strlen(myname));
+
+		// Write this block back to fd
+		put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+	}
+	// Otherwise, allocate a new block if needed
+	else
+	{
+		while(last_length < last_ideal)
+		{
+			i++;
+			// If this block == 0, allocate a new one
+			if(parentMinodePtr->INODE.i_block[i] == 0)
+			{
+				parentMinodePtr->INODE.i_block[i] = balloc(dev);
+				parentMinodePtr->refCount = 0;
+				// Now that we have a new block, the size is BLKSIZE
+				last_length = BLKSIZE;
+				// Wipe our buffer
+				memset(buf, 0, BLKSIZE);
+				// Point dp 
+				dp = (DIR *)buf;
+			}
+			else
+			{
+				// If we get here, we allocated a new block
+				get_block(fd, parentMinodePtr->INODE.i_block[i], buf);
+				// Setup cp and dp
+				cp = buf;
+				dp = (DIR *)buf;
+
+				printf("step to LAST entry in data block %d\n", blk);
+				while (cp + dp->rec_len < buf + BLKSIZE)
+				{
+					cp += dp->rec_len;
+					dp = (DIR *)cp;
+					printf("Stepping Over: %s\n", dp->name);
+				}
+
+				// Calculate the length of the new last dir
+				last_ideal = 4 * ( (8 + strlen(dp->rec_len) + 3) / 4 ); 
+				last_length = dp->rec_len - need_length;
+
+				// Check if we have enough space in this block to add our record
+				if(last_length >= last_ideal)
+				{
+					// If we have space, change the last entries length to last_ideal
+					dp->rec_len = last_ideal;
+
+					// Advance one more position
+					cp += dp->rec_len;
+					dp = (DIR *)cp;
+				}
+			}
+		}
+
+		// Setup our DIR entry values
+		dp->rec_len = last_length;
+		dp->name_len = strlen(myname);
+		dp->inode = myino;
+		strncpy(dp->name, myname, strlen(myname));
+
+		// Write this block back to fd
+		put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+	}
+
+	parentMinodePtr->dirty = 1;
+	parentMinodePtr->refCount++;
+	parentMinodePtr->i_atime = time(0L);
+	iput(parentMinodePtr);
+
+	return myino;
 }
 
 /*
