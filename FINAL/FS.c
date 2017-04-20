@@ -855,14 +855,15 @@ int balloc(int dev)
 // Sets dirname global to the directory name upto but not including the final '/'
 int dirname(char *pathname)
 {
-	int i, j;
+	int i = 0, j;
 
 
 	j = tokenizePathname();
 
-	while(i = 0; i < j-1; i++)
+	while(i < j-1)
 	{
 		printf("\nPiece: %s", path[j]);
+		i++;
 	}
 
 	//dirname_value = out;
