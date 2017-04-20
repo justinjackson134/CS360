@@ -882,7 +882,7 @@ int dirname(char *pathname, int j)
 	}
 
 	printf("Setting dirname_value = %s\n", out);
-	dirname_value = out;
+	strcpy(dirname_value, out);
 
 	return j;
 }
@@ -895,7 +895,7 @@ int basename(char *pathname, int j)
 	strcpy(out, path[j-1]);
 
 	printf("Setting basename_value = %s\n", out);
-	basename_value = out;
+	strcpy(basename_value, out);
 }
 
 int my_make_dir(char *pathname)
