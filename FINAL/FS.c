@@ -1113,8 +1113,10 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 
 	// Calculate needed length of the last record entry	
 	last_ideal = 4 * ( (8 + dp->rec_len + 3) / 4 ); 
+	printf("last_ideal = %d\n", last_ideal);
 	// Calculate and store the length of the new dir item
 	last_length = dp->rec_len - last_ideal; // Last_length = current record length - its ideal length = the amount left after changing it to ideal length
+	printf("last_length = %d\n", last_length);
 
 	printf("Checking if we have enough space on the current block...\n");
 	// Check if we have enough space in this block to add our record
