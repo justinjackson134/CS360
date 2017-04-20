@@ -1101,8 +1101,8 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	}
 
 	// Calculate the length of the new last dir
-	last_ideal = 4 * ( (8 + strlen(dp->rec_len) + 3) / 4 ); 
-	last_length = dp->rec_len - need_length;
+	last_ideal = 4 * ( (8 + dp->rec_len + 3) / 4 ); 
+	last_length = dp->rec_len - last_ideal;
 
 	// Check if we have enough space in this block to add our record
 	if(last_length >= last_ideal)
@@ -1158,8 +1158,8 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 				}
 
 				// Calculate the length of the new last dir
-				last_ideal = 4 * ( (8 + strlen(dp->rec_len) + 3) / 4 ); 
-				last_length = dp->rec_len - need_length;
+				last_ideal = 4 * ( (8 + dp->rec_len + 3) / 4 ); 
+				last_length = dp->rec_len - last_ideal;
 
 				// Check if we have enough space in this block to add our record
 				if(last_length >= last_ideal)
