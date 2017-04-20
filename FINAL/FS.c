@@ -272,7 +272,7 @@ int search(MINODE *minodePtr, char *name) {
 	  }*/
 
 	  // get_block(fd, minodePtr->INODE.i_block[i], dbuf);  // char dbuf[1024]
-	  printf("Before if(minodePtr->INODE.i_block[%d])\n", i);
+	  //printf("Before if(minodePtr->INODE.i_block[%d])\n", i);
 	  if (minodePtr->INODE.i_block[i])
 	  {
 		  printf("inside if(minodePtr->INODE.i_block[%d])\n", i);
