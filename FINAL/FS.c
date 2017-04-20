@@ -865,7 +865,7 @@ int dirname(char *pathname)
 		printf("\nPiece: %s", path[j]);
 	}
 
-	dirname_value = out;
+	//dirname_value = out;
 }
 
 // Sets basename global to everything after the final '/' of pathname
