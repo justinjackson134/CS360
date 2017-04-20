@@ -202,7 +202,7 @@ MINODE *iget(int dev, int ino)
   INODE *ip;
   
   for (i=0; i < NMINODES; i++){
-	printf("In for loop i < NMINODES \n\n");
+	//printf("In for loop i < NMINODES \n\n");
     mip = &minode[i];
     if (mip->dev == dev && mip->ino == ino){
        mip->refCount++;
@@ -942,19 +942,21 @@ int my_make_dir(char *pathname)
 		return;
 	}
 
-	// Get the In_MEMORY minode of parent:
+	// Get the inode number of the parent MINODE
 	printf("Setting parentInode\n");
 	parentInode = getino(&root->dev, parent);
 	// Check if parent inode does not exist
 	if (parentInode == 0)
 	{
-		printf("The Given Path Contains a non-existant directory");
+		printf("The Given Path Contains a non-existant directory\n");
 		return;
 	}
-	// Get the inode number of the parent MINODE
+	
+	// Get the In_MEMORY minode of parent:
 	printf("Setting parentMinodePtr\n");
 	parentMinodePtr = iget(root->dev, parentInode);
 
+	// Check if the parent minode is a dir
 	printf("Checking if S_ISDIR\n");
 	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
 	{
