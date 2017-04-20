@@ -305,7 +305,7 @@ int search(MINODE *minodePtr, char *name) {
 // Given by KC
 int getino(int *dev, char *pathname)
 {
-  int i, ino, blk, disp,n;
+  int i, ino = 0, blk, disp,n;
   char buf[BLKSIZE];
   INODE *gip;
   MINODE *mip;
@@ -330,7 +330,14 @@ int getino(int *dev, char *pathname)
 
   printf("Right before strcpy\n"); /////////////////////////////////////////////// Prints
   strcpy(buf, pathname);
+
+
+  // command[1] currently equals the entire pathname, but if we get here by mkdir, we need it to contain only the parent(dirname_value)
   n = tokenizePathname(); // n = number of token strings
+  if(strcmp(command[1], "mkdir") == 0)
+  {
+  	n -= 1;
+  }
 
   for (i=0; i < n; i++){
       //printf("===========================================\n");
