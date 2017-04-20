@@ -856,6 +856,8 @@ int dirname(char *pathname)
 {
 	char *temp, *out;
 
+	printf("In dirname\n");
+
 	// If the pathname begins with a /, keep it
 	if(pathname[0] == '/')
 	{		
@@ -878,6 +880,7 @@ int dirname(char *pathname)
 // Sets basename global to everything after the final '/' of pathname
 int basename(char *pathname)
 {
+	printf("In basename\n");
 
 }
 
