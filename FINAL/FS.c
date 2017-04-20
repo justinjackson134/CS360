@@ -861,7 +861,12 @@ int dirname(char *pathname)
 	// If the pathname begins with a /, keep it
 	if(pathname[0] == '/')
 	{		
+		printf("pathname begins with '/'\n");
 		strcpy(out, "/");
+	}
+	else
+	{		
+		printf("pathname doesn't begins with '/'\n");
 	}
 
 	// Get first token
