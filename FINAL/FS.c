@@ -473,7 +473,7 @@ int tokenizePathname()
 	// Reset j
 	j = 0;
 
-	printf("This is pathname to be tokenized, stored in command[1]: %s, this is the number of commmands: %d", command[1], numberOfCommands);
+	printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
 	if (numberOfCommands > 1)
 	{
 
@@ -856,17 +856,28 @@ int balloc(int dev)
 int dirname(char *pathname)
 {
 	int i = 0, j;
-
+	char *out;
 
 	j = tokenizePathname();
 
+	if(pathname != NULL)
+	{
+		if(pathname[0] == '/')
+		{
+			strcat(out, "/");
+		}
+	}
+
 	while(i < j-1)
 	{
-		printf("\nPiece: %s", path[i]);
+		printf("Piece: %s\n", path[i]);
+		strcat(out, path[i]);
 		i++;
 	}
 
-	//dirname_value = out;
+	printf("Setting dirname_value = %s\n", dirname_value);
+	dirname_value = out;
+
 }
 
 // Sets basename global to everything after the final '/' of pathname
