@@ -1109,6 +1109,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 		cp += dp->rec_len;
 		dp = (DIR *)cp;
 	}
+	printf("Ended on: %s\n", dp->name);
 
 	// Calculate needed length of the last record entry
 	need_length = 4 * ( (8 + dp->name_len + 3) / 4 );
