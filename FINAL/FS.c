@@ -927,6 +927,113 @@ int my_make_dir(char *pathname)
   }
 }
 
+void my_link(char *oldPath, char *newPath)
+{
+	MINODE *Omip = iget(fd, getino(fd, oldPath));
+	MINODE *Nmip;
+
+	if (Omip->INODE.i_mode == DIR_MODE)
+	{
+		printf("Cannont link to a directory, returning to main menu\n");
+		return;
+	}
+
+	int i = search(Omip, (newPath - lastToken));//or just dir_path
+
+	Nmip = iget(fd, i);
+
+	if (Nmip->INODE.i_mode == FILE_MODE)
+	{
+		printf("Cannot create new file inside a file, returning to main menu\n");
+		return;
+	}
+
+	i = search(basename(newPath));
+	if (i != 0)
+	{
+		printf("File name already exists, returning to main menu\n");
+		return;
+	}
+	else
+	{
+		create_file(Omip->ino);
+		iput(Nmip);
+		Omip->INODE.i_links_count++;
+		iput(Omip);
+		return;
+	}
+
+
+
+}
+
+void my_unlink(char *pathToUnlink)
+{
+	MINODE *mip;
+	int i;
+
+	i = getino(fd, pathToUnlink);
+	mip = iget(fd, i);
+
+	if (mip->INODE.i_mode == DIR_MODE)
+	{
+		printf("Cannot unlink a directory, returning to main\n");
+		return;
+	}
+	mip->INODE.i_links_count--;
+	if (mip->INODE.i_links_count == 0)
+	{
+		truncate(INODE);//this deallocates all datablocks of an inode, in a similar way you would print them
+		dealloc(INODE);
+	}
+	char *childName = baseName(pathToUnlink);
+
+	rm_child(parentInodePtr, childName);//same as rmdir, just delete that from the path
+
+}
+
+void sym_link(char *oldName, char *newName)
+{
+	MINODE *Nmip;
+	int i;
+
+	i = getino(fd, oldName);
+
+	if (!i)
+	{
+		printf("File to link not found, returning\n");
+		return;
+	}
+
+	create(newName);//create the file that will link to OldName
+
+	Nmip = iget(fd, getino(fd, newName);
+
+	Nmip->INODE.i_mode = SYM_LINK;
+
+	//write the string oldName into the i_block[], which has room for 60 chars
+	//this I have no idea how to do so we will have to tackle it together
+
+	iput(Nmip);
+}
+void read_link(char *linkedPath)
+{
+	MINODE *mip;
+
+	mip = iget(fd, getino(fd, linkedPath));
+
+	if (mip->INODE.i_mode != SYM_LINK)
+	{
+		printf("File is not a symbolic link, returning.\n");
+		return;
+	}
+
+	printf(mip->INODE.i_block[0]);//this isnt right but I believe its in Lab 6 stuff, printinf out the datablock ie the name of the symlink that we made above
+
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 
 void commandTable()
