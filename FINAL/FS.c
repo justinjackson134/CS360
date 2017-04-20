@@ -130,7 +130,7 @@ INODE *ip;
 DIR   *dp; 
 
 // Buffer used in getblock
-char buf[BLKSIZE];
+//char buf[BLKSIZE];
 // File Descriptor int
 int fd;
 // Location of Inodes Beging Block
