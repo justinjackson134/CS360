@@ -792,20 +792,20 @@ int clr_bit(char *buf, int bit)
   buf[i] &= ~(1 << j);
 }
 
-int decFreeInodes(int dev)
+int decFreeInodes(int mydev)
 {
   char buf[BLKSIZE];
 
   // dec free inodes count in SUPER and GD
-  get_block(dev, SUPERBLOCK, buf);
+  get_block(mydev, SUPERBLOCK, buf);
   sp = (SUPER *)buf;
   sp->s_free_inodes_count--;
-  put_block(dev, SUPERBLOCK, buf);
+  put_block(mydev, SUPERBLOCK, buf);
 
-  get_block(dev, GDBLOCK, buf);
+  get_block(mydev, GDBLOCK, buf);
   gp = (GD *)buf;
   gp->bg_free_inodes_count--;
-  put_block(dev, GDBLOCK, buf);
+  put_block(mydev, GDBLOCK, buf);
 }
 
 int ialloc(int mydev)
