@@ -334,7 +334,7 @@ int getino(int *dev, char *pathname)
 
   // command[1] currently equals the entire pathname, but if we get here by mkdir, we need it to contain only the parent(dirname_value)
   n = tokenizePathname(); // n = number of token strings
-  if(strcmp(command[1], "mkdir") == 0)
+  if(strcmp(command[0], "mkdir") == 0)
   {
   	n -= 1;
   }
