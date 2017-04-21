@@ -1532,6 +1532,10 @@ void commandTable()
   {
   	my_make_dir(command[1]); // Should pass in the entire path, as long as it is arg 2
   }
+  else if(strcmp(command[0], "creat") == 0)
+  {
+  	my_creat(command[1]); // Should pass in the entire path, as long as it is arg 2
+  }
 }
 
 
