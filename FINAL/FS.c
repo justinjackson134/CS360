@@ -1370,7 +1370,22 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	printf("Pointing mip at ino\n");
 	mip = iget(fd,ino);
 	// WE NEED TO INITIALIZE MIP
-	mip->INODE.i_block[0] = bno;
+	mip->INODE.i_block[0] = 0;
+	mip->INODE.i_block[1] = 0;
+	mip->INODE.i_block[2] = 0;
+	mip->INODE.i_block[3] = 0;
+	mip->INODE.i_block[4] = 0;
+	mip->INODE.i_block[5] = 0;
+	mip->INODE.i_block[6] = 0;
+	mip->INODE.i_block[7] = 0;
+	mip->INODE.i_block[8] = 0;
+	mip->INODE.i_block[9] = 0;
+	mip->INODE.i_block[10] = 0;
+	mip->INODE.i_block[11] = 0;
+	mip->INODE.i_block[12] = 0;
+	mip->INODE.i_block[13] = 0;
+	mip->INODE.i_block[14] = 0;
+	mip->INODE.i_block[15] = 0;
 
 	ip = &mip->INODE;
 	printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
