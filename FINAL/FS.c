@@ -1404,9 +1404,6 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	mip->dirty = 1;                   // mark minode dirty
 	iput(mip);                        // write INODE to disk
 
-	// Put the block into the file system //////////////////////////////////////////////This may be wrong man
-	put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
-
 	// get the parent MINODES block into buf (CALLED IN NEXT FUNCTION)
 	//get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
