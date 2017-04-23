@@ -1514,7 +1514,7 @@ int my_rm_dir(char *pathname)
 
 	printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
 
-	// If the child is null, we cannot create this directory
+	// If the child is null, we cannot remove this directory
 	if(strcmp(child, "") == 0 || child == NULL)
 	{
 		printf("Cannot Remove non-existant Directory!\n");
@@ -1522,11 +1522,11 @@ int my_rm_dir(char *pathname)
 	}
 
 	// Get the inode number of the parent MINODE
-	printf("Setting parentInode\n");
 	parentInode = getino(&root->dev, parent);
+	printf("Setting parentInode: %s\n", parent);
 	// Get the inode number of the child MINODE
-	printf("Setting childInode\n");
 	childInode = getino(&root->dev, child);
+	printf("Setting childInode: %s\n", child);
 
 
 	if(strcmp(parent, "") == 0)
