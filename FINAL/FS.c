@@ -920,6 +920,7 @@ int balloc(int mydev)
 
 void idealloc(int dev, int ino)
 {
+	char buf[BLOCK_SIZE];
 	get_block(dev, IBITMAP, buf); //gets the ibitmap block into buf
 
 	clr_bit(buf, ino - 1); //clears the inode in the map, ino-1 cause of indexes
