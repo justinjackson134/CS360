@@ -1550,6 +1550,10 @@ void commandTable()
   {
   	my_creat(command[1]); // Should pass in the entire path, as long as it is arg 2
   }
+  else if (strcmp(command[0], "link") == 0)
+  {
+	  my_link(command[1], command[2]);
+  }
 }
 
 
