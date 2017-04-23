@@ -1620,7 +1620,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 		endCP += dp->rec_len;
 		dp = (DIR *) endCP;
 
-		getchar();
+		//getchar();
 	}
 
 	// Point the dp at the cp pointer -- aka the beginning of the buf
