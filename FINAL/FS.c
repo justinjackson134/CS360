@@ -1458,7 +1458,15 @@ int my_creat(char *pathname)
 	}
 
 	// Set dirname and basename globals given pathname
-	setDirnameBasename(pathname);
+	if(pathNum == 1)
+  	{
+		setDirnameBasename(pathname);
+  	}
+  	else // pathNum == 2
+  	{  		
+		setDirnameBasename2(pathname);
+  	}
+
 
 	// Set the parent and child equal to the new dirname/basename globals
 	parent = dirname_value;
@@ -1887,7 +1895,9 @@ void sym_link(char *oldName, char *newName)
 		return;
 	}
 
+	pathNum = 2;
 	my_creat(newName);//create the file that will link to OldName
+	pathNum = 1;
 
 	Nmip = iget(fd, getino(&fd, newName);
 
