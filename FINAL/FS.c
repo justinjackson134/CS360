@@ -1905,7 +1905,7 @@ void sym_link(char *oldName, char *newName)
 	printf("Nmip->ino = %d\n", Nmip->ino);
 	Nmip->INODE.i_mode = SYM_LINK;
 	int bno = balloc(fd);
-	Nmip->INDOE.i_blocks[0] = bno;
+	Nmip->INODE.i_blocks[0] = bno;
 	memset(buf, 0, BLKSIZE);
 	dp = (DIR *)buf;
 	
