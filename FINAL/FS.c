@@ -882,7 +882,7 @@ int dirname(char *pathname, int j)
 {
 	int i = 0;
 	char out[128];	
-
+	strcpy(out, "");
 	if(pathname != NULL)
 	{
 		if(pathname[0] == '/')
