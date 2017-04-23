@@ -505,6 +505,42 @@ int tokenizePathname()
 	return j;
 }
 
+// Splits pathname into items, stores in path[], returns number of path items
+int tokenizePathname2()
+{
+	size_t len = BLOCK_SIZE;
+	int j = 0;
+	char copyOfPathname[128];
+
+	strcpy(copyOfPathname, command[2]);
+	printf("copyOfPathname: %s == command[2]: %s\n", copyOfPathname, command[2]);
+	printf("This is pathname to be tokenized, stored in command[2]: %s, \nThis is the number of commmands: %d\n", command[2], numberOfCommands);
+
+	// Reset path
+	while (j < 32)
+	{
+		path[j] = NULL;
+		j++;
+	}
+	// Reset j
+	j = 0;
+
+	if (numberOfCommands > 1)
+	{
+		// Get first token
+		path[0] = strtok(copyOfPathname, "/");
+
+		while (path[j] != NULL) {
+			j++;
+			path[j] = strtok(NULL, "/");
+		}		
+	}
+
+	// Print value of command[1]
+	printf("Now Command[2] = %s\n", command[2]);
+	return j;
+}
+
 // Splits command into items, stores in command[], returns number of path items
 int tokenizeCommmand()
 {
@@ -873,6 +909,15 @@ int setDirnameBasename(char *pathname)
 {
 	int j = 0;
 	j = tokenizePathname();
+	dirname(pathname, j);
+	basename(pathname, j);
+}
+
+// Set both dirnmae and basename
+int setDirnameBasename2(char *pathname)
+{
+	int j = 0;
+	j = tokenizePathname2();
 	dirname(pathname, j);
 	basename(pathname, j);
 }
