@@ -1612,13 +1612,15 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 	endCP = buf;
 	dp = (DIR *)buf;
 
-	printf("getting pointer to end of buffer");
+	printf("getting pointer to end of buffer\n");
 	while (endCP + dp->rec_len < buf + BLKSIZE)
 	{
 		printf("GettingENDCP: %d + %d < %d + %d\n", endCP, dp->rec_len, buf, BLKSIZE);
 		printf("Getting endCP\n");
 		endCP += dp->rec_len;
 		dp = (DIR *) endCP;
+
+		getchar();
 	}
 
 	// Point the dp at the cp pointer -- aka the beginning of the buf
