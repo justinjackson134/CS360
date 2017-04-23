@@ -1885,6 +1885,7 @@ void my_unlink(char *pathToUnlink)
 void sym_link(char *oldName, char *newName)
 {
 	MINODE *Nmip;
+	char buf[BLOCK_SIZE];
 	int i;
 	printf("Inside symlink, geting ino from oldpath\n");
 	i = getino(&fd, oldName);
@@ -1903,6 +1904,14 @@ void sym_link(char *oldName, char *newName)
 	Nmip = iget(fd, getino(&fd, newName));
 	printf("Nmip->ino = %d\n", Nmip->ino);
 	Nmip->INODE.i_mode = SYM_LINK;
+	int bno = balloc(fd);
+	Nmip->INDOE.i_blocks[0] = bno;
+	memset(buf, 0, BLKSIZE);
+	dp = (DIR *)buf;
+	
+	dp->name_len = (strlen(oldName));
+	dp->rec_len = BLOCK_SIZE;
+	strncpy(dp->name, oldName, dp->rec_len);
 
 	//write the string oldName into the i_block[], which has room for 60 chars
 	//this I have no idea how to do so we will have to tackle it together
@@ -1927,6 +1936,23 @@ void read_link(char *linkedPath)
 }
 */
 
+void my_touch(char *file)
+{
+	if (getino(&fd, file) == 0)
+	{
+		my_creat(file);
+	}
+	else
+	{
+		int ino;
+		MINODE *mip;
+		ino = getino(&fd, file);
+		mip = iget(fd, ino);
+		mip->INODE.i_mtime = time(NULL);
+		mip->dirty = 1;
+		iput(mip);
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 
@@ -1970,7 +1996,11 @@ void commandTable()
   }
   else if (strcmp(command[0], "rmdir") == 0)
   {
-  	my_rm_dir(command[1]); // Should pass in the entire path, as long as it is arg 2
+	my_rm_dir(command[1]); // Should pass in the entire path, as long as it is arg 2
+  }
+  else if (strcmp(command[0], "touch") == 0)
+  {
+	  my_touch(command[1]);
   }
 }
 
