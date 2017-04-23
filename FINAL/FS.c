@@ -1471,7 +1471,7 @@ void my_link(char *oldPath, char *newPath)
 		return;
 	}
 	printf("Setting dirname and basename\n");
-	setDirnameBasename(newPath);
+	setDirnameBasename2(newPath);
 	
 
 	printf("dirname = %s      basename = %s\n", dirname_value, basename_value);
