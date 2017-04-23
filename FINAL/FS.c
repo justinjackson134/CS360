@@ -1612,7 +1612,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 	dp = (DIR *)buf;
 
 	printf("getting pointer to end of buffer")
-	while (endcp + dp->rec_len < buf + BLKSIZE)
+	while (endCP + dp->rec_len < buf + BLKSIZE)
 	{
 		endCP += dp->rec_len;
 		dp = (DIR *) endCP;
@@ -1630,7 +1630,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 			// Used to fix rec_lens
 			temp = dp->rec_len;
 			// We are deleting the last node, we need a handle to the prior node to increment its length
-			if(cp == endcp)
+			if(cp == endCP)
 			{
 				dp = (DIR *)lastRec;
 				// increment the length of the last entry
@@ -1649,7 +1649,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 			break;
 		}
 		// Store the last cp address before advancing it -- used to adjust rec_len
-		last = (int) cp;
+		lastRec = (int) cp;
 		// Keep track of how far weve moved
 		distanceFromBegin += dp->rec_len;
 		// Advance dp ptr
