@@ -870,7 +870,7 @@ int ialloc(int mydev)
        decFreeInodes(mydev);
 
        put_block(mydev, imap, buf);
-
+	   fflush(stdout);
        printf("!!! IALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
@@ -910,7 +910,7 @@ int balloc(int mydev)
 
        put_block(mydev, bmap, buf);
 	   fflush(stdout);
-       printf("!!! BALLOC returning i+1: %d\n", i+1);
+      // printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
   }
