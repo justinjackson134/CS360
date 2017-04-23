@@ -918,6 +918,117 @@ int balloc(int mydev)
   return 0;
 }
 
+void idealloc(int dev, int ino)
+{
+	get_block(dev, IBITMAP, buf); //gets the ibitmap block into buf
+
+	clr_bit(buf, ino - 1); //clears the inode in the map, ino-1 cause of indexes
+
+	put_block(dev, IBITMAP, buf);
+}
+//deallocates all blocks of an inode, used for removing 
+void deallocIBlocks(int dev, MINODE *mip)
+{
+	char buf[BLOCK_SIZE];
+	char bitmap[BLOCK_SIZE], dibuff[BLOCK_SIZE];
+	int i, j, indirblk, dindirblk, *ibit, *dbit;
+	for (i = 0; i < 12; i++)
+	{
+		if (mip->INODE.i_block[i] - 1);
+		{
+			clr_bit(bitmap, mip->INODE.i_block[i] - 1);
+			mip->INODE.i_block[i] = 0;
+		}
+		else
+		{
+			put_block(dev, BBITMAP, bitmap);
+			return;
+		}
+	}
+
+	if (mip->INODE.i_block[i] != 0)
+	{
+		indirblk = mip->INODE.i_block[i];
+		get_block(dev, indirblk, buf);
+		ibit = (int *)buf;
+		for (i = 0; i < 256; i++)
+		{
+			if (*ibit != 0)
+			{
+				clr_bit(bitmap, *ibit - 1);
+				*ibit = 0;
+				ibit++;
+			}
+			else
+			{
+				clr_bit(bitmap, indirblk - 1);
+				put_block(dev, indirblk, buf);
+				put_block(dev, BBITMAP, bitmap);
+				mip->INODE.i_block[12] = 0;
+				return;
+			}
+		}
+
+	}
+	else
+	{
+		put_block(dev, BBITMAP, bitmap);
+		return;
+	}
+
+	//deallocate double indirect blocks
+
+	if (mip->INODE.i_block[13] != 0)
+	{
+		dindirblk = mip->INODE.i_block[13];
+		get_block(dev, dindirblk, dibuf);
+		dbit = (int *)dibuff;
+		for (i = 0; i < 256; i++)
+		{
+			indirblk = *dbit;
+			get_block(dev, indirblk, buf);
+			ibit = (int *)buf;
+			for (j = 0; j < 256; j++)
+			{
+				if (*ibit != 0)
+				{
+					clr_bit(bitmap, *ibit - 1);
+					*ibit = 0;
+					ibit++;
+				}
+				else
+				{
+					clr_bit(bitmap, indirblk - 1);
+					clr_bit(bitmap, dindirblk - 1);
+					put_block(dev, indirblk, buf);
+					put_block(dev, BBITMAP, bitmap);
+					put_block(dev, dindirblk, dibuff);
+					mip->INODE.i_block[13] = 0;
+					return;
+				}
+				clr_bit(bitmap, indirblk - 1);
+			}
+			dbit++;
+			if (*dbit == 0)
+			{
+				clr_bit(bitmap, indirblk - 1);
+				clr_bit(bitmap, dindirblk - 1);
+				put_block(dev, indirblk, buf);
+				put_block(dev, BBITMAP, bitmap);
+				put_block(dev, dindirblk, dibuff);
+				mip->INODE.i_block[13] = 0;
+				return;
+			}
+		}
+	}
+	else
+	{
+		put_block(dev, BBITMAP, bitmap);
+		return;
+	}
+
+
+}
 //////////////////////////////////////////////////////////////////////////////////////// END COPY FROM LAB 6
 // Set both dirnmae and basename
 int setDirnameBasename(char *pathname)
