@@ -341,7 +341,12 @@ int getino(int *dev, char *pathname)
   else // pathNum == 2
   {
   	n = tokenizePathname2();
+  	if(strcmp(command[0], "link") == 0)
+  	{
+  		n -= 1;
+  	}
   }
+
   if(strcmp(command[0], "mkdir") == 0)
   {
   	n -= 1;
