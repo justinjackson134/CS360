@@ -1899,7 +1899,7 @@ void sym_link(char *oldName, char *newName)
 	my_creat(newName);//create the file that will link to OldName
 	pathNum = 1;
 
-	Nmip = iget(fd, getino(&fd, newName);
+	Nmip = iget(fd, getino(&fd, newName));
 
 	Nmip->INODE.i_mode = SYM_LINK;
 
