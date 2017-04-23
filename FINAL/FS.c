@@ -1412,7 +1412,7 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	enter_name(parentMinodePtr, mip->ino, name);
 }
 
-/*
+
 void my_link(char *oldPath, char *newPath)
 {
 	MINODE *Omip = iget(fd, getino(fd, oldPath));
@@ -1424,17 +1424,19 @@ void my_link(char *oldPath, char *newPath)
 		return;
 	}
 
-	int i = search(Omip, (newPath - lastToken));//or just dir_path
+	setDirnameBasename(newPath);
 
-	Nmip = iget(fd, i);
+	//int i = search(Omip, (newPath - lastToken));//or just dir_path
 
-	if (Nmip->INODE.i_mode == FILE_MODE)
+	Nmip = iget(fd, getino(fd, dirname_value));
+
+	if (Nmip->INODE.i_mode == FILE_MODE || Nmip->INODE.i_mode == SYM_LINK)
 	{
 		printf("Cannot create new file inside a file, returning to main menu\n");
 		return;
 	}
 
-	i = search(basename(newPath));
+	int i = search(Nmip, basename_value);
 	if (i != 0)
 	{
 		printf("File name already exists, returning to main menu\n");
@@ -1442,7 +1444,7 @@ void my_link(char *oldPath, char *newPath)
 	}
 	else
 	{
-		create_file(Omip->ino);
+		enter_name(Nmip, Omip->ino, basename_value);
 		iput(Nmip);
 		Omip->INODE.i_links_count++;
 		iput(Omip);
@@ -1452,7 +1454,7 @@ void my_link(char *oldPath, char *newPath)
 
 
 }
-
+/*
 void my_unlink(char *pathToUnlink)
 {
 	MINODE *mip;
