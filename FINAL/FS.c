@@ -1472,6 +1472,151 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	enter_name(parentMinodePtr, mip->ino, name);
 }
 
+int my_rm_dir(char *pathname)
+{
+
+  MINODE *parentMinodePtr, childMinodePtr;
+  char *parent, *child;
+  int parentInode, childInode;
+  int isRootPath = 0;
+ 
+  if(pathname != NULL)
+  {
+	if (pathname[0] == '/')
+	{
+	  fd = root->dev;
+	  if(isDebug) printf("RMDIR from root->dev: fd = %d\n", fd);
+	  isRootPath = 1;
+	}
+	else
+	{
+	  fd = running->cwd->dev;
+	  if(isDebug) printf("RMDIR from running->cwd->dev: fd = %d\n", fd);
+	  isRootPath = 0;
+	}
+
+	// Set dirname and basename globals given pathname
+	setDirnameBasename(pathname);
+
+	// Set the parent and child equal to the new dirname/basename globals
+	parent = dirname_value;
+	child = basename_value;
+	printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+
+	if(strcmp(parent, "") == 0)
+	{
+		if(isRootPath == 1)
+		{
+			// Parent is null, but we are a root path, set parent == root
+			parent = "/";
+		}
+	}	
+
+	printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+
+	// If the child is null, we cannot create this directory
+	if(strcmp(child, "") == 0 || child == NULL)
+	{
+		printf("Cannot Remove non-existant Directory!\n");
+		return;
+	}
+
+	// Get the inode number of the parent MINODE
+	printf("Setting parentInode\n");
+	parentInode = getino(&root->dev, parent);
+	// Get the inode number of the child MINODE
+	printf("Setting childInode\n");
+	childInode = getino(&root->dev, child);
+
+
+	if(strcmp(parent, "") == 0)
+	{		
+		if (isRootPath == 0)
+		{
+			// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+			parentInode = running->cwd->ino;
+		}
+	}
+
+	// Check if parent inode does not exist
+	if (parentInode == 0)
+	{		
+		printf("The Given Path Contains a non-existant directory\n");
+		return;
+	}
+	// Check if child directory does not exist
+	if (childInode == 0)
+	{		
+		printf("The Given Target does not exist\n");
+		return;
+	}
+	
+	// Get the In_MEMORY minode of parent:
+	printf("Setting parentMinodePtr\n");
+	parentMinodePtr = iget(root->dev, parentInode);
+	// set child Minodeptr
+	printf("Setting childMinodePtr\n");
+	childMinodePtr = iget(root->dev, childInode);
+
+	// Check if the parent minode is a dir
+	printf("Checking if S_ISDIR\n");
+	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
+	{
+		// Make sure the child does already exists
+		if(search(parentMinodePtr, child) != 0)
+		{	
+			// RMDIR cannot remove a file that is not a directory
+			if(S_ISDIR(childMinodePtr->INODE.i_mode))
+			{
+				// Call rmdir helper function
+				printf("Calling rmdir helper\n");
+				my_rm_dir_Helper(parentMinodePtr, child);
+			}
+		}
+		else
+		{
+			printf("\nTarget Doesnt't Exist, cannot rmdir\n");
+		}
+	}
+	else
+	{
+		printf("\nCannot rmdir, below a file\n");
+	}
+  }
+  else
+  {
+  	printf("\nRmdir missing pathname parameter\n");
+  }
+}
+
+void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
+{
+	int ino, bno;
+	MINODE *mip;
+  	char buf[BLKSIZE];
+  	char *cp;
+
+  	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
+  	fd = parentMinodePtr->dev;
+
+  	// get the parent MINODES i_block into buf so we can delete from it
+  	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+
+  	// Setup cp and dp
+	cp = buf;
+	dp = (DIR *)buf;
+
+	// Step to the end of the data block
+    printf("step through data block  to find: %s\n", name);
+	while (cp < buf + BLKSIZE)
+	{
+		printf("Stepping Over: %s\n", dp->name);
+		cp += dp->rec_len;
+		dp = (DIR *)cp;
+	}
+	printf("Ended on: %s\n", dp->name);
+
+}
 
 void my_link(char *oldPath, char *newPath)
 {
