@@ -1850,7 +1850,7 @@ void my_unlink(char *pathToUnlink)
 	int i;
 
 
-	i = getino(fd, pathToUnlink);
+	i = getino(&fd, pathToUnlink);
 	mip = iget(fd, i);
 
 
