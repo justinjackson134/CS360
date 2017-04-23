@@ -1886,7 +1886,7 @@ void sym_link(char *oldName, char *newName)
 {
 	MINODE *Nmip;
 	int i;
-
+	printf("Inside symlink, geting ino from oldpath\n");
 	i = getino(&fd, oldName);
 
 	if (!i)
@@ -1894,18 +1894,19 @@ void sym_link(char *oldName, char *newName)
 		printf("File to link not found, returning\n");
 		return;
 	}
-
+	printf("Setting pathNum to 2\n");
 	pathNum = 2;
+	printf("Creating new file %s\n", newName);
 	my_creat(newName);//create the file that will link to OldName
 	pathNum = 1;
-
+	printf("Getting INODE of %s into memory\n", newName);
 	Nmip = iget(fd, getino(&fd, newName));
-
+	printf("Nmip->ino = %d\n", Nmip->ino);
 	Nmip->INODE.i_mode = SYM_LINK;
 
 	//write the string oldName into the i_block[], which has room for 60 chars
 	//this I have no idea how to do so we will have to tackle it together
-
+	printf("Putting away Nmip\n");
 	iput(Nmip);
 }
 /*
