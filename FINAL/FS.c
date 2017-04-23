@@ -1475,7 +1475,7 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 int my_rm_dir(char *pathname)
 {
 
-  MINODE *parentMinodePtr, childMinodePtr;
+  MINODE *parentMinodePtr, *childMinodePtr;
   char *parent, *child;
   int parentInode, childInode;
   int isRootPath = 0;
