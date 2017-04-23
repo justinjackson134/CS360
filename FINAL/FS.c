@@ -165,6 +165,9 @@ int bmap;
 int imap;
 int iblock;
 
+// Path NUM var to make tokenize path behave differently on # of paths given
+pathNum = 1;
+
 
 
 ////////////////////////////////////////////////////////////////////
@@ -331,7 +334,14 @@ int getino(int *dev, char *pathname)
 
 
   // command[1] currently equals the entire pathname, but if we get here by mkdir, we need it to contain only the parent(dirname_value)
-  n = tokenizePathname(); // n = number of token strings
+  if(pathNum == 1)
+  {
+  	n = tokenizePathname(); // n = number of token strings
+  }
+  else // pathNum == 2
+  {
+  	n = tokenizePathname2();
+  }
   if(strcmp(command[0], "mkdir") == 0)
   {
   	n -= 1;
