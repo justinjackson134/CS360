@@ -1562,6 +1562,8 @@ int my_rm_dir(char *pathname)
 	printf("Checking if parent S_ISDIR\n");
 	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
 	{
+		printf("SEARCHING: %s <for> %s\n",parent, child);
+
 		// Make sure the child does already exists
 		if(search(parentMinodePtr, child) != 0)
 		{	
