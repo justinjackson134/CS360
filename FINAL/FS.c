@@ -1523,10 +1523,10 @@ int my_rm_dir(char *pathname)
 
 	// Get the inode number of the parent MINODE
 	parentInode = getino(&root->dev, parent);
-	printf("Setting parentInode: %s\n", parent);
+	printf("Setting parentInode: %s, %d\n", parent, parentInode);
 	// Get the inode number of the child MINODE
 	childInode = getino(&root->dev, child);
-	printf("Setting childInode: %s\n", child);
+	printf("Setting childInode: %s, %d\n", child, childInode);
 
 
 	if(strcmp(parent, "") == 0)
