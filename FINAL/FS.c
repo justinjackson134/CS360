@@ -1607,8 +1607,9 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
   	// get the parent MINODES i_block into buf so we can delete from it
   	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
-  	// Setup cp and dp
+  	// Setup cp, endCP and dp
 	cp = buf;
+	endCP = buf;
 	dp = (DIR *)buf;
 
 	printf("getting pointer to end of buffer");
