@@ -1863,9 +1863,9 @@ void my_unlink(char *pathToUnlink)
 		truncate(mip->dev,mip);//this deallocates all datablocks of an inode, in a similar way you would print them
 		dealloc(mip->dev,mip->ino);
 	}
-	setDirnameBasename(pathToUnlink);
-	my_rm_dir_Helper(parentInodePtr, basename_value);//same as rmdir, just delete that from the path
 
+	setDirnameBasename(pathToUnlink);
+	my_rm_dir_Helper(mip, basename_value);//same as rmdir, just delete that from the path
 }
 /*
 void sym_link(char *oldName, char *newName)
