@@ -1963,7 +1963,7 @@ void commandTable()
   {
 	  my_unlink(command[1]);
   }
-  else if (strcmp(command[0], "unlink") == 0)
+  else if (strcmp(command[0], "symlink") == 0)
   {
 	  sym_link(command[1], command[2]);
   }
