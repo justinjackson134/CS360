@@ -1873,13 +1873,13 @@ void my_unlink(char *pathToUnlink)
 	pmip = iget(fd, i);
 	my_rm_dir_Helper(pmip, basename_value);//same as rmdir, just delete that from the path
 }
-/*
+
 void sym_link(char *oldName, char *newName)
 {
 	MINODE *Nmip;
 	int i;
 
-	i = getino(fd, oldName);
+	i = getino(&fd, oldName);
 
 	if (!i)
 	{
@@ -1887,9 +1887,9 @@ void sym_link(char *oldName, char *newName)
 		return;
 	}
 
-	create(newName);//create the file that will link to OldName
+	my_creat(newName);//create the file that will link to OldName
 
-	Nmip = iget(fd, getino(fd, newName);
+	Nmip = iget(fd, getino(&fd, newName);
 
 	Nmip->INODE.i_mode = SYM_LINK;
 
@@ -1898,6 +1898,7 @@ void sym_link(char *oldName, char *newName)
 
 	iput(Nmip);
 }
+/*
 void read_link(char *linkedPath)
 {
 	MINODE *mip;
@@ -1951,6 +1952,10 @@ void commandTable()
   else if (strcmp(command[0], "unlink") == 0)
   {
 	  my_unlink(command[1]);
+  }
+  else if (strcmp(command[0], "unlink") == 0)
+  {
+	  sym_link(command[1], command[2]);
   }
   else if (strcmp(command[0], "rmdir") == 0)
   {
