@@ -1563,8 +1563,8 @@ int my_rm_dir(char *pathname)
 	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
 	{
 		// Make sure the child does already exists
-		if(search(parentMinodePtr, child) != 0)
-		{	
+		//if(search(parentMinodePtr, child) != 0)
+		//{	
 			// RMDIR cannot remove a file that is not a directory
 			printf("Checking if child S_ISDIR\n");
 			if(S_ISDIR(childMinodePtr->INODE.i_mode))
@@ -1577,11 +1577,11 @@ int my_rm_dir(char *pathname)
 			{
 				printf("\nTarget is a file, not a directory\n");
 			}
-		}
-		else
-		{
-			printf("\nTarget Doesnt't Exist, cannot rmdir\n");
-		}
+		//}
+		//else
+		//{
+		//	printf("\nTarget Doesnt't Exist, cannot rmdir\n");
+		//}
 	}
 	else
 	{
