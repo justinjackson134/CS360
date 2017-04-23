@@ -918,6 +918,16 @@ int balloc(int mydev)
   return 0;
 }
 
+void truncate(int dev, MINODE *mip)
+{
+	//deallocates all i_blocks of an inode
+	deallocIBlocks(dev, mip);
+	
+	mip->INODE.i_size = 0;
+	mip->INODE.i_mtime = time(NULL);
+	mip->dirty = 1;
+
+}
 void idealloc(int dev, int ino)
 {
 	char buf[BLOCK_SIZE];
@@ -1833,7 +1843,7 @@ void my_link(char *oldPath, char *newPath)
 
 
 }
-/*
+
 void my_unlink(char *pathToUnlink)
 {
 	MINODE *mip;
@@ -1850,15 +1860,14 @@ void my_unlink(char *pathToUnlink)
 	mip->INODE.i_links_count--;
 	if (mip->INODE.i_links_count == 0)
 	{
-		truncate(INODE);//this deallocates all datablocks of an inode, in a similar way you would print them
-		dealloc(INODE);
+		truncate(mip->dev,mip);//this deallocates all datablocks of an inode, in a similar way you would print them
+		dealloc(mip->dev,mip->ino);
 	}
-	char *childName = baseName(pathToUnlink);
-
-	rm_child(parentInodePtr, childName);//same as rmdir, just delete that from the path
+	tokenizePathname(pathToUnlink);
+	rm_child(parentInodePtr, basename_value);//same as rmdir, just delete that from the path
 
 }
-
+/*
 void sym_link(char *oldName, char *newName)
 {
 	MINODE *Nmip;
