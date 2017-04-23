@@ -1771,6 +1771,10 @@ void commandTable()
   {
 	  my_link(command[1], command[2]);
   }
+  else if (strcmp(command[0], "rmdir") == 0)
+  {
+  	my_rm_dir(command[1]); // Should pass in the entire path, as long as it is arg 2
+  }
 }
 
 
