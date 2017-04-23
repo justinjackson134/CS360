@@ -910,6 +910,7 @@ int balloc(int mydev)
 
        put_block(mydev, bmap, buf);
 	   fflush(stdout);
+	   fflush(stdin);
       // printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
