@@ -1488,7 +1488,9 @@ void my_link(char *oldPath, char *newPath)
 
 	//int i = search(Omip, (newPath - lastToken));//or just dir_path
 	printf("Getting inode of %s into Nmip\n", dirname_value);
+	pathNum = 2;
 	Nmip = iget(fd, getino(&fd, dirname_value));
+	pathNum = 1;
 	
 	if (Nmip->INODE.i_mode == FILE_MODE || Nmip->INODE.i_mode == SYM_LINK)
 	{
