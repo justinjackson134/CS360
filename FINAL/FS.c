@@ -871,7 +871,7 @@ int ialloc(int mydev)
 
        put_block(mydev, imap, buf);
 	   fflush(stdout);
-       printf("!!! IALLOC returning i+1: %d\n", i+1);
+       //printf("!!! IALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
   }
