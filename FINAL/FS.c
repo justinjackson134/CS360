@@ -1846,11 +1846,14 @@ void my_link(char *oldPath, char *newPath)
 
 void my_unlink(char *pathToUnlink)
 {
-	MINODE *mip;
+	MINODE *mip, *pmip;
 	int i;
+
 
 	i = getino(fd, pathToUnlink);
 	mip = iget(fd, i);
+
+
 
 	if (mip->INODE.i_mode == DIR_MODE)
 	{
@@ -1861,11 +1864,13 @@ void my_unlink(char *pathToUnlink)
 	if (mip->INODE.i_links_count == 0)
 	{
 		truncate(mip->dev,mip);//this deallocates all datablocks of an inode, in a similar way you would print them
-		dealloc(mip->dev,mip->ino);
+		idealloc(mip->dev,mip->ino);
 	}
-
+	
 	setDirnameBasename(pathToUnlink);
-	my_rm_dir_Helper(mip, basename_value);//same as rmdir, just delete that from the path
+
+	pmip = getino(&fd, dirname_value);
+	my_rm_dir_Helper(pmip, basename_value);//same as rmdir, just delete that from the path
 }
 /*
 void sym_link(char *oldName, char *newName)
