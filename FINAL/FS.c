@@ -1416,7 +1416,7 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 void my_link(char *oldPath, char *newPath)
 {
 	printf("BEGIN my_link\n");
-	MINODE *Omip = iget(fd, getino(fd, oldPath));
+	MINODE *Omip = iget(fd, getino(&fd, oldPath));
 	printf("Loaded Omip\n");
 	MINODE *Nmip;
 
@@ -1433,7 +1433,7 @@ void my_link(char *oldPath, char *newPath)
 
 	//int i = search(Omip, (newPath - lastToken));//or just dir_path
 	printf("Getting inode of %s into Nmip\n", dirname_value);
-	Nmip = iget(fd, getino(fd, dirname_value));
+	Nmip = iget(fd, getino(&fd, dirname_value));
 	
 	if (Nmip->INODE.i_mode == FILE_MODE || Nmip->INODE.i_mode == SYM_LINK)
 	{
