@@ -1415,7 +1415,9 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 
 void my_link(char *oldPath, char *newPath)
 {
+	printf("BEGIN my_link\n");
 	MINODE *Omip = iget(fd, getino(fd, oldPath));
+	printf("Loaded Omip\n");
 	MINODE *Nmip;
 
 	if (Omip->INODE.i_mode == DIR_MODE)
@@ -1423,20 +1425,24 @@ void my_link(char *oldPath, char *newPath)
 		printf("Cannont link to a directory, returning to main menu\n");
 		return;
 	}
-
+	printf("Setting dirname and basename\n");
 	setDirnameBasename(newPath);
+	
+
+	printf("dirname = %s      basename = %s\n", dirname_value, basename_value);
 
 	//int i = search(Omip, (newPath - lastToken));//or just dir_path
-
+	printf("Getting inode of %s into Nmip\n", dirname_value);
 	Nmip = iget(fd, getino(fd, dirname_value));
-
+	
 	if (Nmip->INODE.i_mode == FILE_MODE || Nmip->INODE.i_mode == SYM_LINK)
 	{
 		printf("Cannot create new file inside a file, returning to main menu\n");
 		return;
 	}
-
+	printf("Searching for %s in %s\n", basename_value, dirname_value);
 	int i = search(Nmip, basename_value);
+	printf("i = %d\n", i);
 	if (i != 0)
 	{
 		printf("File name already exists, returning to main menu\n");
@@ -1444,9 +1450,13 @@ void my_link(char *oldPath, char *newPath)
 	}
 	else
 	{
+		printf("Inside else statement, calling enter_name function\n");
 		enter_name(Nmip, Omip->ino, basename_value);
+		printf("Putting back Nmip\n");
 		iput(Nmip);
+		printf("Incrementing Omip->INODE.i_links_count\n");
 		Omip->INODE.i_links_count++;
+		printf("Putting back Omip\n);
 		iput(Omip);
 		return;
 	}
