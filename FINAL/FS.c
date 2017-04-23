@@ -910,10 +910,7 @@ int balloc(int mydev)
 
        put_block(mydev, bmap, buf);
 	   
-       int c;
-	   do {
-       		c = getchar();
-       } while (c != '\n' && c != EOF);
+       // GARBAGE PRINTS FROM HERE <-----------------------------------------------------------------------------------
 
        printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
