@@ -909,9 +909,13 @@ int balloc(int mydev)
        decFreeBlocks(bmap);
 
        put_block(mydev, bmap, buf);
-	   fflush(stdout);
-	   fflush(stdin);
-      // printf("!!! BALLOC returning i+1: %d\n", i+1);
+	   
+       int c;
+	   do {
+       		c = getchar();
+       } while (c != '\n' && c != EOF);
+
+       printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
   }
