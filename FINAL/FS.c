@@ -935,7 +935,7 @@ void deallocIBlocks(int dev, MINODE *mip)
 	int i, j, indirblk, dindirblk, *ibit, *dbit;
 	for (i = 0; i < 12; i++)
 	{
-		if (mip->INODE.i_block[i] - 1);
+		if (mip->INODE.i_block[i] - 1)
 		{
 			clr_bit(bitmap, mip->INODE.i_block[i] - 1);
 			mip->INODE.i_block[i] = 0;
@@ -982,7 +982,7 @@ void deallocIBlocks(int dev, MINODE *mip)
 	if (mip->INODE.i_block[13] != 0)
 	{
 		dindirblk = mip->INODE.i_block[13];
-		get_block(dev, dindirblk, dibuf);
+		get_block(dev, dindirblk, dibuff);
 		dbit = (int *)dibuff;
 		for (i = 0; i < 256; i++)
 		{
