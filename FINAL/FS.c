@@ -1559,18 +1559,23 @@ int my_rm_dir(char *pathname)
 	childMinodePtr = iget(root->dev, childInode);
 
 	// Check if the parent minode is a dir
-	printf("Checking if S_ISDIR\n");
+	printf("Checking if parent S_ISDIR\n");
 	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
 	{
 		// Make sure the child does already exists
 		if(search(parentMinodePtr, child) != 0)
 		{	
 			// RMDIR cannot remove a file that is not a directory
+			printf("Checking if child S_ISDIR\n");
 			if(S_ISDIR(childMinodePtr->INODE.i_mode))
 			{
 				// Call rmdir helper function
 				printf("Calling rmdir helper\n");
 				my_rm_dir_Helper(parentMinodePtr, child);
+			}
+			else
+			{
+				printf("\nTarget is a file, not a directory\n");
 			}
 		}
 		else
@@ -1591,10 +1596,10 @@ int my_rm_dir(char *pathname)
 
 void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 {
-	int ino, bno;
+	int temp, lastRec, distanceFromBegin = 0;
 	MINODE *mip;
   	char buf[BLKSIZE];
-  	char *cp;
+  	char *cp, *endCP;
 
   	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
   	fd = parentMinodePtr->dev;
@@ -1606,16 +1611,56 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 	cp = buf;
 	dp = (DIR *)buf;
 
+	printf("getting pointer to end of buffer")
+	while (endcp + dp->rec_len < buf + BLKSIZE)
+	{
+		endCP += dp->rec_len;
+		dp = (DIR *) endCP;
+	}
+
+	// Point the dp at the cp pointer -- aka the beginning of the buf
+	dp = (DIR *) cp;
+
 	// Step to the end of the data block
-    printf("step through data block  to find: %s\n", name);
+    printf("step through data block to find: %s\n", name);
 	while (cp < buf + BLKSIZE)
 	{
+		if(strcmp(dp->name, name) == 0)
+		{
+			// Used to fix rec_lens
+			temp = dp->rec_len;
+			// We are deleting the last node, we need a handle to the prior node to increment its length
+			if(cp == endcp)
+			{
+				dp = (DIR *)lastRec;
+				// increment the length of the last entry
+				dp->rec_len += temp;
+				break;
+			}
+			// We are deleting from the middle
+			else
+			{
+				dp = (DIR *)endCP;
+				// increment the length of the last entry
+				dp->rec_len += temp;
+				// We need to move all items downstream from the deleted item up by the length of the deleted dir
+				memcpy(cp, cp + temp, BLKSIZE - distanceFromBegin - temp);
+			}
+			break;
+		}
+		// Store the last cp address before advancing it -- used to adjust rec_len
+		last = (int) cp;
+		// Keep track of how far weve moved
+		distanceFromBegin += dp->rec_len;
+		// Advance dp ptr
 		printf("Stepping Over: %s\n", dp->name);
 		cp += dp->rec_len;
 		dp = (DIR *)cp;
 	}
 	printf("Ended on: %s\n", dp->name);
 
+	// write the changes back to the fd
+	put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 }
 
 void my_link(char *oldPath, char *newPath)
