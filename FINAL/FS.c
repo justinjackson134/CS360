@@ -1911,7 +1911,7 @@ void sym_link(char *oldName, char *newName)
 	
 	dp->name_len = (strlen(oldName));
 	dp->rec_len = BLOCK_SIZE;
-	strncpy(dp->name, oldName, dp->rec_len);
+	strncpy(dp->name, oldName, dp->name_len);
 
 	//write the string oldName into the i_block[], which has room for 60 chars
 	//this I have no idea how to do so we will have to tackle it together
