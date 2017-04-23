@@ -347,7 +347,7 @@ int getino(int *dev, char *pathname)
   	}
   }
 
-  if(strcmp(command[0], "mkdir") == 0)
+  if(strcmp(command[0], "mkdir") == 0 || strcmp(command[0], "rmdir") == 0)
   {
   	n -= 1;
   }
