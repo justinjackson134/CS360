@@ -1456,7 +1456,7 @@ void my_link(char *oldPath, char *newPath)
 		iput(Nmip);
 		printf("Incrementing Omip->INODE.i_links_count\n");
 		Omip->INODE.i_links_count++;
-		printf("Putting back Omip\n);
+		printf("Putting back Omip\n");
 		iput(Omip);
 		return;
 	}
