@@ -1097,7 +1097,7 @@ int dirname(char *pathname, int j)
 		i++;
 	}
 
-	printf("Setting dirname_value = %s\n", out);
+	if (isDebug) printf("Setting dirname_value = %s\n", out);
 	strcpy(dirname_value, out);
 
 	return j;
@@ -2014,12 +2014,12 @@ void debug_flip()
 {
 	if(isDebug)
 	{
-		printf("No Longer Debugging\n");
+		printf("\nNo Longer Debugging");
 		isDebug = 0;
 	}
 	else
 	{
-		printf("Now Debugging\n");
+		printf("Now Debugging");
 		isDebug = 1;
 	}
 }
