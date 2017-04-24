@@ -599,8 +599,8 @@ void my_help()
 
 void my_ls(char *name) {
   //print directory contents 
-  int i;
-  MINODE *mip;
+  int i, ino;
+  MINODE *mip, *printMe;
   DIR *dir;
   char buf[BLKSIZE], *cp;
  
@@ -650,7 +650,16 @@ void my_ls(char *name) {
 				while (cp < &buf[BLKSIZE])
 				{
 					// This was the original print // printf("%s ", dir->name);
-					printf("%s\t%s\n", dir->name, dir->file_type);
+					// Get the parents inode number
+					ino = dir->inode;
+					// Load the parents inode into a MINODE
+					printMe = iget(fd, ino);
+					// Print printMe's info
+					printf("%s\t%d\n", dir->name, printMe->i_mode);					
+
+					// Put the MINODE back into fd
+					iput(printMe);
+
 					cp += dir->rec_len;
 					dir = (DIR *)cp;
 				}
