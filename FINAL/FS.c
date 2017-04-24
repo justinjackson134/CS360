@@ -122,7 +122,7 @@ typedef struct Mount {
 ////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES                                               //
 ////////////////////////////////////////////////////////////////////
-int isDebug = 1; // IF 1, enable debug prints!
+int isDebug = 0; // IF 1, enable debug prints!
 
 GD    *gp;
 SUPER *sp;
@@ -1932,7 +1932,7 @@ void sym_link(char *oldName, char *newName)
 
 	//write the string oldName into the i_block[], which has room for 60 chars
 	//this I have no idea how to do so we will have to tackle it together
-	printf("Putting away Nmip\n");
+	if (isDebug) printf("Putting away Nmip\n");
 	iput(Nmip);
 }
 /*
