@@ -649,7 +649,8 @@ void my_ls(char *name) {
 				dir = (DIR *)buf;
 				while (cp < &buf[BLKSIZE])
 				{
-					printf("%s ", dir->name);
+					// This was the original print // printf("%s ", dir->name);
+					printf("%s\t%s\n", dir->name, dir->file_type);
 					cp += dir->rec_len;
 					dir = (DIR *)cp;
 				}
