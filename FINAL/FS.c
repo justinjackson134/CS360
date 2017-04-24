@@ -2012,7 +2012,7 @@ void my_chmod(char *filename, int permissions)
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 void debug_flip()
 {
-	if(debug)
+	if(isDebug)
 	{
 		printf("No Longer Debugging\n");
 		debug = 0;
