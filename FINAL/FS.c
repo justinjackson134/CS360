@@ -1201,6 +1201,9 @@ int my_make_dir(char *pathname)
 			// Call mkdir helper function
 			printf("Calling mkdir helper\n");
 			my_make_dir_Helper(parentMinodePtr, child);
+			// Increment the parents link count
+			parentMinodePtr->INODE.i_links_count++;
+			parentMinodePtr->INODE.i_atime = time(0);
 		}
 		else
 		{
