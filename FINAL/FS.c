@@ -2015,12 +2015,12 @@ void debug_flip()
 	if(isDebug)
 	{
 		printf("No Longer Debugging\n");
-		debug = 0;
+		isDebug = 0;
 	}
 	else
 	{
 		printf("Now Debugging\n");
-		debug = 1;
+		isDebug = 1;
 	}
 }
 
