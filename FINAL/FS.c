@@ -655,7 +655,7 @@ void my_ls(char *name) {
 					// Load the parents inode into a MINODE
 					printMe = iget(fd, ino);
 					// Print printMe's info
-					printf("%s\t%d\n", dir->name, printMe->INODE.i_mode);					
+					printf("%s\t%x\n", dir->name, printMe->INODE.i_mode);					
 
 					// Put the MINODE back into fd
 					iput(printMe);
