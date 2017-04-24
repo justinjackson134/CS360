@@ -1961,7 +1961,9 @@ void my_chmod(char *filename, int permissions)
 	int ino = 0, dev;
 	MINODE *mip;
 
+	pathNum = 2;
 	ino = getino(&fd, filename);
+	pathNum = 1;
 	dev = root->dev;
 
 	if(ino == 0)
