@@ -647,7 +647,7 @@ void my_ls(char *name) {
 				get_block(fd, mip->INODE.i_block[i], buf);
 				cp = buf;
 				dir = (DIR *)buf;
-				printf("Name\tMode\tC_time\tM_time\n");
+				printf("Name\tMode\tC_time\tM_time\tA_time\tLink Count\n");
 				while (cp < &buf[BLKSIZE])
 				{
 					// This was the original print // printf("%s ", dir->name);
@@ -656,7 +656,7 @@ void my_ls(char *name) {
 					// Load the parents inode into a MINODE
 					printMe = iget(fd, ino);
 					// Print printMe's info
-					printf("%s\t%x\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_links_count);					
+					printf("%s\t%x\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printme->INODE.i_atime, printMe->INODE.i_links_count);					
 
 					// Put the MINODE back into fd
 					iput(printMe);
