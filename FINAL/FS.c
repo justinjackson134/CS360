@@ -1956,6 +1956,42 @@ void my_touch(char *file)
 	}
 }
 
+void my_chmod(char *filename, int permissions)
+{
+	int ino = 0, dev;
+	MINODE *mip;
+
+	ino = getino(&fd, filename);
+	dev = root->dev;
+
+	if(ino == 0)
+	{
+		printf("The given file does not exist\n");
+		return;
+	}
+
+	mip = iget(dev, ino);
+
+	// Handle the actual permission changes
+	if(mip->INODE.i_mode == 0100000)
+	{
+		mip->INODE.i_mode = 0100000 + permissions;
+	}
+	else if (mip->INODE.i_mode == 0040000)
+	{
+		mip->INODE.i_mode = 0040000 + permissions;
+	}
+	else
+	{
+		mip->INODE.i_mode = 0120000 + permissions;
+	}
+
+	// Mark dirty
+	mip->dirty = 1;
+	mip->INODE.i_mtime = time(0);
+	iput(mip);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 
 void commandTable()
