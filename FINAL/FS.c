@@ -2042,6 +2042,10 @@ void commandTable()
   {
 	  my_touch(command[1]);
   }
+  else if (strcmp(command[0], "chmod") == 0)
+  {
+	  my_chmod(command[2],command[1]);
+  }
 }
 
 
