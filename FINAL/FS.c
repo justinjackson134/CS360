@@ -195,7 +195,7 @@ void get_inode(int fd, int ino, int inode_table,INODE *inode) {
 // load INODE at (dev,ino) into a minode[]; return mip->minode[]
 MINODE *iget(int dev, int ino)
 {
-  printf("We are in the iget function \n");
+  if (isDebug) printf("We are in the iget function \n");
   int i, blk, disp;
   char buf[BLKSIZE];
   MINODE *mip;
@@ -206,14 +206,14 @@ MINODE *iget(int dev, int ino)
     mip = &minode[i];
     if (mip->dev == dev && mip->ino == ino){
        mip->refCount++;
-       printf("\nfound [%d %d] as minode[%d] in core\n", dev, ino, i);
+       if (isDebug) printf("\nfound [%d %d] as minode[%d] in core\n", dev, ino, i);
        return mip;
     }
   }
   for (i=0; i < NMINODES; i++){
     mip = &minode[i];
     if (mip->refCount == 0){
-       printf("\nallocating NEW minode[%d] for [%d %d]\n", i, dev, ino);  // WHAT IS DEV? EARLIER WE GET GROUP DESCRIPTOR, IT USED TO SAY DEV, BUT THAT DIDNT WORK SO I MADE IT FD
+       if (isDebug) printf("\nallocating NEW minode[%d] for [%d %d]\n", i, dev, ino);  // WHAT IS DEV? EARLIER WE GET GROUP DESCRIPTOR, IT USED TO SAY DEV, BUT THAT DIDNT WORK SO I MADE IT FD
        // Increment ref count as we are using it
        mip->refCount = 1;
        // I DONT KNOW WHAT THIS DOES <--------------------------------------------------------------------------------------------------------------------
@@ -223,7 +223,7 @@ MINODE *iget(int dev, int ino)
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + InodesBeginBlock;  // iblock = Inodes start block #
        disp = (ino-1) % 8;
-       printf("allocating new Minode: iget: ino=%d blk=%d disp=%d\n", ino, blk, disp);
+       if (isDebug) printf("allocating new Minode: iget: ino=%d blk=%d disp=%d\n", ino, blk, disp);
        get_block(dev, blk, buf);
        ip = (INODE *)buf + disp;
        // copy INODE to mp->INODE
@@ -245,7 +245,7 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
   if (mip->refCount > 0) return;
   if (!mip->dirty)       return;
   
-  printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino);
+  if (isDebug) printf("iput: dev=%d ino=%d\n", mip->dev, mip->ino);
 
   nodeIn = (mip->ino -1 ) % INODES_PER_BLOCK; // Mailman's Algorithm
   blockIn = (mip->ino -1) / INODES_PER_BLOCK + InodesBeginBlock; // Mailman's Algorithm
@@ -261,8 +261,8 @@ int iput(MINODE *mip)  // dispose of a minode[] pointed by mip
 char dbuf[1024];
 // Searches through data blocks to find entry specified by pathname
 int search(MINODE *minodePtr, char *name) {
-  printf("In search-> This is what is in minodePtr: '%d,%d'", minodePtr->dev, minodePtr->ino);
-  printf("\nSEARCHING FOR: %s\n", name);
+  if (isDebug) printf("In search-> This is what is in minodePtr: '%d,%d'", minodePtr->dev, minodePtr->ino);
+  if (isDebug) printf("\nSEARCHING FOR: %s\n", name);
   int i;
   for (i = 0; i < 12; i++) {
 	 /* if (minodePtr->INODE.i_block[i] == 0)
@@ -275,7 +275,7 @@ int search(MINODE *minodePtr, char *name) {
 	  //printf("Before if(minodePtr->INODE.i_block[%d])\n", i);
 	  if (minodePtr->INODE.i_block[i])
 	  {
-		  printf("inside if(minodePtr->INODE.i_block[%d])\n", i);
+		  if (isDebug) printf("inside if(minodePtr->INODE.i_block[%d])\n", i);
 		  get_block(minodePtr->dev, minodePtr->INODE.i_block[i], dbuf);  // char dbuf[1024]
 		  DIR *dp = (SUPER *)dbuf;
 		  char *cp = dbuf;
@@ -283,14 +283,14 @@ int search(MINODE *minodePtr, char *name) {
 		  while (cp < &dbuf[1024])
 		  {
 			  //use dp-> to print the DIR entries as  [inode rec_len name_len name]
-			  printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
+			  if (isDebug) printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
 			  if (strcmp(name, dp->name) == 0)
 			  {
-				  printf("\n - Name: %s == %s", name, dp->name);
-				  printf("\n - Found at INODE: %d\n", dp->inode);
+				  if (isDebug) printf("\n - Name: %s == %s", name, dp->name);
+				  if (isDebug) printf("\n - Found at INODE: %d\n", dp->inode);
 				  return dp->inode;
 			  }
-			  printf("\n - Name: %s != %s", name, dp->name);
+			  if (isDebug) printf("\n - Name: %s != %s", name, dp->name);
 			  cp += dp->rec_len;
 			  dp = (DIR *)cp;
 
@@ -299,7 +299,7 @@ int search(MINODE *minodePtr, char *name) {
 	  }
 	 
   }
-  printf(" - Not Found\n");
+  if (isDebug) printf(" - Not Found\n");
   return 0;
 }
 
@@ -311,25 +311,25 @@ int getino(int *dev, char *pathname)
   INODE *gip;
   MINODE *mip;
 
-  printf("getino: dev=%d pathname=%s\n", *dev, pathname);
-  printf("Right before strcmp1\n");                /////////////////////////////// Going
+  if (isDebug) printf("getino: dev=%d pathname=%s\n", *dev, pathname);
+  if (isDebug) printf("Right before strcmp1\n");                /////////////////////////////// Going
   if (strcmp(pathname, "/")==0)
   {
       return 2;
   }
-  printf("Right before strcmp2\n");                /////////////////////////////// Hard
+  if (isDebug) printf("Right before strcmp2\n");                /////////////////////////////// Hard
   if (pathname[0]=='/')
   {
-    printf("Right before iget(*dev, 2)\n");                /////////////////////// With
+    if (isDebug) printf("Right before iget(*dev, 2)\n");                /////////////////////// With
     mip = iget(*dev, 2); ///// taking out the damn * for dev
   }
   else    
   {
-    printf("Right before iget(running->cwd->dev, running->cwd->ino)\n");   /////// The
+    if (isDebug) printf("Right before iget(running->cwd->dev, running->cwd->ino)\n");   /////// The
     mip = iget(running->cwd->dev, running->cwd->ino);
   }
 
-  printf("Right before strcpy\n"); /////////////////////////////////////////////// Prints
+  if (isDebug) printf("Right before strcpy\n"); /////////////////////////////////////////////// Prints
   strcpy(buf, pathname);
 
 
@@ -356,13 +356,13 @@ int getino(int *dev, char *pathname)
       //printf("===========================================\n");
       //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
 	  gip = &mip->INODE;
-	  printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in mip: '%d,%d'\n\n", path[0], mip->dev, mip->ino);
-	  printf("This is what is in gip: '%d,%d'\n\n", gip->i_mode, gip->i_uid);
+	  if (isDebug) printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in mip: '%d,%d'\n\n", path[0], mip->dev, mip->ino);
+	  if (isDebug) printf("This is what is in gip: '%d,%d'\n\n", gip->i_mode, gip->i_uid);
       ino = search(mip, path[i]);
 
       if (ino==0){
          iput(mip);
-         printf("name %s does not exist\n", path[i]);
+         if (isDebug) printf("name %s does not exist\n", path[i]);
          return 0;
       }
       iput(mip);
@@ -418,8 +418,8 @@ void mountRoot(char *disk)
 
   if(isDebug)
   {
-    printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
-          sp->s_blocks_count, sp->s_inodes_count, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
+    if (isDebug) printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
+                         sp->s_blocks_count, sp->s_inodes_count, sp->s_inodes_per_group, sp->s_free_inodes_count, sp->s_free_blocks_count);
   }
 
   // check for EXT2 magic number:
@@ -453,21 +453,21 @@ void mountRoot(char *disk)
 
     if(isDebug) 
     {
-      printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
+      if (isDebug) printf("\nInodesBeginBlock: %d\n", InodesBeginBlock);
    	  // Read in the inodes from begin block
-	  printf("\nPrinting InodeBeginBlock:\n-------------------------\n - InodesBeginBlock=%d\n", InodesBeginBlock);
+	  if (isDebug) printf("\nPrinting InodeBeginBlock:\n-------------------------\n - InodesBeginBlock=%d\n", InodesBeginBlock);
 
 	  // get inode start block     
 	  get_block(fd, InodesBeginBlock, buf);
 
 	  ip = (INODE *)buf + 1;         // ip points at 2nd INODE
 	  
-	  printf(" - mode=%4x ", ip->i_mode);
-	  printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
-	  printf(" - size=%d\n", ip->i_size);
-	  printf(" - time=%s", ctime(&ip->i_ctime));
-	  printf(" - link=%d\n", ip->i_links_count);
-	  printf(" - i_block[0]=%d\n", ip->i_block[0]);
+	  if (isDebug) printf(" - mode=%4x ", ip->i_mode);
+	  if (isDebug) printf("  uid=%d  gid=%d\n", ip->i_uid, ip->i_gid);
+	  if (isDebug) printf(" - size=%d\n", ip->i_size);
+	  if (isDebug) printf(" - time=%s", ctime(&ip->i_ctime));
+	  if (isDebug) printf(" - link=%d\n", ip->i_links_count);
+	  if (isDebug) printf(" - i_block[0]=%d\n", ip->i_block[0]);
     }
 
     // WHAT DOES THIS DO?
@@ -492,8 +492,8 @@ int tokenizePathname()
 	char copyOfPathname[128];
 
 	strcpy(copyOfPathname, command[1]);
-	printf("copyOfPathname: %s == command[1]: %s\n", copyOfPathname, command[1]);
-	printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
+	if (isDebug) printf("copyOfPathname: %s == command[1]: %s\n", copyOfPathname, command[1]);
+	if (isDebug) printf("This is pathname to be tokenized, stored in command[1]: %s, \nThis is the number of commmands: %d\n", command[1], numberOfCommands);
 
 	// Reset path
 	while (j < 32)
@@ -516,7 +516,7 @@ int tokenizePathname()
 	}
 
 	// Print value of command[1]
-	printf("Now Command[1] = %s\n", command[1]);
+	if (isDebug) printf("Now Command[1] = %s\n", command[1]);
 	return j;
 }
 
@@ -528,8 +528,8 @@ int tokenizePathname2()
 	char copyOfPathname[128];
 
 	strcpy(copyOfPathname, command[2]);
-	printf("copyOfPathname: %s == command[2]: %s\n", copyOfPathname, command[2]);
-	printf("This is pathname to be tokenized, stored in command[2]: %s, \nThis is the number of commmands: %d\n", command[2], numberOfCommands);
+	if (isDebug) printf("copyOfPathname: %s == command[2]: %s\n", copyOfPathname, command[2]);
+	if (isDebug) printf("This is pathname to be tokenized, stored in command[2]: %s, \nThis is the number of commmands: %d\n", command[2], numberOfCommands);
 
 	// Reset path
 	while (j < 32)
@@ -552,7 +552,7 @@ int tokenizePathname2()
 	}
 
 	// Print value of command[1]
-	printf("Now Command[2] = %s\n", command[2]);
+	if (isDebug) printf("Now Command[2] = %s\n", command[2]);
 	return j;
 }
 
@@ -625,7 +625,7 @@ void my_ls(char *name) {
 		printf("Error file not found \n\n\n");
 		return;
 	}
-	printf("mip = iget(%d, %d)\n", fd, i);
+	if (isDebug) printf("mip = iget(%d, %d)\n", fd, i);
 	mip = iget(fd, i); ///changed from dev to fd
 
 	if (mip->ino == 0x8000)//
@@ -633,11 +633,11 @@ void my_ls(char *name) {
 		// This sets a global named basename!
 		setDirnameBasename(name);
 		// Print the global basename
-		printf("%s", basename_value);
+		if (isDebug) printf("%s", basename_value);
 	}
 	else
 	{
-		printf("ACTUAL OUTPUT:\n");
+		if (isDebug) printf("ACTUAL OUTPUT:\n");
 		int i;
 		for (i = 0; i <= 11; i++)
 		{
@@ -680,11 +680,11 @@ void my_ls(char *name) {
 		// This sets a global named basename!
 		setDirnameBasename(name);
 		// Print the global basename
-		printf("%s", basename_value);
+		if (isDebug) printf("%s", basename_value);
 	}
 	else
 	{
-		printf("ACTUAL OUTPUT:\n");
+		if (isDebug) printf("ACTUAL OUTPUT:\n");
 		int i;
 		for (i = 0; i <= 11; i++)
 		{
@@ -711,17 +711,17 @@ void my_cd(char *pathname)
 	MINODE *mip, *oldMip;
 	int ino;
 
-	printf("\nIn my_cd(%s)\n", pathname);
+	if (isDebug) printf("\nIn my_cd(%s)\n", pathname);
 	
 	// Store a handle to our current MINODE before changing cwd
-	printf("begining storing running->cwd in oldMip\n");
+	if (isDebug) printf("begining storing running->cwd in oldMip\n");
 	oldMip = running->cwd;
-	printf("completed storing running->cwd in oldMip\n");
+	if (isDebug) printf("completed storing running->cwd in oldMip\n");
 
 	// If we are told to cd to root, we dont need getino
 	if(pathname == NULL || strcmp(pathname, "/") == 0)
 	{
-		printf("We were given the root, so, set cwd to root");
+		if (isDebug) printf("We were given the root, so, set cwd to root");
 
 		// Change cwd to root
 		running->cwd = iget(root->dev, ROOT_INODE);
@@ -730,7 +730,7 @@ void my_cd(char *pathname)
 	}
 	else
 	{
-		printf("We are now checking if pathname exists");
+		if (isDebug) printf("We are now checking if pathname exists");
 		// Get inode from pathname
 		ino = getino(&fd, pathname);
 		// Check if the given pathname was not found
@@ -923,7 +923,7 @@ int balloc(int mydev)
 	   
        // GARBAGE PRINTS FROM HERE <-----------------------------------------------------------------------------------
 
-       printf("!!! BALLOC returning i+1: %d\n", i+1);
+       if (isDebug) printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
     }
   }
@@ -1088,7 +1088,7 @@ int dirname(char *pathname, int j)
 
 	while(i < j-1)
 	{
-		printf("Piece: %s\n", path[i]);
+		if (isDebug) printf("Piece: %s\n", path[i]);
 		strcat(out, path[i]);
 		if (i != j-2)
 		{
@@ -1115,7 +1115,7 @@ int basename(char *pathname, int j)
 		strcpy(out, path[j-1]);
 	}
 
-	printf("Setting basename_value = %s\n", out);
+	if (isDebug) printf("Setting basename_value = %s\n", out);
 	strcpy(basename_value, out);
 }
 
@@ -1147,7 +1147,7 @@ int my_make_dir(char *pathname)
 	// Set the parent and child equal to the new dirname/basename globals
 	parent = dirname_value;
 	child = basename_value;
-	printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+	if (isDebug) printf("RAW: Parent: %s\nChild: %s\n", parent, child);
 
 	if(strcmp(parent, "") == 0)
 	{
@@ -1158,7 +1158,7 @@ int my_make_dir(char *pathname)
 		}
 	}	
 
-	printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+	if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
 
 	// If the child is null, we cannot create this directory
 	if(strcmp(child, "") == 0 || child == NULL)
@@ -1168,7 +1168,7 @@ int my_make_dir(char *pathname)
 	}
 
 	// Get the inode number of the parent MINODE
-	printf("Setting parentInode\n");
+	if (isDebug) printf("Setting parentInode\n");
 	parentInode = getino(&root->dev, parent);
 
 	if(strcmp(parent, "") == 0)
@@ -1188,18 +1188,18 @@ int my_make_dir(char *pathname)
 	}
 	
 	// Get the In_MEMORY minode of parent:
-	printf("Setting parentMinodePtr\n");
+	if (isDebug) printf("Setting parentMinodePtr\n");
 	parentMinodePtr = iget(root->dev, parentInode);
 
 	// Check if the parent minode is a dir
-	printf("Checking if S_ISDIR\n");
+	if (isDebug) printf("Checking if S_ISDIR\n");
 	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
 	{
 		// Make sure the child does not already exist
 		if(search(parentMinodePtr, child) == 0)
 		{	
 			// Call mkdir helper function
-			printf("Calling mkdir helper\n");
+			if (isDebug) printf("Calling mkdir helper\n");
 			my_make_dir_Helper(parentMinodePtr, child);
 			// Increment the parents link count
 			parentMinodePtr->INODE.i_links_count++;
@@ -1231,18 +1231,18 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
   	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
   	fd = parentMinodePtr->dev;
 
-  	printf("Allocating ino and bno on fd = %d\n", fd);
+  	if (isDebug) printf("Allocating ino and bno on fd = %d\n", fd);
 	ino = ialloc(fd);
 	bno = balloc(fd);
-	printf("After allocation, ino = %d, bno = %d\n", ino, bno);
+	if (isDebug) printf("After allocation, ino = %d, bno = %d\n", ino, bno);
 
-	printf("Pointing mip at ino\n");
+	if (isDebug) printf("Pointing mip at ino\n");
 	mip = iget(fd,ino);
 	// WE NEED TO INITIALIZE MIP
 	mip->INODE.i_block[0] = bno;
 
 	ip = &mip->INODE;
-	printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
+	if (isDebug) printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
 
 	// Use ip-> to acess the INODE fields:
 	ip->i_mode = 0x41ED;		      // OR 040755: DIR type and permissions
@@ -1281,12 +1281,12 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 
 	// Add '.' directory
 	// point to the inode we just allocated
-	printf("Adding '.' directory to new dir\n");
+	if (isDebug) printf("Adding '.' directory to new dir\n");
 	dp->inode = ino;
 	strncpy(dp->name, ".", 1);
 	dp->name_len = 1;
 	dp->rec_len = 12;
-	printf("Results: dp->inode = %d, dp->name = %s, dp->name_len = %d, dp->rec_len = %d\n", dp->inode, dp->name, dp->name_len, dp->rec_len);
+	if (isDebug) printf("Results: dp->inode = %d, dp->name = %s, dp->name_len = %d, dp->rec_len = %d\n", dp->inode, dp->name, dp->name_len, dp->rec_len);
 
 	// advance one dir place
 	cp = buf;
@@ -1294,12 +1294,12 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	dp = (DIR *) cp;
 
 	// Add '..' directory	
-	printf("Adding '..' directory to new dir\n");
+	if (isDebug) printf("Adding '..' directory to new dir\n");
 	dp->inode = parentMinodePtr->ino;
 	strncpy(dp->name, "..", 2);
 	dp->name_len = 2;
 	dp->rec_len = BLOCK_SIZE - 12; // This needs to be equal to the remaining space on the block!
-	printf("Results: dp->inode = %d, dp->name = %s, dp->name_len = %d, dp->rec_len = %d\n", dp->inode, dp->name, dp->name_len, dp->rec_len);
+	if (isDebug) printf("Results: dp->inode = %d, dp->name = %s, dp->name_len = %d, dp->rec_len = %d\n", dp->inode, dp->name, dp->name_len, dp->rec_len);
 
 	// Put the block into the file system
 	put_block(fd, bno, buf);
@@ -1308,7 +1308,7 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	//get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
 	// We never set mips name! We may not be initializing this as much as needed!!!!
-	printf("Going to Enter_Name: name = %s\n", name);
+	if (isDebug) printf("Going to Enter_Name: name = %s\n", name);
 	enter_name(parentMinodePtr, mip->ino, name);
 }
 
@@ -1319,7 +1319,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	int need_length = 0, last_length = 0, last_ideal = 0;
   	char buf[BLKSIZE];
 
-	printf("Inside ofEnter_Name: name = %s\n", myname);
+	if (isDebug) printf("Inside ofEnter_Name: name = %s\n", myname);
 
   	// get the parent MINODES block into buf
 	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
@@ -1329,27 +1329,27 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	dp = (DIR *)buf;
 
 	// Step to the end of the data block
-    printf("step to LAST entry in data block %d\n", buf);
+    if (isDebug) printf("step to LAST entry in data block %d\n", buf);
 	while (cp + dp->rec_len < buf + BLKSIZE)
 	{
-		printf("Stepping Over: %s\n", dp->name);
+		if (isDebug) printf("Stepping Over: %s\n", dp->name);
 		cp += dp->rec_len;
 		dp = (DIR *)cp;
 	}
-	printf("Ended on: %s\n", dp->name);
+	if (isDebug) printf("Ended on: %s\n", dp->name);
 
 	// Calculate needed length of the last record entry	
 	last_ideal = 4*( (8 + dp->name_len + 3 ) / 4 ); 
-	printf("last_ideal = %d\n", last_ideal);
+	if (isDebug) printf("last_ideal = %d\n", last_ideal);
 	// Calculate and store the length of the new dir item
 	last_length = dp->rec_len - last_ideal; // Last_length = current record length - its ideal length = the amount left after changing it to ideal length
-	printf("last_length = %d\n", last_length);
+	if (isDebug) printf("last_length = %d\n", last_length);
 
-	printf("Checking if we have enough space on the current block...\n");
+	if (isDebug) printf("Checking if we have enough space on the current block...\n");
 	// Check if we have enough space in this block to add our record
 	if(last_length >= last_ideal)
 	{
-		printf("NA: We have enough space\n");
+		if (isDebug) printf("NA: We have enough space\n");
 		// If we have space, change the last entries length to last_ideal
 		dp->rec_len = last_ideal;
 
@@ -1363,16 +1363,16 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 		dp->inode = myino;
 		strncpy(dp->name, myname, strlen(myname));
 
-		printf("NA: Creating new dp->, rec_len = %d, name_len = %d, inode = %d, name = %s\n", dp->rec_len, dp->name_len, dp->inode, dp->name);
+		if (isDebug) printf("NA: Creating new dp->, rec_len = %d, name_len = %d, inode = %d, name = %s\n", dp->rec_len, dp->name_len, dp->inode, dp->name);
 
 		// Write this block back to fd
-		printf("NA: Writing this block to fd\n");
+		if (isDebug) printf("NA: Writing this block to fd\n");
 		put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 	}
 	// Otherwise, allocate a new block if needed
 	else
 	{
-		printf("AL: We do NOT have enough space\n");
+		if (isDebug) printf("AL: We do NOT have enough space\n");
 		i = 0;
 		while(last_length < last_ideal)
 		{
@@ -1399,27 +1399,27 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 				dp = (DIR *)buf;
 
 				// Step to the end of the data block
-			    printf("AL: step to LAST entry in data block %d\n", buf);
+			    if (isDebug) printf("AL: step to LAST entry in data block %d\n", buf);
 				while (cp + dp->rec_len < buf + BLKSIZE)
 				{
-					printf("AL: Stepping Over: %s\n", dp->name);
+					if (isDebug) printf("AL: Stepping Over: %s\n", dp->name);
 					cp += dp->rec_len;
 					dp = (DIR *)cp;
 				}
-				printf("AL: Ended on: %s\n", dp->name);
+				if (isDebug) printf("AL: Ended on: %s\n", dp->name);
 
 				// Calculate needed length of the last record entry	
 				last_ideal = 4*( (8 + dp->name_len + 3 ) / 4 ); 
-				printf("AL: last_ideal = %d\n", last_ideal);
+				if (isDebug) printf("AL: last_ideal = %d\n", last_ideal);
 				// Calculate and store the length of the new dir item
 				last_length = dp->rec_len - last_ideal; // Last_length = current record length - its ideal length = the amount left after changing it to ideal length
-				printf("AL: last_length = %d\n", last_length);
+				if (isDebug) printf("AL: last_length = %d\n", last_length);
 
-				printf("AL: Checking if we have enough space on the current block...\n");
+				if (isDebug) printf("AL: Checking if we have enough space on the current block...\n");
 				// Check if we have enough space in this block to add our record
 				if(last_length >= last_ideal)
 				{
-					printf("AL: We have enough space\n");
+					if (isDebug) printf("AL: We have enough space\n");
 					// If we have space, change the last entries length to last_ideal
 					dp->rec_len = last_ideal;
 
@@ -1436,10 +1436,10 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 		dp->inode = myino;
 		strncpy(dp->name, myname, strlen(myname));
 
-		printf("AL: Creating new dp->, rec_len = %d, name_len = %d, inode = %d, name = %s\n", dp->rec_len, dp->name_len, dp->inode, dp->name);
+		if (isDebug) printf("AL: Creating new dp->, rec_len = %d, name_len = %d, inode = %d, name = %s\n", dp->rec_len, dp->name_len, dp->inode, dp->name);
 
 		// Write this block back to fd
-		printf("AL: Writing this block to fd\n");
+		if (isDebug) printf("AL: Writing this block to fd\n");
 		put_block(fd, parentMinodePtr->INODE.i_block[i], buf);
 	}
 
@@ -1487,7 +1487,7 @@ int my_creat(char *pathname)
 	// Set the parent and child equal to the new dirname/basename globals
 	parent = dirname_value;
 	child = basename_value;
-	printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+	if (isDebug) printf("RAW: Parent: %s\nChild: %s\n", parent, child);
 
 	if(strcmp(parent, "") == 0)
 	{
@@ -1498,7 +1498,7 @@ int my_creat(char *pathname)
 		}
 	}	
 
-	printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+	if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
 
 	// If the child is null, we cannot create this directory
 	if(strcmp(child, "") == 0 || child == NULL)
@@ -1508,7 +1508,7 @@ int my_creat(char *pathname)
 	}
 
 	// Get the inode number of the parent MINODE
-	printf("Setting parentInode\n");
+	if (isDebug) printf("Setting parentInode\n");
 	parentInode = getino(&root->dev, parent);
 
 	if(strcmp(parent, "") == 0)
@@ -1528,18 +1528,18 @@ int my_creat(char *pathname)
 	}
 	
 	// Get the In_MEMORY minode of parent:
-	printf("Setting parentMinodePtr\n");
+	if (isDebug) printf("Setting parentMinodePtr\n");
 	parentMinodePtr = iget(root->dev, parentInode);
 
 	// Check if the parent minode is a dir
-	printf("Checking if S_ISDIR\n");
+	if (isDebug) printf("Checking if S_ISDIR\n");
 	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
 	{
 		// Make sure the child does not already exist
 		if(search(parentMinodePtr, child) == 0)
 		{	
 			// Call mkdir helper function
-			printf("Calling CREAT helper\n");
+			if (isDebug) printf("Calling CREAT helper\n");
 			my_creat_helper(parentMinodePtr, child);
 		}
 		else
@@ -1568,12 +1568,12 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
   	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
   	fd = parentMinodePtr->dev;
 
-  	printf("Allocating ino fd = %d\n", fd);
+  	if (isDebug) printf("Allocating ino fd = %d\n", fd);
 	ino = ialloc(fd);
 	//bno = balloc(fd);
-	printf("After allocation, ino = %d\n", ino);
+	if (isDebug) printf("After allocation, ino = %d\n", ino);
 
-	printf("Pointing mip at ino\n");
+	if (isDebug) printf("Pointing mip at ino\n");
 	mip = iget(fd,ino);
 	// WE NEED TO INITIALIZE MIP
 	mip->INODE.i_block[0] = 0;
@@ -1594,7 +1594,7 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	mip->INODE.i_block[15] = 0;
 
 	ip = &mip->INODE;
-	printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
+	if (isDebug) printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
 
 	// Use ip-> to acess the INODE fields:
 	ip->i_mode = 0x81A4;		      // OR 040755: DIR type and permissions
@@ -1614,7 +1614,7 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	//get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
 	// We never set mips name! We may not be initializing this as much as needed!!!!
-	printf("Going to Enter_Name: name = %s\n", name);
+	if (isDebug) printf("Going to Enter_Name: name = %s\n", name);
 	enter_name(parentMinodePtr, mip->ino, name);
 }
 
@@ -1647,7 +1647,7 @@ int my_rm_dir(char *pathname)
 	// Set the parent and child equal to the new dirname/basename globals
 	parent = dirname_value;
 	child = basename_value;
-	printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+	if (isDebug) printf("RAW: Parent: %s\nChild: %s\n", parent, child);
 
 	if(strcmp(parent, "") == 0)
 	{
@@ -1658,7 +1658,7 @@ int my_rm_dir(char *pathname)
 		}
 	}	
 
-	printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+	if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
 
 	// If the child is null, we cannot remove this directory
 	if(strcmp(child, "") == 0 || child == NULL)
@@ -1669,10 +1669,10 @@ int my_rm_dir(char *pathname)
 
 	// Get the inode number of the parent MINODE
 	parentInode = getino(&root->dev, parent);
-	printf("\n\n_________________________________\nSetting parentInode: %s, %d\n", parent, parentInode);
+	if (isDebug) printf("\n\n_________________________________\nSetting parentInode: %s, %d\n", parent, parentInode);
 	// Get the inode number of the child MINODE
 	childInode = getino(&root->dev, child);
-	printf("\n\n_________________________________\nSetting childInode: %s, %d\n", child, childInode);
+	if (isDebug) printf("\n\n_________________________________\nSetting childInode: %s, %d\n", child, childInode);
 
 
 	if(strcmp(parent, "") == 0)
@@ -1698,27 +1698,27 @@ int my_rm_dir(char *pathname)
 	}
 	
 	// Get the In_MEMORY minode of parent:
-	printf("Setting parentMinodePtr\n");
+	if (isDebug) printf("Setting parentMinodePtr\n");
 	parentMinodePtr = iget(root->dev, parentInode);
 	// set child Minodeptr
-	printf("Setting childMinodePtr\n");
+	if (isDebug) printf("Setting childMinodePtr\n");
 	childMinodePtr = iget(root->dev, childInode);
 
 	// Check if the parent minode is a dir
-	printf("Checking if parent S_ISDIR\n");
+	if (isDebug) printf("Checking if parent S_ISDIR\n");
 	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
 	{
-		printf("SEARCHING: %s <for> %s\n",parent, child);
+		if (isDebug) printf("SEARCHING: %s <for> %s\n",parent, child);
 
 		// Make sure the child does already exists
 		if(search(parentMinodePtr, child) != 0)
 		{	
 			// RMDIR cannot remove a file that is not a directory
-			printf("Checking if child S_ISDIR\n");
+			if (isDebug) printf("Checking if child S_ISDIR\n");
 			if(S_ISDIR(childMinodePtr->INODE.i_mode))
 			{
 				// Call rmdir helper function
-				printf("Calling rmdir helper\n");
+				if (isDebug) printf("Calling rmdir helper\n");
 				my_rm_dir_Helper(parentMinodePtr, child);
 			}
 			else
@@ -1760,11 +1760,11 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 	endCP = buf;
 	dp = (DIR *)buf;
 
-	printf("getting pointer to end of buffer\n");
+	if (isDebug) printf("getting pointer to end of buffer\n");
 	while (endCP + dp->rec_len < buf + BLKSIZE)
 	{
-		printf("GettingENDCP: %d + %d < %d + %d\n", endCP, dp->rec_len, buf, BLKSIZE);
-		printf("Getting endCP\n");
+		if (isDebug) printf("GettingENDCP: %d + %d < %d + %d\n", endCP, dp->rec_len, buf, BLKSIZE);
+		if (isDebug) printf("Getting endCP\n");
 		endCP += dp->rec_len;
 		dp = (DIR *) endCP;
 	}
@@ -1773,7 +1773,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 	dp = (DIR *) cp;
 
 	// Step to the end of the data block
-    printf("step through data block to find: %s\n", name);
+    if (isDebug) printf("step through data block to find: %s\n", name);
 	while (cp < buf + BLKSIZE)
 	{
 		if(strcmp(dp->name, name) == 0)
@@ -1804,11 +1804,11 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 		// Keep track of how far weve moved
 		distanceFromBegin += dp->rec_len;
 		// Advance dp ptr
-		printf("Stepping Over: %s\n", dp->name);
+		if (isDebug) printf("Stepping Over: %s\n", dp->name);
 		cp += dp->rec_len;
 		dp = (DIR *)cp;
 	}
-	printf("Ended on: %s\n", dp->name);
+	if (isDebug) printf("Ended on: %s\n", dp->name);
 
 	// write the changes back to the fd
 	put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
@@ -1816,9 +1816,9 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 
 void my_link(char *oldPath, char *newPath)
 {
-	printf("BEGIN my_link\n");
+	if (isDebug) printf("BEGIN my_link\n");
 	MINODE *Omip = iget(fd, getino(&fd, oldPath));
-	printf("Loaded Omip\n");
+	if (isDebug) printf("Loaded Omip\n");
 	MINODE *Nmip;
 
 	if (Omip->INODE.i_mode == DIR_MODE)
@@ -1826,14 +1826,15 @@ void my_link(char *oldPath, char *newPath)
 		printf("Cannont link to a directory, returning to main menu\n");
 		return;
 	}
-	printf("Setting dirname and basename\n");
+
+	if (isDebug) printf("Setting dirname and basename\n");
 	setDirnameBasename2(newPath);
 	
-
-	printf("dirname = %s      basename = %s\n", dirname_value, basename_value);
+	if (isDebug) printf("dirname = %s      basename = %s\n", dirname_value, basename_value);
 
 	//int i = search(Omip, (newPath - lastToken));//or just dir_path
-	printf("Getting inode of %s into Nmip\n", dirname_value);
+	if (isDebug) printf("Getting inode of %s into Nmip\n", dirname_value);
+
 	pathNum = 2;
 	Nmip = iget(fd, getino(&fd, dirname_value));
 	pathNum = 1;
@@ -1853,13 +1854,13 @@ void my_link(char *oldPath, char *newPath)
 	}
 	else
 	{
-		printf("Inside else statement, calling enter_name function\n");
+		if (isDebug) printf("Inside else statement, calling enter_name function\n");
 		enter_name(Nmip, Omip->ino, basename_value);
-		printf("Putting back Nmip\n");
+		if (isDebug) printf("Putting back Nmip\n");
 		iput(Nmip);
-		printf("Incrementing Omip->INODE.i_links_count\n");
+		if (isDebug) printf("Incrementing Omip->INODE.i_links_count\n");
 		Omip->INODE.i_links_count++;
-		printf("Putting back Omip\n");
+		if (isDebug) printf("Putting back Omip\n");
 		iput(Omip);
 		return;
 	}
@@ -1903,7 +1904,7 @@ void sym_link(char *oldName, char *newName)
 	MINODE *Nmip;
 	char buf[BLOCK_SIZE];
 	int i;
-	printf("Inside symlink, geting ino from oldpath\n");
+	if (isDebug) printf("Inside symlink, geting ino from oldpath\n");
 	i = getino(&fd, oldName);
 
 	if (!i)
@@ -1911,14 +1912,14 @@ void sym_link(char *oldName, char *newName)
 		printf("File to link not found, returning\n");
 		return;
 	}
-	printf("Setting pathNum to 2\n");
+	if (isDebug) printf("Setting pathNum to 2\n");
 	pathNum = 2;
-	printf("Creating new file %s\n", newName);
+	if (isDebug) printf("Creating new file %s\n", newName);
 	my_creat(newName);//create the file that will link to OldName
 	pathNum = 1;
-	printf("Getting INODE of %s into memory\n", newName);
+	if (isDebug) printf("Getting INODE of %s into memory\n", newName);
 	Nmip = iget(fd, getino(&fd, newName));
-	printf("Nmip->ino = %d\n", Nmip->ino);
+	if (isDebug) printf("Nmip->ino = %d\n", Nmip->ino);
 	Nmip->INODE.i_mode = SYM_LINK;
 	int bno = balloc(fd);
 	Nmip->INODE.i_block[0] = bno;
@@ -2009,6 +2010,20 @@ void my_chmod(char *filename, int permissions)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
+void debug_flip()
+{
+	if(debug)
+	{
+		printf("No Longer Debugging\n");
+		debug = 0;
+	}
+	else
+	{
+		printf("Now Debugging\n");
+		debug = 1;
+	}
+}
+
 
 void commandTable()
 {
@@ -2060,6 +2075,10 @@ void commandTable()
   {
 	  my_chmod(command[2],command[1]);
   }
+  else if (strcmp(command[0], "debug") == 0)
+  {
+  	  debug_flip();
+  }
 }
 
 
@@ -2107,7 +2126,7 @@ main(int argc, char *argv[ ]) {
     {
       if(isDebug)
       {
-        printf("Debug Echo: ");
+        if (isDebug) printf("Debug Echo: ");
         i = 0;
         while(i < numberOfCommands)
         {
