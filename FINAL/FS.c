@@ -1972,7 +1972,9 @@ void my_link(char *oldPath, char *newPath)
 		Omip = iget(root->dev, parentInode);
 	}
 	if (isDebug) printf("Loaded Omip\n");
+
 	// If Omip is a directory, we cant link to it!
+	if(isDebug) printf("Omip->INODE.i_mode: %d\n", Omip->INODE.i_mode);
 	if (Omip->INODE.i_mode == DIR_MODE)
 	{
 		printf("Cannont link to a directory, returning to main menu\n");
