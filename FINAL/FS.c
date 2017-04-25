@@ -1792,16 +1792,18 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 
 	// Step to the end of the data block
     if (isDebug) printf("step through data block to find: %s\n", name);
-	while (cp + dp->rec_len < buf + BLKSIZE)
+	while (cp < buf + BLKSIZE)
 	{
 		if (isDebug) printf("If dp->name: %s, == name: %s\n", dp->name, name);
 		if(strcmp(dp->name, name) == 0)
 		{
+			if (isDebug) printf("Found the rec to delete, name: %s, rec_len: %d\n", dp->name, dp->rec_len);
 			// Used to fix rec_lens
 			temp = dp->rec_len;
 			// We are deleting the last node, we need a handle to the prior node to increment its length
 			if(cp == endCP)
 			{
+				if(isDebug) printf("We are deleting the last node\n");
 				dp = (DIR *)lastRec;
 				// increment the length of the last entry
 				dp->rec_len += temp;
@@ -1810,9 +1812,15 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 			// We are deleting from the middle
 			else
 			{
+				if(isDebug) printf("We are not deleting the last node- dp->name: %s\n", dp->name);
 				dp = (DIR *) endCP;
+				if(isDebug) printf("dp->name: %s\n", dp->name);
 				// increment the length of the last entry
+				
+				if(isDebug) printf("dp->rec_len: %d\n", dp->rec_len);
 				dp->rec_len += temp;
+				if(isDebug) printf("dp->rec_len: %s\n", dp->rec_len);
+
 				// We need to move all items downstream from the deleted item up by the length of the deleted dir
 				memcpy(cp, cp + temp, BLKSIZE - distanceFromBegin - temp);
 			}
