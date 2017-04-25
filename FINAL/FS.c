@@ -1697,10 +1697,7 @@ int my_rm_dir(char *pathname)
 	parentInode = getino(&root->dev, parent);
 	rmDirFindParent = 0;
 	if (isDebug) printf("\n\n_________________________________\nSetting parentInode: %s, %d\n", parent, parentInode);
-	// Get the inode number of the child MINODE
-	childInode = getino(&root->dev, child);
-	if (isDebug) printf("\n\n_________________________________\nSetting childInode: %s, %d\n", child, childInode);
-
+	
 
 	if(strcmp(parent, "") == 0)
 	{		
@@ -1717,16 +1714,22 @@ int my_rm_dir(char *pathname)
 		printf("The Given Path Contains a non-existant directory\n");
 		return;
 	}
+
+	// Get the In_MEMORY minode of parent:
+	if (isDebug) printf("Setting parentMinodePtr\n");
+	parentMinodePtr = iget(root->dev, parentInode);
+
+	// Get the inode number of the child MINODE
+	childInode = getino(&parentMinodePtr->dev, child);
+	if (isDebug) printf("\n\n_________________________________\nSetting childInode: %s, %d\n", child, childInode);
+
 	// Check if child directory does not exist
 	if (childInode == 0)
 	{		
 		printf("The Given Target does not exist\n");
 		return;
-	}
+	}	
 	
-	// Get the In_MEMORY minode of parent:
-	if (isDebug) printf("Setting parentMinodePtr\n");
-	parentMinodePtr = iget(root->dev, parentInode);
 	// set child Minodeptr
 	if (isDebug) printf("Setting childMinodePtr\n");
 	childMinodePtr = iget(root->dev, childInode);
