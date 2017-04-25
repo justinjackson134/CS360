@@ -1792,9 +1792,9 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 
 	// Step to the end of the data block
     if (isDebug) printf("step through data block to find: %s\n", name);
-	while (cp < buf + BLKSIZE)
+	while (cp + dp->rec_len < buf + BLKSIZE)
 	{
-		printf("If dp->name: %s, == name: %s\n", dp->name, name);
+		if (isDebug) printf("If dp->name: %s, == name: %s\n", dp->name, name);
 		if(strcmp(dp->name, name) == 0)
 		{
 			// Used to fix rec_lens
