@@ -2351,7 +2351,7 @@ void sym_link(char *oldPath, char *newPath)
 	
 	dp->name_len = (strlen(oldPath));
 	dp->rec_len = BLOCK_SIZE;
-	strncpy(dp->name, oldName, dp->name_len); ////////////////////////////////////////////////////////////////////////SHOULD THIS BE THE LOCAL PATH OR THE ABSOLUTE PATH?
+	strncpy(dp->name, oldPath, dp->name_len); ////////////////////////////////////////////////////////////////////////SHOULD THIS BE THE LOCAL PATH OR THE ABSOLUTE PATH?
 
 	//write the string oldName into the i_block[], which has room for 60 chars
 	//this I have no idea how to do so we will have to tackle it together
