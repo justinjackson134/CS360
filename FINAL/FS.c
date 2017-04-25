@@ -1750,14 +1750,22 @@ int my_rm_dir(char *pathname)
 			if (isDebug) printf("Checking if child S_ISDIR\n");
 			if(S_ISDIR(childMinodePtr->INODE.i_mode))
 			{
-				if(isDebug) printf("Deallocating Child Inode: %d\n", childMinodePtr->ino);
-				childMinodePtr->dirty = 1;
-				idealloc(fd, childMinodePtr->ino);
-				deallocIBlocks(fd, childMinodePtr);
+				if(isDebug) printf("Checking Dir is Empty\n");
+				if(dirIsEmpty(childMinodePtr))
+				{
+					if(isDebug) printf("Deallocating Child Inode: %d\n", childMinodePtr->ino);
+					childMinodePtr->dirty = 1;
+					idealloc(fd, childMinodePtr->ino);
+					deallocIBlocks(fd, childMinodePtr);
 
-				// Call rmdir helper function
-				if (isDebug) printf("Calling rmdir helper\n");
-				my_rm_dir_Helper(parentMinodePtr, child);
+					// Call rmdir helper function
+					if (isDebug) printf("Calling rmdir helper\n");
+					my_rm_dir_Helper(parentMinodePtr, child);
+				}
+				else
+				{
+					printf("Cannot delete a non-empty directory!\n");
+				}
 			}
 			else
 			{
@@ -1860,6 +1868,28 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 
 	// write the changes back to the fd
 	put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+}
+
+int dirIsEmpty(MINODE *childMinodePtr)
+{
+	// A dir is empty if it contains only '.' and '..' this means that the rec_length of .. should =BLKSIZE - 12 (12 being the size of .)
+	char *cp;
+	char buf[BLKSIZE];
+
+	get_block(fd, childMinodePtr->INODE.i_block[0], buf);
+
+	// Setup cp and dp (points at .)
+	cp = buf;
+	dp = (DIR *)buf;
+	// Advance dp (now will point at ..)
+	cp += dp->rec_len;
+	dp = (DIR *)cp;
+
+	if(dp->rec_len == BLKSIZE-12)
+	{
+		return 1; // Dir contains only '.' and '..'
+	}
+	return 0; // Dir contains more than '.' and '..'
 }
 
 void my_link(char *oldPath, char *newPath)
