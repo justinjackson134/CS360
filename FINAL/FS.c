@@ -122,7 +122,7 @@ typedef struct Mount {
 ////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES                                               //
 ////////////////////////////////////////////////////////////////////
-int isDebug = 0; // IF 1, enable debug prints!
+int isDebug = 1; // IF 1, enable debug prints!
 
 GD    *gp;
 SUPER *sp;
@@ -131,8 +131,6 @@ DIR   *dp;
 
 // Buffer used in getblock
 //char buf[BLKSIZE];
-// Handle to the open disk so it can be closed on exit
-int OpenDiskDescriptor = 0;
 // File Descriptor int
 int fd;
 // Location of Inodes Beging Block
@@ -406,8 +404,7 @@ void mountRoot(char *disk)
   char buf[BLKSIZE];
 
   // Open disk for read/write
-  OpenDiskDescriptor = open(disk, O_RDWR);
-  fd = OpenDiskDescriptor;
+  fd = open(disk, O_RDWR);
   // Check if the open succeds or fails
   if (fd < 0) {
     // If we failed, exit!
@@ -2762,8 +2759,6 @@ main(int argc, char *argv[ ]) {
       	}
       }
       printf("EXT2 FS: s_magic = %x\n", sp->s_magic);
-      // Close the virtual disk
-      close(OpenDiskDescriptor);
       break;
     }
     else
