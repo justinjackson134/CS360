@@ -2084,7 +2084,7 @@ void my_unlink(char *pathToUnlink)
 
 	if (pathToUnlink != NULL)
 	{
-		if (pathname[0] == '/')
+		if (pathToUnlink[0] == '/')
 		{
 		  fd = root->dev;
 		  if(isDebug) printf("Unlink from root->dev: fd = %d\n", fd);
@@ -2164,7 +2164,7 @@ void my_unlink(char *pathToUnlink)
 	
 	setDirnameBasename(pathToUnlink);
 
-	i = getino(&fd, dirname_value);
+	ino = getino(&fd, dirname_value);
 	pmip = iget(fd, i);
 	my_rm_dir_Helper(pmip, basename_value);//same as rmdir, just delete that from the path
 }
