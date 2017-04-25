@@ -1779,7 +1779,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 	dp = (DIR *)buf;
 
 	if (isDebug) printf("getting pointer to end of buffer\n");
-	while (endCP < buf + BLKSIZE)
+	while (endCP + dp->rec_len < buf + BLKSIZE)
 	{
 		if (isDebug) printf("GettingENDCP: %d +  < %d + %d\n", endCP, buf, BLKSIZE);
 		endCP += dp->rec_len;
