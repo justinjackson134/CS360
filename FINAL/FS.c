@@ -122,7 +122,7 @@ typedef struct Mount {
 ////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES                                               //
 ////////////////////////////////////////////////////////////////////
-int isDebug = 1; // IF 1, enable debug prints!
+int isDebug = 0; // IF 1, enable debug prints!
 
 GD    *gp;
 SUPER *sp;
