@@ -1720,7 +1720,7 @@ int my_rm_dir(char *pathname)
 	parentMinodePtr = iget(root->dev, parentInode);
 
 	// Get the inode number of the child MINODE
-	childInode = getino(&parentMinodePtr->dev, child);
+	childInode = getino(&parentMinodePtr->ino, child);
 	if (isDebug) printf("\n\n_________________________________\nSetting childInode: %s, %d\n", child, childInode);
 
 	// Check if child directory does not exist
