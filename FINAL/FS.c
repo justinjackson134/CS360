@@ -1903,8 +1903,12 @@ void my_link(char *oldPath, char *newPath)
 
 	if (isDebug) printf("BEGIN my_link\n");
 
-	printf("\nNUMBER OF COMMANDS: %d\n\n", numberOfCommands);
-
+	if (isDebug) printf("\nNUMBER OF COMMANDS: %d\n\n", numberOfCommands);
+	if(numberOfCommands < 3)
+	{
+		printf("Not enough Parameters entered for link");
+		return;
+	}
 	// Load Omip
 	if (isDebug) printf("Loading Omip\n");
 	if(oldPath != NULL)
@@ -1974,12 +1978,6 @@ void my_link(char *oldPath, char *newPath)
 		printf("Cannont link to a directory, returning to main menu\n");
 		return;
 	}
-
-
-
-
-
-
 
 	if (isDebug) printf("Loading Nmip\n");
 	if(newPath != NULL)
@@ -2053,9 +2051,9 @@ void my_link(char *oldPath, char *newPath)
 		return;
 	}
 
-	printf("Searching for %s in %s\n", basename_value, dirname_value);
+	if(isDebug) printf("Searching for %s in %s\n", basename_value, dirname_value);
 	int i = search(Nmip, basename_value);
-	printf("i = %d\n", i);
+	if(isDebug) printf("i = %d\n", i);
 
 	if (i != 0)
 	{
