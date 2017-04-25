@@ -2758,6 +2758,11 @@ main(int argc, char *argv[ ]) {
       		iput(&minode[i]);
       	}
       }
+
+ 	  char buf[BLKSIZE];
+  	  get_block(fd, 1, buf);
+  	  sp = (SUPER *)buf;
+
       printf("EXT2 FS: s_magic = %x\n", sp->s_magic);
       break;
     }
