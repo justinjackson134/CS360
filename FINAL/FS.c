@@ -2076,14 +2076,79 @@ void my_link(char *oldPath, char *newPath)
 
 void my_unlink(char *pathToUnlink)
 {
+	char *parent, *child;
+  	int parentInode;
+  	int isRootPath = 0;
 	MINODE *mip, *pmip;
-	int i;
+	int ino;
 
+	if (pathToUnlink != NULL)
+	{
+		if (pathname[0] == '/')
+		{
+		  fd = root->dev;
+		  if(isDebug) printf("Unlink from root->dev: fd = %d\n", fd);
+		  isRootPath = 1;
+		}
+		else
+		{
+		  fd = running->cwd->dev;
+		  if(isDebug) printf("Unlink from running->cwd->dev: fd = %d\n", fd);
+		  isRootPath = 0;
+		}
 
-	i = getino(&fd, pathToUnlink);
-	mip = iget(fd, i);
+		// Set dirname and basename globals given pathname
+		setDirnameBasename(pathToUnlink);
+		// Set the parent and child equal to the new dirname/basename globals
+		parent = dirname_value;
+		child = basename_value;
+		if (isDebug) printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+		// If we are a root path with no '/' in parent, fix parent
+		if(strcmp(parent, "") == 0)
+		{
+			if(isRootPath == 1)
+			{
+				// Parent is null, but we are a root path, set parent == root
+				parent = "/";
+			}
+		}	
+		if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
 
+		// If the child is null, we cannot create this directory
+		if(strcmp(child, "") == 0 || child == NULL)
+		{
+			printf("Cannot Create Empty Directory!\n");
+			return;
+		}
 
+		// Get the inode number of the parent MINODE
+		if (isDebug) printf("Setting parentInode\n");
+		ino = getino(&root->dev, parent);
+		// If we are not a root parent, and our inode is 0, set the parent node to the cwd
+		if(strcmp(parent, "") == 0)
+		{		
+			if (isRootPath == 0)
+			{
+				// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+				parentInode = running->cwd->ino;
+			}
+		}
+		// Check if parent inode does not exist
+		if (parentInode == 0)
+		{		
+			printf("The Given Path Contains a non-existant directory\n");
+			return;
+		}
+		
+		// Get the In_MEMORY minode of parent:
+		if (isDebug) printf("Setting parentMinodePtr\n");
+		mip = iget(root->dev, parentInode);
+	}
+	else
+	{
+		printf("Pathname cannot be null!\n");
+		return;
+	}
 
 	if (S_ISDIR(mip->INODE.i_mode))
 	{
