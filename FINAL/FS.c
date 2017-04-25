@@ -353,9 +353,10 @@ int getino(int *dev, char *pathname)
   	n -= 1;
   }
 
-  // Tells the program if rmdir is looking for the parent or child
+  // Tells the program if rmdir/rm/unlink is looking for the parent or child
   if((strcmp(command[0], "rmdir") == 0 && FindParent == 1) || (strcmp(command[0], "rm") == 0 && FindParent == 1) || (strcmp(command[0], "unlink") == 0 && FindParent == 1))
   {
+  	printf("\n\nWE MADE IT TO HERE\n\n");
   	n -= 1;
   }
 
