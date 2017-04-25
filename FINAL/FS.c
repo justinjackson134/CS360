@@ -1756,7 +1756,7 @@ int my_rm_dir(char *pathname)
 					if(isDebug) printf("Deallocating Child Inode: %d\n", childMinodePtr->ino);
 					childMinodePtr->dirty = 1;
 					idealloc(fd, childMinodePtr->ino);
-					//deallocIBlocks(fd, childMinodePtr);
+					//deallocIBlocks(fd, childMinodePtr); // Deallocing blocks here ruins EVERYTHING
 
 					// Call rmdir helper function
 					if (isDebug) printf("Calling rmdir helper\n");
@@ -1896,7 +1896,7 @@ int my_rm(char *pathname)
 				if(isDebug) printf("Deallocating Child Inode: %d\n", childMinodePtr->ino);
 				childMinodePtr->dirty = 1;
 				idealloc(fd, childMinodePtr->ino);
-				deallocIBlocks(fd, childMinodePtr);
+				//deallocIBlocks(fd, childMinodePtr); // Deallocing blocks here ruins EVERYTHING
 
 				// Call rmdir helper function
 				if (isDebug) printf("Calling rmdir helper\n");
