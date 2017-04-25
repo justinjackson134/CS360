@@ -1788,6 +1788,141 @@ int my_rm_dir(char *pathname)
   }
 }
 
+int my_rm(char *pathname)
+{
+
+  MINODE *parentMinodePtr, *childMinodePtr;
+  char *parent, *child;
+  int parentInode, childInode;
+  int isRootPath = 0;
+ 
+  if(pathname != NULL)
+  {
+	if (pathname[0] == '/')
+	{
+	  fd = root->dev;
+	  if(isDebug) printf("RM from root->dev: fd = %d\n", fd);
+	  isRootPath = 1;
+	}
+	else
+	{
+	  fd = running->cwd->dev;
+	  if(isDebug) printf("RM from running->cwd->dev: fd = %d\n", fd);
+	  isRootPath = 0;
+	}
+
+	// Set dirname and basename globals given pathname
+	setDirnameBasename(pathname);
+
+	// Set the parent and child equal to the new dirname/basename globals
+	parent = dirname_value;
+	child = basename_value;
+	if (isDebug) printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+
+	if(strcmp(parent, "") == 0)
+	{
+		if(isRootPath == 1)
+		{
+			// Parent is null, but we are a root path, set parent == root
+			parent = "/";
+		}
+	}	
+
+	if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+
+	// If the child is null, we cannot remove this directory
+	if(strcmp(child, "") == 0 || child == NULL)
+	{
+		printf("Cannot Remove non-existant file!\n");
+		return;
+	}
+
+	// Get the inode number of the parent MINODE
+	FindParent = 1;
+	parentInode = getino(&root->dev, parent);
+	FindParent = 0;
+	if (isDebug) printf("\n\n_________________________________\nSetting parentInode: %s, %d\n", parent, parentInode);
+	
+
+	if(strcmp(parent, "") == 0)
+	{		
+		if (isRootPath == 0)
+		{
+			// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+			parentInode = running->cwd->ino;
+		}
+	}
+
+	// Check if parent inode does not exist
+	if (parentInode == 0)
+	{		
+		printf("The Given Path Contains a non-existant directory\n");
+		return;
+	}
+
+	// Get the In_MEMORY minode of parent:
+	if (isDebug) printf("Setting parentMinodePtr\n");
+	parentMinodePtr = iget(root->dev, parentInode);
+
+	// Get the inode number of the child MINODE
+	//childInode = getino(&parentMinodePtr, child);
+	childInode = search(parentMinodePtr, child);
+	if (isDebug) printf("\n\n_________________________________\nSetting childInode: %s, %d\n", child, childInode);
+
+	// Check if child directory does not exist
+	if (childInode == 0)
+	{		
+		printf("The Given Target does not exist\n");
+		return;
+	}	
+	
+	// set child Minodeptr
+	if (isDebug) printf("Setting childMinodePtr\n");
+	childMinodePtr = iget(root->dev, childInode);
+
+	// Check if the parent minode is a dir
+	if (isDebug) printf("Checking if parent S_ISDIR\n");
+	if(S_ISDIR(parentMinodePtr->INODE.i_mode))
+	{
+		if (isDebug) printf("SEARCHING: %s <for> %s\n",parent, child);
+
+		// Make sure the child does already exists
+		if(childInode != 0)
+		{	
+			// RMDIR cannot remove a file that is not a directory
+			if (isDebug) printf("Checking if child S_ISREG\n");
+			if(S_ISREG(childMinodePtr->INODE.i_mode))
+			{
+				if(isDebug) printf("Deallocating Child Inode: %d\n", childMinodePtr->ino);
+				childMinodePtr->dirty = 1;
+				idealloc(fd, childMinodePtr->ino);
+				deallocIBlocks(fd, childMinodePtr);
+
+				// Call rmdir helper function
+				if (isDebug) printf("Calling rmdir helper\n");
+				my_rm_dir_Helper(parentMinodePtr, child);				
+			}
+			else
+			{
+				printf("\nTarget is not a file\n");
+			}
+		}
+		else
+		{
+			printf("\nTarget Doesnt't Exist, cannot rm\n");
+		}
+	}
+	else
+	{
+		printf("\nCannot rm below a file\n");
+	}
+  }
+  else
+  {
+  	printf("\nRm missing pathname parameter\n");
+  }
+}
+
 void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 {
 	int temp, lastRec, distanceFromBegin = 0;
