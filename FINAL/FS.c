@@ -2749,6 +2749,15 @@ main(int argc, char *argv[ ]) {
     if (strcmp(command[0], "quit") == 0)
     {
       //User entered Quit, we should probably exit
+      for (i = 0; i < NMINODES; i++)
+      {
+      	if(minode[i].ino != 0)
+      	{
+      		if(isDebug)printf("Putting away minode[%d]\n", i);
+      		// If we have this inode loaded in memory, put it away!
+      		iput(&minode[i]);
+      	}
+      }
       break;
     }
     else
