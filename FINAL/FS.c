@@ -1782,8 +1782,8 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 	while (endCP + dp->rec_len < buf + BLKSIZE)
 	{
 		if (isDebug) printf("GettingENDCP: %d + %d < %d + %d\n", endCP, dp->rec_len, buf, BLKSIZE);
-		if (isDebug) printf("Getting endCP\n");
 		endCP += dp->rec_len;
+		if (isDebug) printf("Getting endCP: %s\n", dp->name);
 		dp = (DIR *) endCP;
 	}
 
@@ -1792,7 +1792,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 
 	// Step to the end of the data block
     if (isDebug) printf("step through data block to find: %s\n", name);
-	while (cp + dp->rec_len < buf + BLKSIZE)
+	while (cp < buf + BLKSIZE)
 	{
 		if (isDebug) printf("If dp->name: %s, == name: %s\n", dp->name, name);
 		if(strcmp(dp->name, name) == 0)
