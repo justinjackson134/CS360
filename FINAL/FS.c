@@ -159,11 +159,9 @@ int dev;
 // dirname variable
 char dirname_value[128];
 char basename_value[128];
-
-// Unknown, copied from original main
+// bmap and imap ints
 int bmap;
 int imap;
-int iblock;
 
 // Path NUM var to make tokenize path behave differently on # of paths given
 int pathNum = 1;
@@ -1975,7 +1973,7 @@ void my_link(char *oldPath, char *newPath)
 
 	// If Omip is a directory, we cant link to it!
 	if(isDebug) printf("Omip->INODE.i_mode: %d\n", Omip->INODE.i_mode);
-	if (Omip->INODE.i_mode == DIR_MODE)
+	if (S_ISDIR(Omip->INODE.i_mode))
 	{
 		printf("Cannont link to a directory, returning to main menu\n");
 		return;
@@ -2142,6 +2140,7 @@ void sym_link(char *oldName, char *newName)
 	if (isDebug) printf("Putting away Nmip\n");
 	iput(Nmip);
 }
+
 /*
 void read_link(char *linkedPath)
 {
@@ -2275,9 +2274,6 @@ int open_File(char *fileName, int mode)
 		break;
 		
 	}
-
-
-
 }
 */
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
