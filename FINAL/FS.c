@@ -1729,7 +1729,7 @@ int my_rm_dir(char *pathname)
 		if (isDebug) printf("SEARCHING: %s <for> %s\n",parent, child);
 
 		// Make sure the child does already exists
-		if(search(parentMinodePtr, child) != 0)
+		if(childInode != 0)
 		{	
 			// RMDIR cannot remove a file that is not a directory
 			if (isDebug) printf("Checking if child S_ISDIR\n");
