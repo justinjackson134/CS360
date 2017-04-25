@@ -166,7 +166,9 @@ int imap;
 int iblock;
 
 // Path NUM var to make tokenize path behave differently on # of paths given
-pathNum = 1;
+int pathNum = 1;
+// Var used to tell getino to return the parent for rmdir
+int rmDirFindParent = 0;
 
 
 
@@ -347,9 +349,14 @@ int getino(int *dev, char *pathname)
   	}
   }
 
-  if(strcmp(command[0], "mkdir") == 0 || strcmp(command[0], "rmdir") == 0)
+  if(strcmp(command[0], "mkdir") == 0)
   {
   	n -= 1;
+  }
+
+  if(strcmp(command[0], "rmdir") == 0 && rmDirFindParent == 1)
+  {
+
   }
 
   for (i=0; i < n; i++){
@@ -1686,7 +1693,9 @@ int my_rm_dir(char *pathname)
 	}
 
 	// Get the inode number of the parent MINODE
+	rmDirFindParent = 1;
 	parentInode = getino(&root->dev, parent);
+	rmDirFindParent = 0;
 	if (isDebug) printf("\n\n_________________________________\nSetting parentInode: %s, %d\n", parent, parentInode);
 	// Get the inode number of the child MINODE
 	childInode = getino(&root->dev, child);
