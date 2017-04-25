@@ -131,6 +131,8 @@ DIR   *dp;
 
 // Buffer used in getblock
 //char buf[BLKSIZE];
+// Handle to the open disk so it can be closed on exit
+int OpenDiskDescriptor = 0;
 // File Descriptor int
 int fd;
 // Location of Inodes Beging Block
@@ -404,7 +406,8 @@ void mountRoot(char *disk)
   char buf[BLKSIZE];
 
   // Open disk for read/write
-  fd = open(disk, O_RDWR);
+  OpenDiskDescriptor = open(disk, O_RDWR);
+  fd = OpenDiskDescriptor;
   // Check if the open succeds or fails
   if (fd < 0) {
     // If we failed, exit!
@@ -2758,6 +2761,8 @@ main(int argc, char *argv[ ]) {
       		iput(&minode[i]);
       	}
       }
+      // Close the virtual disk
+      close(OpenDiskDescriptor);
       break;
     }
     else
