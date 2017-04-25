@@ -1896,73 +1896,154 @@ int dirIsEmpty(MINODE *childMinodePtr)
 
 void my_link(char *oldPath, char *newPath)
 {
-	int isRootPath = 0, nmipIno, omipIno;
+	char *parent, *child;
+  	int parentInode;
+  	int isRootPath = 0;
+  	MINODE *Omip, *Nmip;
 
 	if (isDebug) printf("BEGIN my_link\n");
-	MINODE *Omip = iget(fd, getino(&fd, oldPath));
-	if (isDebug) printf("Loaded Omip\n");
-	MINODE *Nmip;
 
-	// If the old path is a directory, exit
+	// Load Omip
+	if (isDebug) printf("Loading Omip\n");
+	if(oldPath != NULL)
+	{
+		if(oldPath[0] == '/')
+		{
+		  fd = root->dev;
+		  if(isDebug) printf("OLDLink from root->dev: fd = %d\n", fd);
+		  isRootPath = 1;
+		}
+		else
+		{
+		  fd = running->cwd->dev;
+		  if(isDebug) printf("OLDLink from running->cwd->dev: fd = %d\n", fd);
+		  isRootPath = 0;
+		}
+		// Set dirname and basename globals from pathname
+		setDirnameBasename(oldPath);
+		// Set parent and child equal to the new dirname/basename
+		parent = dirname_value;
+		child = basename_value;
+		if (isDebug) printf("OLD RAW: Parent: %s\nChild: %s\n", parent, child);
+
+		// If the parent is null but we are a root path, parent must be set to /
+		if(strcmp(parent, "") == 0)
+		{
+			if(isRootPath == 1)
+			{
+				// Parent is null, but we are a root path, set parent == root
+				parent = "/";
+			}
+		}	
+		if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+		// If the child is null, we cannot link this
+		if(strcmp(child, "") == 0 || child == NULL)
+		{
+			printf("Cannot Create Link to nothing!\n");
+			return;
+		}
+		if (isDebug) printf("Setting parentInode\n");
+		parentInode = getino(&root->dev, parent);
+		// If the parent name is empty, and were not a root path, set the parent to cwd
+		if(strcmp(parent, "") == 0)
+		{		
+			if (isRootPath == 0)
+			{
+				// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+				parentInode = running->cwd->ino;
+			}
+		}
+		// Check if parent inode does not exist
+		if (parentInode == 0)
+		{		
+			printf("The Given Path Contains a non-existant directory\n");
+			return;
+		}
+		
+		// Get the In_MEMORY minode of parent:
+		if (isDebug) printf("Setting parentMinodePtr\n");
+		// Set Omip
+		Omip = iget(root->dev, parentInode);
+	}
+	if (isDebug) printf("Loaded Omip\n");
+	// If Omip is a directory, we cant link to it!
 	if (Omip->INODE.i_mode == DIR_MODE)
 	{
 		printf("Cannont link to a directory, returning to main menu\n");
 		return;
 	}
 
-	// If the new pathname begins with a "/" it is a root path
-	if (newPath[0] == '/')
-	{
-	  fd = root->dev;
-	  if(isDebug) printf("Link Newpath from root->dev: fd = %d\n", fd);
-	  isRootPath = 1;
-	}
-	else
-	{
-	  fd = running->cwd->dev;
-	  if(isDebug) printf("Link Newpath from running->cwd->dev: fd = %d\n", fd);
-	  isRootPath = 0;
-	}
 
-	if (isDebug) printf("Setting dirname and basename\n");
-	setDirnameBasename2(newPath);
-	if (isDebug) printf("dirname = %s      basename = %s\n", dirname_value, basename_value);
 
-	// Validate that the parent == root if we are a root path
-	if(strcmp(dirname_value, "") == 0)
+
+
+
+
+	if (isDebug) printf("Loading Nmip\n");
+	if(newPath != NULL)
 	{
-		if(isRootPath == 1)
+		if(newPath[0] == '/')
 		{
-			// Parent is null, but we are a root path, set parent == root
-			strcpy(dirname_value, "/");
+		  fd = root->dev;
+		  if(isDebug) printf("OLDLink from root->dev: fd = %d\n", fd);
+		  isRootPath = 1;
 		}
-	}
-	
-	// Get the inode of Nmip
-	if (isDebug) printf("Getting inode of %s into Nmip\n", dirname_value);
-	pathNum = 2;
-	nmipIno = getino(&fd, dirname_value);
-	pathNum = 1;	
-
-	// Validate that the parent == running cwd->ino if we are not a root path
-	if(strcmp(dirname_value, "") == 0)
-	{		
-		if (isRootPath == 0)
+		else
 		{
-			// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
-			parentInode = running->cwd->ino;
+		  fd = running->cwd->dev;
+		  if(isDebug) printf("OLDLink from running->cwd->dev: fd = %d\n", fd);
+		  isRootPath = 0;
 		}
-	}
-	
-	// Get the nmip MINODE
-	Nmip = iget(fd, nmipIno);
+		// Set dirname and basename globals from pathname
+		setDirnameBasename2(newPath);
+		// Set parent and child equal to the new dirname/basename
+		parent = dirname_value;
+		child = basename_value;
+		if (isDebug) printf("OLD RAW: Parent: %s\nChild: %s\n", parent, child);
 
-	// If the child is null, we cannot link this
-	if(strcmp(basename_value, "") == 0 || basename_value == NULL)
-	{
-		printf("Cannot link to nothing!\n");
-		return;
+		// If the parent is null but we are a root path, parent must be set to /
+		if(strcmp(parent, "") == 0)
+		{
+			if(isRootPath == 1)
+			{
+				// Parent is null, but we are a root path, set parent == root
+				parent = "/";
+			}
+		}	
+		if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+		// If the child is null, we cannot link this
+		if(strcmp(child, "") == 0 || child == NULL)
+		{
+			printf("Cannot Create Link to nothing!\n");
+			return;
+		}
+		if (isDebug) printf("Setting parentInode\n");
+		pathNum = 2;
+		parentInode = getino(&root->dev, parent);
+		pathNum = 1;
+		// If the parent name is empty, and were not a root path, set the parent to cwd
+		if(strcmp(parent, "") == 0)
+		{		
+			if (isRootPath == 0)
+			{
+				// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+				parentInode = running->cwd->ino;
+			}
+		}
+		// Check if parent inode does not exist
+		if (parentInode == 0)
+		{		
+			printf("The Given Path Contains a non-existant directory\n");
+			return;
+		}
+		
+		// Get the In_MEMORY minode of parent:
+		if (isDebug) printf("Setting parentMinodePtr\n");
+		// Set Nmip
+		Nmip = iget(root->dev, parentInode);
 	}
+	if (isDebug) printf("Loaded Nmip\n");
+	// If Omip is a directory, we cant link to it!
 	
 	if (Nmip->INODE.i_mode == FILE_MODE || Nmip->INODE.i_mode == SYM_LINK)
 	{
@@ -1973,7 +2054,7 @@ void my_link(char *oldPath, char *newPath)
 	printf("Searching for %s in %s\n", basename_value, dirname_value);
 	int i = search(Nmip, basename_value);
 	printf("i = %d\n", i);
-	
+
 	if (i != 0)
 	{
 		printf("File name already exists, returning to main menu\n");
