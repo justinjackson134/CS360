@@ -341,7 +341,7 @@ int getino(int *dev, char *pathname)
   else // pathNum == 2
   {
   	n = tokenizePathname2();
-  	if(strcmp(command[0], "link") == 0)
+  	if(strcmp(command[0], "link") == 0 || strcmp(command[0], "symlink"))
   	{
   		n -= 1;
   	}
@@ -2172,7 +2172,7 @@ void my_unlink(char *pathToUnlink)
 	my_rm_dir_Helper(pmip, basename_value);//same as rmdir, just delete that from the path
 }
 
-void sym_link(char *oldName, char *newName)
+void sym_link(char *oldPath, char *newPath)
 {
 	char *parent, *child;
   	int parentInode, childInode;
@@ -2189,30 +2189,159 @@ void sym_link(char *oldName, char *newName)
 		return;
 	}
 	
+	if(oldPath != NULL)
+	{
+		if(oldPath[0] == '/')
+		{
+			fd = root->dev;
+		  	if(isDebug) printf("OLD Symlink from root->dev: fd = %d\n", fd);
+		  	isRootPath = 1;
+		}
+		else
+		{
+		  	fd = running->cwd->dev;
+		  	if(isDebug) printf("OLD Symlink from running->cwd->dev: fd = %d\n", fd);
+		  	isRootPath = 0;
+		}
+		// Set dirname and basename globals given pathname
+		setDirnameBasename(oldPath);
+
+		// Set the parent and child equal to the new dirname/basename globals
+		parent = dirname_value;
+		child = basename_value;
+		if (isDebug) printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+		if(strcmp(parent, "") == 0)
+		{
+			if(isRootPath == 1)
+			{
+				// Parent is null, but we are a root path, set parent == root
+				parent = "/";
+			}
+		}	
+		if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+		// If the child is null, we cannot create this link
+		if(strcmp(child, "") == 0 || child == NULL)
+		{
+			printf("Cannot Create Empty Link!\n");
+			return;
+		}
+		// Get the inode number of the parent MINODE
+		if (isDebug) printf("Setting parentInode\n");
+		parentInode = getino(&root->dev, parent);
+		// If the parent is empty, we know that it needs to be the cwd
+		if(strcmp(parent, "") == 0)
+		{		
+			if (isRootPath == 0)
+			{
+				// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+				parentInode = running->cwd->ino;
+			}
+		}
+		// Check if parent inode does not exist
+		if (parentInode == 0)
+		{		
+			printf("The Given Path Contains a non-existant directory\n");
+			return;
+		}
+		
+		// Get the In_MEMORY minode of parent:
+		if (isDebug) printf("Setting parentMinodePtr\n");
+		Omip = iget(root->dev, parentInode);
+
+		childInode = search(Omip, child);
+	}
 
 
-	
 
 
-
-
-	if (isDebug) printf("Inside symlink, geting ino from oldpath\n");
-	i = getino(&fd, oldName);
-
-
-
-	if (!i)
+	// If the child exists, then we can continue, else, exit
+	if (!childInode)
 	{
 		printf("File to link not found, returning\n");
 		return;
 	}
 	if (isDebug) printf("Setting pathNum to 2\n");
 	pathNum = 2;
-	if (isDebug) printf("Creating new file %s\n", newName);
-	my_creat(newName);//create the file that will link to OldName
+	// This is too make get inode only find the parent dir to create the new file in
+	strncpy(command[0],"creat",strlen("creat"));
+	if (isDebug) printf("Creating new file %s\n", newPath);
+	my_creat(newPath);//create the file that will link to OldName
+	// This is too reset the command[0] to be accurate
+	strncpy(command[0],"symlink",strlen("symlink"));
 	pathNum = 1;
-	if (isDebug) printf("Getting INODE of %s into memory\n", newName);
-	Nmip = iget(fd, getino(&fd, newName));
+
+
+
+	// Get the inode of newPath into memory
+	if (isDebug) printf("Getting INODE of %s into memory\n", newPath);
+	if(newPath != NULL)
+	{
+		if (newPath[0] == '/')
+		{
+		  	fd = root->dev;
+		  	if(isDebug) printf("Symlink from root->dev: fd = %d\n", fd);
+		  	isRootPath = 1;
+		}
+		else
+		{
+		  	fd = running->cwd->dev;
+		  	if(isDebug) printf("Symlink from running->cwd->dev: fd = %d\n", fd);
+		  	isRootPath = 0;
+		}
+
+		// Set dirname and basename globals given pathname
+		setDirnameBasename2(newPath);
+
+		// Set the parent and child equal to the new dirname/basename globals
+		parent = dirname_value;
+		child = basename_value;
+		if (isDebug) printf("RAW: Parent: %s\nChild: %s\n", parent, child);
+
+		if(strcmp(parent, "") == 0)
+		{
+			if(isRootPath == 1)
+			{
+				// Parent is null, but we are a root path, set parent == root
+				parent = "/";
+			}
+		}	
+
+		if (isDebug) printf("FIXED: Parent: %s\nChild: %s\n", parent, child);
+		// If the child is null, we cannot create this link
+		if(strcmp(child, "") == 0 || child == NULL)
+		{
+			printf("Cannot Create Link in Non-existant file!\n");
+			return;
+		}
+
+		// Get the inode number of the parent MINODE
+		if (isDebug) printf("Setting parentInode\n");
+		pathNum = 2;
+		parentInode = getino(&root->dev, parent);
+		pathNum = 1;
+
+		if(strcmp(parent, "") == 0)
+		{		
+			if (isRootPath == 0)
+			{
+				// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+				parentInode = running->cwd->ino;
+			}
+		}
+
+		// Check if parent inode does not exist
+		if (parentInode == 0)
+		{		
+			printf("The Given Path Contains a non-existant directory\n");
+			return;
+		}
+		
+		// Get the In_MEMORY minode of parent:
+		if (isDebug) printf("Setting parentMinodePtr\n");
+		Nmip = iget(root->dev, parentInode);
+	}
+
+	// We now have a handle to the file we just created
 	if (isDebug) printf("Nmip->ino = %d\n", Nmip->ino);
 	Nmip->INODE.i_mode = SYM_LINK;
 	int bno = balloc(fd);
@@ -2222,7 +2351,7 @@ void sym_link(char *oldName, char *newName)
 	
 	dp->name_len = (strlen(oldName));
 	dp->rec_len = BLOCK_SIZE;
-	strncpy(dp->name, oldName, dp->name_len);
+	strncpy(dp->name, oldName, dp->name_len); ////////////////////////////////////////////////////////////////////////SHOULD THIS BE THE LOCAL PATH OR THE ABSOLUTE PATH?
 
 	//write the string oldName into the i_block[], which has room for 60 chars
 	//this I have no idea how to do so we will have to tackle it together
