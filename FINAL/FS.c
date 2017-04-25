@@ -1817,7 +1817,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 				if(isDebug) printf("dp->name: %s\n", dp->name);
 				// increment the length of the last entry
 				
-				if(isDebug) printf("dp->rec_len: %d\n", dp->rec_len);
+				if(isDebug) printf("dp->rec_len: %d + temp: %d\n", dp->rec_len, temp);
 				dp->rec_len += temp;
 				if(isDebug) printf("dp->rec_len: %s\n", dp->rec_len);
 
