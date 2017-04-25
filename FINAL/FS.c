@@ -2175,7 +2175,7 @@ void my_unlink(char *pathToUnlink)
 void sym_link(char *oldName, char *newName)
 {
 	char *parent, *child;
-  	int parentInode,   ;
+  	int parentInode, childInode;
   	int isRootPath = 0;
   	MINODE *Omip, *Nmip;
 
