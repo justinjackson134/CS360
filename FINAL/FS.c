@@ -1792,11 +1792,12 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 
 	// Step to the end of the data block
     if (isDebug) printf("step through data block to find: %s\n", name);
-	while (cp < buf + BLKSIZE)
+	while (cp <= buf + BLKSIZE)
 	{
 		if (isDebug) printf("If dp->name: %s, == name: %s\n", dp->name, name);
 		if(strcmp(dp->name, name) == 0)
 		{
+			if (isDebug) printf("Ended on: %s\n", dp->name);
 			if (isDebug) printf("Found the rec to delete, name: %s, rec_len: %d\n", dp->name, dp->rec_len);
 			// Used to fix rec_lens
 			temp = dp->rec_len;
@@ -1835,7 +1836,6 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 		cp += dp->rec_len;
 		dp = (DIR *)cp;
 	}
-	if (isDebug) printf("Ended on: %s\n", dp->name);
 
 	// write the changes back to the fd
 	put_block(fd, parentMinodePtr->INODE.i_block[0], buf);
