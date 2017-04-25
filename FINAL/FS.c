@@ -2341,6 +2341,9 @@ void sym_link(char *oldPath, char *newPath)
 		// Get the In_MEMORY minode of parent:
 		if (isDebug) printf("Setting parentMinodePtr\n");
 		Nmip = iget(root->dev, parentInode);
+
+		childInode = search(Nmip, child);
+		Nmip = iget(root->dev, childInode);
 	}
 
 	// We now have a handle to the file we just created
