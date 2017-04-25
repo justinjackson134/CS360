@@ -1754,8 +1754,6 @@ int my_rm_dir(char *pathname)
 				// Call rmdir helper function
 				if (isDebug) printf("Calling rmdir helper\n");
 				my_rm_dir_Helper(parentMinodePtr, child);
-
-				parentMinodePtr
 			}
 			else
 			{
