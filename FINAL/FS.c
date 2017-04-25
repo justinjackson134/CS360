@@ -341,7 +341,7 @@ int getino(int *dev, char *pathname)
   else // pathNum == 2
   {
   	n = tokenizePathname2();
-  	if(strcmp(command[0], "link") == 0 || strcmp(command[0], "symlink"))
+  	if(strcmp(command[0], "link") == 0 || (strcmp(command[0], "symlink") && FindParent == 1))
   	{
   		n -= 1;
   	}
@@ -2227,7 +2227,9 @@ void sym_link(char *oldPath, char *newPath)
 		}
 		// Get the inode number of the parent MINODE
 		if (isDebug) printf("Setting parentInode\n");
+		FindParent = 1;
 		parentInode = getino(&root->dev, parent);
+		FindParent = 0;
 		// If the parent is empty, we know that it needs to be the cwd
 		if(strcmp(parent, "") == 0)
 		{		
