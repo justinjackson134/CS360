@@ -1973,11 +1973,11 @@ void my_link(char *oldPath, char *newPath)
 
 	// If Omip is a directory, we cant link to it!
 	if(isDebug) printf("Omip->INODE.i_mode: %d\n", Omip->INODE.i_mode);
-	if (S_ISDIR(Omip->INODE.i_mode))
-	{
-		printf("Cannont link to a directory, returning to main menu\n");
-		return;
-	}
+//	if (S_ISDIR(Omip->INODE.i_mode))
+//	{
+//		printf("Cannont link to a directory, returning to main menu\n");
+//		return;
+//	}
 
 	if (isDebug) printf("Loading Nmip\n");
 	if(newPath != NULL)
@@ -2150,11 +2150,11 @@ void my_unlink(char *pathToUnlink)
 		return;
 	}
 
-	if (S_ISDIR(mip->INODE.i_mode))
-	{
-		printf("Cannot unlink a directory, returning to main\n");
-		return;
-	}
+//	if (S_ISDIR(mip->INODE.i_mode))
+//	{
+//		printf("Cannot unlink a directory, returning to main\n");
+//		return;
+//	}
 	mip->INODE.i_links_count--;
 	if (mip->INODE.i_links_count == 0)
 	{
