@@ -341,7 +341,7 @@ int getino(int *dev, char *pathname)
   else // pathNum == 2
   {
   	n = tokenizePathname2();
-  	if(strcmp(command[0], "link") == 0 || (strcmp(command[0], "symlink") && FindParent == 1))
+  	if(strcmp(command[0], "link") == 0 || (strcmp(command[0], "symlink") == 0 && FindParent == 1))
   	{
   		n -= 1;
   	}
