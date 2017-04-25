@@ -2704,6 +2704,10 @@ void commandTable()
   {
   	  debug_flip();
   }
+  else if (strcmp(command[0], "rm") == 0)
+  {
+  	  my_rm(command[1]);
+  }
 }
 
 
