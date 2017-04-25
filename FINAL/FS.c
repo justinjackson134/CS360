@@ -349,11 +349,13 @@ int getino(int *dev, char *pathname)
   	}
   }
 
-  if(strcmp(command[0], "mkdir") == 0 || strcmp(command[0], "creat") == 0)
+  // Tells the program that we are trying to find the parent and not just the parent and child
+  if(strcmp(command[0], "mkdir") == 0 || strcmp(command[0], "creat") == 0 || strcmp(command[0], "touch") == 0);
   {
   	n -= 1;
   }
 
+  // Tells the program if rmdir is looking for the parent or child
   if(strcmp(command[0], "rmdir") == 0 && rmDirFindParent == 1)
   {
   	n -= 1;
