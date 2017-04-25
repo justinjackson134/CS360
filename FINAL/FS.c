@@ -1896,37 +1896,84 @@ int dirIsEmpty(MINODE *childMinodePtr)
 
 void my_link(char *oldPath, char *newPath)
 {
+	int isRootPath = 0, nmipIno, omipIno;
+
 	if (isDebug) printf("BEGIN my_link\n");
 	MINODE *Omip = iget(fd, getino(&fd, oldPath));
 	if (isDebug) printf("Loaded Omip\n");
 	MINODE *Nmip;
 
+	// If the old path is a directory, exit
 	if (Omip->INODE.i_mode == DIR_MODE)
 	{
 		printf("Cannont link to a directory, returning to main menu\n");
 		return;
 	}
 
+	// If the new pathname begins with a "/" it is a root path
+	if (newPath[0] == '/')
+	{
+	  fd = root->dev;
+	  if(isDebug) printf("Link Newpath from root->dev: fd = %d\n", fd);
+	  isRootPath = 1;
+	}
+	else
+	{
+	  fd = running->cwd->dev;
+	  if(isDebug) printf("Link Newpath from running->cwd->dev: fd = %d\n", fd);
+	  isRootPath = 0;
+	}
+
 	if (isDebug) printf("Setting dirname and basename\n");
 	setDirnameBasename2(newPath);
-	
 	if (isDebug) printf("dirname = %s      basename = %s\n", dirname_value, basename_value);
 
-	//int i = search(Omip, (newPath - lastToken));//or just dir_path
+	// Validate that the parent == root if we are a root path
+	if(strcmp(dirname_value, "") == 0)
+	{
+		if(isRootPath == 1)
+		{
+			// Parent is null, but we are a root path, set parent == root
+			strcpy(dirname_value, "/");
+		}
+	}
+	
+	// Get the inode of Nmip
 	if (isDebug) printf("Getting inode of %s into Nmip\n", dirname_value);
-
 	pathNum = 2;
-	Nmip = iget(fd, getino(&fd, dirname_value));
-	pathNum = 1;
+	nmipIno = getino(&fd, dirname_value);
+	pathNum = 1;	
+
+	// Validate that the parent == running cwd->ino if we are not a root path
+	if(strcmp(dirname_value, "") == 0)
+	{		
+		if (isRootPath == 0)
+		{
+			// Parent is bad, we are not a root path, but we were given no dirname, set parent to cwd
+			parentInode = running->cwd->ino;
+		}
+	}
+	
+	// Get the nmip MINODE
+	Nmip = iget(fd, nmipIno);
+
+	// If the child is null, we cannot link this
+	if(strcmp(basename_value, "") == 0 || basename_value == NULL)
+	{
+		printf("Cannot link to nothing!\n");
+		return;
+	}
 	
 	if (Nmip->INODE.i_mode == FILE_MODE || Nmip->INODE.i_mode == SYM_LINK)
 	{
 		printf("Cannot create new file inside a file, returning to main menu\n");
 		return;
 	}
+
 	printf("Searching for %s in %s\n", basename_value, dirname_value);
 	int i = search(Nmip, basename_value);
 	printf("i = %d\n", i);
+	
 	if (i != 0)
 	{
 		printf("File name already exists, returning to main menu\n");
