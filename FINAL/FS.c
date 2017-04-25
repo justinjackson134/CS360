@@ -969,11 +969,13 @@ void truncate(int dev, MINODE *mip)
 void idealloc(int dev, int ino)
 {
 	char buf[BLOCK_SIZE];
+	if(isDebug) printf("Dealloc: Get_block\n");
 	get_block(dev, IBITMAP, buf); //gets the ibitmap block into buf
-
+	if(isDebug) printf("Dealloc: clr_bit\n");
 	clr_bit(buf, ino - 1); //clears the inode in the map, ino-1 cause of indexes
-
+	if(isDebug) printf("Dealloc: put_block\n");
 	put_block(dev, IBITMAP, buf);
+	if(isDebug) printf("Dealloc: Done\n");
 }
 //deallocates all blocks of an inode, used for removing 
 void deallocIBlocks(int dev, MINODE *mip)
