@@ -2035,7 +2035,7 @@ void my_touch(char *file)
 	if (getino(&fd, file) == 0)
 	{
 		// This is too make get inode only find the parent dir to create the new file in
-		strncpy(command[0],"creat");
+		strncpy(command[0],"creat",strlen("creat"));
 		my_creat(file);
 	}
 	else
