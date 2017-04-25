@@ -349,8 +349,12 @@ int getino(int *dev, char *pathname)
   	}
   }
 
+<<<<<<< HEAD
   // Tells the program that we are trying to find the parent and not just the parent and child
   if(strcmp(command[0], "mkdir") == 0 || strcmp(command[0], "creat") == 0);// || strcmp(command[0], "touch") == 0);
+=======
+  if(strcmp(command[0], "mkdir") == 0)
+>>>>>>> parent of 48c5203... fix creat
   {
   	n -= 1;
   }
