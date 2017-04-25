@@ -350,7 +350,7 @@ int getino(int *dev, char *pathname)
   }
 
   // Tells the program that we are trying to find the parent and not just the parent and child
-  if(strcmp(command[0], "mkdir") == 0 || strcmp(command[0], "creat") == 0 || strcmp(command[0], "touch") == 0)
+  if(strcmp(command[0], "mkdir") == 0 || strcmp(command[0], "creat") == 0) // || strcmp(command[0], "touch") == 0)
   {
   	n -= 1;
   }
