@@ -2349,7 +2349,7 @@ void sym_link(char *oldPath, char *newPath)
 	memset(buf, 0, BLKSIZE);
 	dp = (DIR *)buf;
 	
-	dp->name_len = (strlen(oldName));
+	dp->name_len = (strlen(oldPath));
 	dp->rec_len = BLOCK_SIZE;
 	strncpy(dp->name, oldName, dp->name_len); ////////////////////////////////////////////////////////////////////////SHOULD THIS BE THE LOCAL PATH OR THE ABSOLUTE PATH?
 
