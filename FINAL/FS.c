@@ -2761,6 +2761,7 @@ main(int argc, char *argv[ ]) {
       		iput(&minode[i]);
       	}
       }
+      printf("EXT2 FS: s_magic = %x\n", sp->s_magic);
       // Close the virtual disk
       close(OpenDiskDescriptor);
       break;
