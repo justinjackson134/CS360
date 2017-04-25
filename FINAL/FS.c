@@ -1819,7 +1819,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 				
 				if(isDebug) printf("dp->rec_len: %d + temp: %d\n", dp->rec_len, temp);
 				dp->rec_len += temp;
-				if(isDebug) printf("dp->rec_len: %s\n", dp->rec_len);
+				if(isDebug) printf("dp->rec_len: %d\n", dp->rec_len);
 
 				// We need to move all items downstream from the deleted item up by the length of the deleted dir
 				memcpy(cp, cp + temp, BLKSIZE - distanceFromBegin - temp);
@@ -1891,9 +1891,6 @@ void my_link(char *oldPath, char *newPath)
 		iput(Omip);
 		return;
 	}
-
-
-
 }
 
 void my_unlink(char *pathToUnlink)
