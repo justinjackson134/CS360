@@ -2027,6 +2027,7 @@ void my_chmod(char *filename, int permissions)
 	iput(mip);
 }
 
+/*
 int open_File(char *fileName, int mode)
 {
 	MINODE *mip;
@@ -2087,7 +2088,7 @@ int open_File(char *fileName, int mode)
 
 
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 void debug_flip()
 {
