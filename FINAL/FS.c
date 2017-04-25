@@ -1903,6 +1903,8 @@ void my_link(char *oldPath, char *newPath)
 
 	if (isDebug) printf("BEGIN my_link\n");
 
+	printf("\nNUMBER OF COMMANDS: %d\n\n", numberOfCommands);
+
 	// Load Omip
 	if (isDebug) printf("Loading Omip\n");
 	if(oldPath != NULL)
