@@ -405,6 +405,7 @@ void mountRoot(char *disk)
 
   // Open disk for read/write
   fd = open(disk, O_RDWR);
+  if(isDebug) printf("TRYING TO OPEN DISK: FD = %d\n", fd);
   // Check if the open succeds or fails
   if (fd < 0) {
     // If we failed, exit!
@@ -453,9 +454,9 @@ void mountRoot(char *disk)
     InodesBeginBlock = gp->bg_inode_table;
     // Added this from the ialloc.c of lab 6, I believe we need it in order for ialloc and balloc to work correctly --- This may need to be something else however!
     imap = gp->bg_inode_bitmap;
-  	printf("imap = %d\n", imap);
+  	if(isDebug) printf("imap = %d\n", imap);
   	bmap = gp->bg_block_bitmap;
-  	printf("bmap = %d\n", bmap);
+  	if(isDebug) printf("bmap = %d\n", bmap);
 
 
     if(isDebug) 
@@ -601,7 +602,11 @@ int tokenizeCommmand()
 
 void my_help()
 {
-	printf("\n------------- J&J EXT2FS HELP -------------\nCommands: ls, cd, pwd, mkdir, rmdir, creat,\n          link, unlink, symlink, readlink,\n          quit\n");
+	printf("\n\n");
+	printf("--------------- J&J EXT2FS HELP ---------------\n");
+	printf("Commands: ls, cd, pwd, mkdir, rmdir, creat, rm,\n");
+	printf("          link, unlink, symlink, readlink,\n");
+	printf("          chmod, touch, quit\n\n");
 }
 
 void my_ls(char *name) {
@@ -1077,10 +1082,8 @@ void deallocIBlocks(int dev, MINODE *mip)
 		put_block(dev, BBITMAP, bitmap);
 		return;
 	}
-
-
 }
-//////////////////////////////////////////////////////////////////////////////////////// END COPY FROM LAB 6
+
 // Set both dirnmae and basename
 int setDirnameBasename(char *pathname)
 {
@@ -1624,7 +1627,7 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	if (isDebug) printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
 
 	// Use ip-> to acess the INODE fields:
-	ip->i_mode = 0x81A4;		      // OR 040755: DIR type and permissions
+	ip->i_mode = 0x81A4;		      // OR 040755: FILE type and permissions
 	ip->i_uid  = running->uid;	      // Owner uid 
 	ip->i_gid  = running->gid;	      // Group Id
 	ip->i_size = 0;       		      // Size in bytes 
@@ -2648,7 +2651,6 @@ void debug_flip()
 		isDebug = 1;
 	}
 }
-
 
 void commandTable()
 {
