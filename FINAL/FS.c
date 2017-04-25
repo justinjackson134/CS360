@@ -931,6 +931,24 @@ int balloc(int mydev)
   return 0;
 }
 
+int falloc(OFT *op) {
+	int i = 0;
+	// Check all OFT pointers in running process
+	for (i = 0; i < NFD; i++) {
+		if (running->fd[i] == NULL)
+			break;
+	}
+	// if there is a free OFT pointer
+	if (i < NFD) {
+		// Assign to next available location in running process
+		running->fd[i] = op;
+		return i;
+	}
+	// no OFT pointers available
+	return -1;
+}
+
+
 void truncate(int dev, MINODE *mip)
 {
 	//deallocates all i_blocks of an inode
@@ -2007,6 +2025,67 @@ void my_chmod(char *filename, int permissions)
 	mip->dirty = 1;
 	mip->INODE.i_mtime = time(0);
 	iput(mip);
+}
+
+int open_File(char *fileName, int mode)
+{
+	MINODE *mip;
+	int device, ino, i;
+
+	if (file[0] == '/') device = root->dev;
+	else device = running->cwd->dev;
+
+	ino = getino(&device, file);
+
+	mip = iget(device, ino);
+
+	if (mip->INODE.i_mode != FILE_MODE)
+	{
+		printf("NOT A REGULAR FILE, RETURNING\n");
+		return;
+	}
+
+	for (i = 0; i < NFD; i++) {
+		if (running->fd[i] != 0)
+		{
+			if (running->fd[i]->minodeptr == mip) {
+				if (running->fd[i]->mode > 0) {
+					printf("file already opened!\n");
+					return -1;
+				}
+			}
+		}
+	}
+
+	OFT *newFile = malloc(sizeof(OFT));
+	int location = falloc(newFile);
+
+	if (location == -1)
+	{
+		printf("No available open file descriptors, please close something and try again\n");
+		return;
+	}
+
+	newFile->mode = mode;
+	newFile->refCount = 1;
+	newFile->inodeptr = mip;
+
+	switch (mode)
+	{
+	case(0): newFile->offset = 0;
+		break;
+	case(1): truncate(device, mip);
+		newFile->offset = 0;
+		break;
+	case(2): newFile->offset = 0;
+		break;
+	case(3): newFile->offset = mip->INODE.i_size;
+		break;
+		
+	}
+
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
