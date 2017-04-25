@@ -2077,7 +2077,7 @@ void my_link(char *oldPath, char *newPath)
 void my_unlink(char *pathToUnlink)
 {
 	char *parent, *child;
-  	int parentInode;
+  	int parentInode, childInode;
   	int isRootPath = 0;
 	MINODE *mip, *pmip;
 	int ino;
@@ -2123,7 +2123,8 @@ void my_unlink(char *pathToUnlink)
 
 		// Get the inode number of the parent MINODE
 		if (isDebug) printf("Setting parentInode\n");
-		ino = getino(&root->dev, parent);
+		parentInode = getino(&root->dev, parent);
+		childInode = getino(&root->dev, child);
 		// If we are not a root parent, and our inode is 0, set the parent node to the cwd
 		if(strcmp(parent, "") == 0)
 		{		
@@ -2142,7 +2143,8 @@ void my_unlink(char *pathToUnlink)
 		
 		// Get the In_MEMORY minode of parent:
 		if (isDebug) printf("Setting parentMinodePtr\n");
-		mip = iget(root->dev, parentInode);
+		pmip = iget(root->dev, parentInode);
+		mip = iget(root->dev, childInode);
 	}
 	else
 	{
@@ -2162,10 +2164,6 @@ void my_unlink(char *pathToUnlink)
 		idealloc(mip->dev,mip->ino);
 	}
 	
-	setDirnameBasename(pathToUnlink);
-
-	ino = getino(&fd, dirname_value);
-	pmip = iget(fd, ino);
 	my_rm_dir_Helper(pmip, basename_value);//same as rmdir, just delete that from the path
 }
 
