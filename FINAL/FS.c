@@ -1751,7 +1751,9 @@ int my_rm_dir(char *pathname)
 			if(S_ISDIR(childMinodePtr->INODE.i_mode))
 			{
 				if(isDebug) printf("Deallocating Child Inode: %d\n", childMinodePtr->ino);
+				childMinodePtr->dirty = 1;
 				idealloc(fd, childMinodePtr->ino);
+				deallocIBlocks(fd, childMinodePtr);
 
 				// Call rmdir helper function
 				if (isDebug) printf("Calling rmdir helper\n");
