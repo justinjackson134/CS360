@@ -2165,7 +2165,7 @@ void my_unlink(char *pathToUnlink)
 	setDirnameBasename(pathToUnlink);
 
 	ino = getino(&fd, dirname_value);
-	pmip = iget(fd, i);
+	pmip = iget(fd, ino);
 	my_rm_dir_Helper(pmip, basename_value);//same as rmdir, just delete that from the path
 }
 
