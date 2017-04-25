@@ -165,8 +165,8 @@ int imap;
 
 // Path NUM var to make tokenize path behave differently on # of paths given
 int pathNum = 1;
-// Var used to tell getino to return the parent for rmdir
-int rmDirFindParent = 0;
+// Var used to tell getino to return the parent for rmdir and unlink
+int FindParent = 0;
 
 
 
@@ -354,7 +354,7 @@ int getino(int *dev, char *pathname)
   }
 
   // Tells the program if rmdir is looking for the parent or child
-  if(strcmp(command[0], "rmdir") == 0 && rmDirFindParent == 1)
+  if((strcmp(command[0], "rmdir") == 0 && FindParent == 1) || (strcmp(command[0], "unlink") == 0 && FindParent == 1))
   {
   	n -= 1;
   }
@@ -1695,9 +1695,9 @@ int my_rm_dir(char *pathname)
 	}
 
 	// Get the inode number of the parent MINODE
-	rmDirFindParent = 1;
+	FindParent = 1;
 	parentInode = getino(&root->dev, parent);
-	rmDirFindParent = 0;
+	FindParent = 0;
 	if (isDebug) printf("\n\n_________________________________\nSetting parentInode: %s, %d\n", parent, parentInode);
 	
 
@@ -2123,7 +2123,12 @@ void my_unlink(char *pathToUnlink)
 
 		// Get the inode number of the parent MINODE
 		if (isDebug) printf("Setting parentInode\n");
+
+		// Flip this switch so that getino returns the parent
+		FindParent = 1;
 		parentInode = getino(&root->dev, parent);
+		FindParent = 0;
+
 		childInode = getino(&root->dev, child);
 		// If we are not a root parent, and our inode is 0, set the parent node to the cwd
 		if(strcmp(parent, "") == 0)
@@ -2163,7 +2168,7 @@ void my_unlink(char *pathToUnlink)
 		truncate(mip->dev,mip);//this deallocates all datablocks of an inode, in a similar way you would print them
 		idealloc(mip->dev,mip->ino);
 	}
-	
+
 	my_rm_dir_Helper(pmip, basename_value);//same as rmdir, just delete that from the path
 }
 
