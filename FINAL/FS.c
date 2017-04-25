@@ -2085,7 +2085,7 @@ void my_unlink(char *pathToUnlink)
 
 
 
-	if (mip->INODE.i_mode == DIR_MODE)
+	if (S_ISDIR(mip->INODE.i_mode))
 	{
 		printf("Cannot unlink a directory, returning to main\n");
 		return;
