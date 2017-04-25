@@ -649,7 +649,7 @@ void my_ls(char *name) {
 				dir = (DIR *)buf;
 				printf("Name\tMode\tC_time\tM_time\tA_time\tLink Count\n");
 				while (cp < &buf[BLKSIZE])
-				{
+				{					
 					// This was the original print // printf("%s ", dir->name);
 					// Get the parents inode number
 					ino = dir->inode;
@@ -663,6 +663,8 @@ void my_ls(char *name) {
 
 					cp += dir->rec_len;
 					dir = (DIR *)cp;
+
+					getchar();
 				}
 			}
 		}
