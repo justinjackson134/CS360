@@ -2253,23 +2253,23 @@ void sym_link(char *oldPath, char *newPath)
 		childInode = search(Omip, child);
 	}
 
-
-
-
 	// If the child exists, then we can continue, else, exit
 	if (!childInode)
 	{
 		printf("File to link not found, returning\n");
 		return;
 	}
+
 	if (isDebug) printf("Setting pathNum to 2\n");
 	pathNum = 2;
 	// This is too make get inode only find the parent dir to create the new file in
-	strncpy(command[0],"creat",strlen("creat"));
+	//strncpy(command[0],"creat",strlen("creat"));
+	FindParent = 1;
 	if (isDebug) printf("Creating new file %s\n", newPath);
 	my_creat(newPath);//create the file that will link to OldName
+	FindParent = 0;
 	// This is too reset the command[0] to be accurate
-	strncpy(command[0],"symlink",strlen("symlink"));
+	//strncpy(command[0],"symlink",strlen("symlink"));
 	pathNum = 1;
 
 
