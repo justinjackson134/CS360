@@ -321,7 +321,7 @@ int getino(int *dev, char *pathname)
   if (pathname[0]=='/')
   {
     if (isDebug) printf("Right before iget(*dev, 2)\n");                /////////////////////// With
-    mip = iget(*dev, 2); ///// taking out the damn * for dev
+    mip = iget(*dev, 2);
   }
   else    
   {
@@ -2174,11 +2174,32 @@ void my_unlink(char *pathToUnlink)
 
 void sym_link(char *oldName, char *newName)
 {
-	MINODE *Nmip;
+	char *parent, *child;
+  	int parentInode,   ;
+  	int isRootPath = 0;
+  	MINODE *Omip, *Nmip;
+
 	char buf[BLOCK_SIZE];
 	int i;
+	
+	if (isDebug) printf("\nNUMBER OF COMMANDS: %d\n\n", numberOfCommands);
+	if(numberOfCommands < 3)
+	{
+		printf("Not enough Parameters entered for symlink");
+		return;
+	}
+	
+
+
+	
+
+
+
+
 	if (isDebug) printf("Inside symlink, geting ino from oldpath\n");
 	i = getino(&fd, oldName);
+
+
 
 	if (!i)
 	{
