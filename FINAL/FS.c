@@ -663,8 +663,6 @@ void my_ls(char *name) {
 
 					cp += dir->rec_len;
 					dir = (DIR *)cp;
-
-					getchar();
 				}
 			}
 		}
@@ -1794,7 +1792,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 
 	// Step to the end of the data block
     if (isDebug) printf("step through data block to find: %s\n", name);
-	while (cp < buf + BLKSIZE)
+	while (cp + dp->rec_len < buf + BLKSIZE)
 	{
 		if (isDebug) printf("If dp->name: %s, == name: %s\n", dp->name, name);
 		if(strcmp(dp->name, name) == 0)
@@ -1812,7 +1810,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 			// We are deleting from the middle
 			else
 			{
-				dp = (DIR *)endCP;
+				dp = (DIR *) endCP;
 				// increment the length of the last entry
 				dp->rec_len += temp;
 				// We need to move all items downstream from the deleted item up by the length of the deleted dir
