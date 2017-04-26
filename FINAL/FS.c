@@ -2756,7 +2756,9 @@ main(int argc, char *argv[ ]) {
   while(1)
   {
     // Print prompt for user command entry
-    printf("\nJ&J EXT2FS: ");
+    printf("\nJ&J EXT2FS@");
+    recursive_pwd(running->cwd, 0);
+    printf(": ");
     // Read in and tokenize Command
     numberOfCommands = tokenizeCommmand();
     if (strcmp(command[0], "quit") == 0)
