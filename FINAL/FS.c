@@ -2546,7 +2546,7 @@ void read_link(char *linkedPath)
 	}
 	else // Calling this manually
 	{
-		getino(&fd, linkedPath);
+		ino = getino(&fd, linkedPath);
 	}
 	if(isDebug) printf("got ino = %d\n", ino);
 	mip = iget(fd, ino);
