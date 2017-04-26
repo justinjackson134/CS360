@@ -2793,7 +2793,11 @@ int pfd()
 	for (i = 0; i < NFD; i++);
 	{
 		if (running->fd[i] == NULL)
+		{
+			if (isDebug) printf("running->fd[%d] == NULL returning\n", i);
 			return;
+		}
+			
 		else
 		{
 			switch (proc->fd[i]->mode)
