@@ -2063,7 +2063,7 @@ int dirIsEmpty(MINODE *childMinodePtr)
 void my_link(char *oldPath, char *newPath)
 {
 	char *parent, *child;
-  	int parentInode;
+  	int parentInode, childInode;
   	int isRootPath = 0;
   	MINODE *Omip, *Nmip;
 
