@@ -2543,7 +2543,7 @@ void read_link(char *linkedPath)
 
 	DIR *dp2 = (DIR *)buf;
 
-	printf("SymLink: %s->%s\n", linkedPath, dp->name);
+	printf("SymLink: %s->%s\n", linkedPath, dp2->name);
 
 	return;
 
