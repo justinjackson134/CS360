@@ -2527,12 +2527,11 @@ void sym_link(char *oldPath, char *newPath)
 
 void read_link(char *linkedPath)
 {
+	if(isDebug) printf("Read_Link linkedPath = %s\n", linkedPath);
+
 	MINODE *mip;
 	char buf[BLOCK_SIZE];
 	mip = iget(fd, getino(&fd, linkedPath));
-
-
-	if(isDebug) printf("Read_Link linkedPath = %s\n", linkedPath);
 
 	if (mip->INODE.i_mode != SYM_LINK)
 	{
