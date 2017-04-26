@@ -2756,8 +2756,7 @@ main(int argc, char *argv[ ]) {
   while(1)
   {
     // Print prompt for user command entry
-    printf("UID-%d@J&J EXT2FS:~", running->uid);
-    printf("J&J EXT2FS@");
+    printf("\nUID-%d@J&J EXT2FS:~", running->uid);
     recursive_pwd(running->cwd, 0);
     printf("$ ");
     // Read in and tokenize Command
