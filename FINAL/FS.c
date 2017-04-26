@@ -2811,7 +2811,7 @@ int pfd()
 				break;
 			case 3: temp = "APPEND";
 				break;
-			case default: printf("Default");
+			default: printf("Default");
 				break;
 			}
 		}
