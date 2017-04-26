@@ -2510,11 +2510,11 @@ void sym_link(char *oldPath, char *newPath)
 	iput(Nmip);
 }
 
-/*
+
 void read_link(char *linkedPath)
 {
 	MINODE *mip;
-
+	char buf[BLOCK_SIZE];
 	mip = iget(fd, getino(fd, linkedPath));
 
 	if (mip->INODE.i_mode != SYM_LINK)
@@ -2523,10 +2523,16 @@ void read_link(char *linkedPath)
 		return;
 	}
 
-	printf(mip->INODE.i_block[0]);//this isnt right but I believe its in Lab 6 stuff, printinf out the datablock ie the name of the symlink that we made above
+	get_block(fd, mip->INODE.i_block[0], buf);
+
+	DIR *dp = (DIR *)buf;
+
+	printf("SymLink: %s->%s\n", linkedPath, dp->name);
+
+	return;
 
 }
-*/
+
 
 void my_touch(char *file)
 {
