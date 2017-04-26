@@ -2665,20 +2665,22 @@ int open_File(char *fileName, int mode)
 {
 	MINODE *mip;
 	int device, ino, i;
-
+	if (isDebug) printf("In open file\n");
 	if (fileName[0] == '/') device = root->dev;
 	else device = running->cwd->dev;
 
+	if (isDebug) printf("Getting ino\n");
 	ino = getino(&device, fileName);
-
+	if (isDebug) printf("Ino = %d\n", ino);
 	mip = iget(device, ino);
+	
 
 	if (mip->INODE.i_mode != FILE_MODE)
 	{
 		printf("NOT A REGULAR FILE, RETURNING\n");
 		return;
 	}
-
+	if (isDebug) printf("Checking if it is already open\n");
 	for (i = 0; i < NFD; i++)
 	{
 		if (running->fd[i] != 0)
@@ -2693,7 +2695,7 @@ int open_File(char *fileName, int mode)
 			}
 		}
 	}
-
+	if (isDebug) printf("Allocating a new OFT\n");
 	OFT *newFile = malloc(sizeof(OFT));
 	int location = falloc(newFile);
 
@@ -3126,6 +3128,7 @@ void commandTable()
   else if (strcmp(command[0], "open") == 0)
   {
 	  int i = (int)command[2];
+	  if (isDebug) printf("i = %d", i);
 	  open_File(command[1], i);
   }
   else if (strcmp(command[0], "pfd") == 0)
