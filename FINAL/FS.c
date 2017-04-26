@@ -2830,7 +2830,7 @@ int readStart()
 {
 	int toRead, nbytes;
 	toRead = atoi(command[1]);
-	char *buf;
+	char buf[BLOCK_SIZE];
 	if (isDebug) printf("Running->fd[%d]->mode = %d", toRead, running->fd[toRead]->mode);
 	if (running->fd[toRead] == NULL)
 	{
