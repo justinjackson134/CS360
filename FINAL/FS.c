@@ -2899,12 +2899,16 @@ int my_read(int descriptor, char *buf, int nbytes)
 			indirect = (long)buf;
 			blk = (indirect + ((lbk - 268) % 256));
 		}
+
 		if (isDebug) printf("Before getting blk block\n");
 		get_block(mip->dev, blk, readBuf);
+
 		if (isDebug) printf("After getting blk block\n");
 		char *cp = readBuf + startbyte;
+
 		remain = BLOCK_SIZE - startbyte;
 		if (isDebug) printf("Before while(remaing > 0)\n");
+
 		while (remain > 0)
 		{
 			if (isDebug) printf("before cp++\n");
