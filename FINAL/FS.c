@@ -729,7 +729,9 @@ void my_ls(char *name) {
 					if ((printMe->INODE.i_mode & 0120000) == 0120000)
 					{
 						//strncpy(command[1], dir->name, dir->name_len);
+						readLinkFromLs = ino;
 						read_link(dir->name);
+						readLinkFromLs = 0;
 					}
 					else
 					{
