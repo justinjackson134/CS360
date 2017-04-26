@@ -2907,11 +2907,17 @@ int my_read(int descriptor, char *buf, int nbytes)
 		if (isDebug) printf("Before while(remaing > 0)\n");
 		while (remain > 0)
 		{
+			if (isDebug) printf("before cp++\n");
 			*cq++ = *cp++;//copy byte from readbuf into buf
+			if (isDebug) printf("before offset++\n");
 			oftp->offset++;//advance the offset
+			if (isDebug) printf("before count++\n");
 			count++;//increase count to return read number of bytes
+			if (isDebug) printf("before avil--\n");
 			avil--;//decrease available number of bytes to read
+			if (isDebug) printf("before nbytes--\n");
 			nbytes--;//decrease amount left to read
+			if (isDebug) printf("before remain--\n");
 			remain--;//decrease amount remaining
 			if (nbytes <= 0 || avil <= 0)
 				break;
