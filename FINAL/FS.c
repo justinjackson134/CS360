@@ -154,6 +154,7 @@ char *fullpath;
 int numberOfPathItems = 0;
 // Number of free inodes, gived by the SUPERBLOCK
 int ninodes;
+int nblocks;
 // Device number
 int dev;
 // dirname variable
@@ -425,7 +426,7 @@ void mountRoot(char *disk)
 
   // Added this from the ialloc.c of lab 6, I believe we need it in order for ialloc and balloc to work correctly --- This may need to be something else however!
   ninodes = sp->s_inodes_count;
-
+  nblocks = sp->s_blocks_count;
   if(isDebug)
   {
     if (isDebug) printf("\nSUPERBLOCK\n-------------------------\n - nblocks:          %d\n - ninodes:          %d\n - inodes_per_group: %d\n - # free inodes:    %d\n - # free blocks:    %d\n",
@@ -956,7 +957,7 @@ int balloc(int mydev)
   // read block_bitmap
   get_block(mydev, bmap, buf);
 
-  for (i=0; i < ninodes; i++){
+  for (i=0; i < nblocks; i++){
     if (tst_bit(buf, i)==0){
        set_bit(buf,i);
        decFreeBlocks(bmap);
