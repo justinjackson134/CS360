@@ -659,7 +659,7 @@ void my_ls(char *name) {
 				get_block(fd, mip->INODE.i_block[i], buf);
 				cp = buf;
 				dir = (DIR *)buf;
-				printf("Name\tMode\tC_time\tM_time\tA_time\tLink Count\n");
+				printf("Name\tMode\tC_time\t\tM_time\t\tA_time\tLink Count\n");
 				while (cp < &buf[BLKSIZE])
 				{					
 					// This was the original print // printf("%s ", dir->name);
@@ -670,7 +670,7 @@ void my_ls(char *name) {
 					// Print printMe's info
 					if ((printMe->INODE.i_mode & 0120000) == 0120000)
 					{
-						strncpy(command[1], dir->name, dir->name_len);
+						//strncpy(command[1], dir->name, dir->name_len);
 						read_link(dir->name);
 					}
 					else
@@ -724,7 +724,7 @@ void my_ls(char *name) {
 					// Print printMe's info
 					if ((printMe->INODE.i_mode & 0120000) == 0120000)
 					{
-						strncpy(command[1], dir->name, dir->name_len);
+						//strncpy(command[1], dir->name, dir->name_len);
 						read_link(dir->name);
 					}
 					else
