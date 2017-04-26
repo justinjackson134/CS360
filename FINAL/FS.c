@@ -2855,12 +2855,13 @@ int my_read(int descriptor, char *buf, int nbytes)
 	char indirectBuf[BLOCK_SIZE], dblindirectBuf[BLOCK_SIZE];
 	long indirect;
 
-
+	if (isDebug) printf("In my_read\n");
 	OFT *oftp = running->fd[descriptor];
 
 	MINODE *mip = oftp->inodeptr;
 	long avil = oftp->inodeptr->INODE.i_size - oftp->offset;
-
+	if (isDebug) printf("Avil = %ld\n", avil);
+	if (isDebug) printf("nbytes = %d\n", nbytes);
 
 
 	long lbk, startbyte, blk, remain;
@@ -2872,6 +2873,8 @@ int my_read(int descriptor, char *buf, int nbytes)
 	{
 		lbk = oftp->offset / BLOCK_SIZE;
 		startbyte = oftp->offset % BLOCK_SIZE;
+		if (isDebug) printf("lbk = %ld\n", lbk);
+		if (isDebug) printf("startbyte = %ld\n", startbyte);
 
 		if (lbk < 12)
 		{
