@@ -2709,7 +2709,7 @@ void commandTable()
   }
   else if (strcmp(command[0], "readlink") == 0)
   {
-	  read_link(command[1])
+	  read_link(command[1]);
   }
   else if (strcmp(command[0], "rmdir") == 0)
   {
