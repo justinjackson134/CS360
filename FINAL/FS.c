@@ -2800,7 +2800,7 @@ int pfd()
 			
 		else
 		{
-			if (isDebug) printf("INSIDE ELSE, i = %d\n", i);
+			//if (isDebug) printf("INSIDE ELSE, i = %d\n", i);
 			switch (proc->fd[i]->mode)
 			{
 			case 0: temp = "READ";
@@ -2811,7 +2811,7 @@ int pfd()
 				break;
 			case 3: temp = "APPEND";
 				break;
-			default: printf("Default");
+			default: temp = "DEFAULT";
 				break;
 			}
 		}
