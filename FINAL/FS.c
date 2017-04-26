@@ -2541,7 +2541,7 @@ void read_link(char *linkedPath)
 
 	get_block(fd, mip->INODE.i_block[0], buf);
 
-	DIR *dp = (DIR *)buf;
+	DIR *dp2 = (DIR *)buf;
 
 	printf("SymLink: %s->%s\n", linkedPath, dp->name);
 
