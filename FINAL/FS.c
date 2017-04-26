@@ -2660,7 +2660,7 @@ void my_chmod(char *filename, int perm)
 	iput(mip);
 }
 
-/*
+
 int open_File(char *fileName, int mode)
 {
 	MINODE *mip;
@@ -2679,11 +2679,14 @@ int open_File(char *fileName, int mode)
 		return;
 	}
 
-	for (i = 0; i < NFD; i++) {
+	for (i = 0; i < NFD; i++)
+	{
 		if (running->fd[i] != 0)
 		{
-			if (running->fd[i]->minodeptr == mip) {
-				if (running->fd[i]->mode > 0) {
+			if (running->fd[i]->minodeptr == mip) 
+			{
+				if (running->fd[i]->mode > 0) 
+				{
 					printf("file already opened!\n");
 					return -1;
 				}
@@ -2718,7 +2721,329 @@ int open_File(char *fileName, int mode)
 		
 	}
 }
-*/
+
+
+
+int close_file(int descriptor)
+{
+	if (descriptor < 0 || descriptor > 16)
+	{
+		printf("Out of range for open file table, returning\n");
+		return;
+	}
+
+	if (running->fd[descriptor] == NULL)
+	{
+		printf("Already closed, returning\n");
+		return;
+	}
+	MINODE *mip;
+
+	OFT *newFile = running->Fd[descriptor];
+
+
+	running->fd[descriptor] = 0;
+
+	newFile->refCount--;
+
+	if (newFile->refCount > 0) return;
+
+	mip = newFile->inodeptr;
+
+	mip->dirty = 1;
+
+	iput(mip);
+
+	return 1;
+}
+
+
+int lseek(int fileD, int position)
+{
+	int op, sizeFile;
+	OFT *file = running->fd[fileD];
+	sizeFile = running->fd[fileD]->inoodeptr->i_size;//probably not that but we need the size of the file as to not offset too much
+	if (position > sizeFile)
+	{
+		printf("Cannot offset past the file, returning\n");
+		return;
+	}
+	if (position < 0)
+	{
+		printf("Cannot offset before the file, returning\n");
+		return;
+	}
+	file->offset = position;
+	return op;
+
+}
+
+int pfd()
+{
+	char *temp;
+	printf("fd\t mode\t offset\t INODE\t\n");
+	printf("----\t ----\t ----\t ----\t");
+
+	int i;
+	for (i = 0; i < NFD; i++);
+	{
+		if (running->fd[i] == NULL)
+			return;
+		else
+		{
+			switch (proc->fd[i]->mode)
+			{
+			case 0: temp = "READ";
+				break;
+			case 1: temp = "WRITE";
+				break;
+			case 2: temp = "READ/WRITE";
+				break;
+			case 3: temp = "APPEND";
+				break;
+			}
+		}
+		printf("%d\t %s\t %d\t [%d,%d]\n", running->fd[i]->mode, temp, running->fd[i]->offset, running->fd[i]->inodePtr->dev, running->fd[i]->inodePtr->ino)
+	}
+}
+
+int readStart()
+{
+	int toRead, nbytes;
+	int i = (int)command[1];
+	char *buf;
+	if (running->fd[i] == NULL)
+	{
+		printf("File not currently open, returning\n");
+		return;
+	}
+
+	else
+	{
+		if (running->fd[i]->mode != 0 || running->fd[i]->mode != 2)
+		{
+			printf("File not open for reading, returning\n");
+			return;
+		}
+
+		nbytes = (int)command[2];
+
+		my_read(toRead, buf, nbytes);
+	}
+
+
+}
+
+
+int my_read(int descriptor, char *buf, int nbytes)
+{
+	int count = 0;
+	char readBuf[BLOCK_SIZE];
+	char indirectBuf[BLOCK_SIZE], dblindirectBuf[BLOCK_SIZE];
+	long indirect;
+
+
+	OFT *oftp = running->fd[descriptor];
+
+	MINODE *mip = oftp->fd[descriptor]->inodeptr
+		long avil = oftp->inodeptr->INODE.i_size - oftp->offset;
+
+	long lbk, startbyte, blk;
+
+
+	char *cq = buf;
+
+	while (nbytes && avil)
+	{
+		lbk = oftp->offset / BLOCK_SIZE;
+		startbyte = oftp->offset % BLOCK_SIZE;
+
+		if (lbk < 12)
+		{
+			blk = mip->INODE.i_block[lbk];
+		}
+		else if (lbk >= 12 && lbk < 256 + 12)
+		{
+			get_block(mip->dev, mip->INODE.i_block[12], indirectBuf);
+			indirect = (long)indirectBuf;
+			blk = (indirect + (lbk - 12));
+		} //read double indirect blocks
+		else
+		{
+			get_block(mip->dev, mip->INODE.i_block[13], dblindirectBuf);
+			indirect = (long)buf;
+			blk = (indirect + ((lbk - 268) % 256));
+		}
+
+		get_block(mip->dev, blk, readBuf);
+
+		char *cp = readBuf + startbyte;
+		remain = BLOCK_SIZE - startbyte;
+
+		while (remain > 0)
+		{
+			*cq++ = *cp++;//copy byte from readbuf into buf
+			oftp->offset++;//advance the offset
+			count++;//increase count to return read number of bytes
+			avil--;//decrease available number of bytes to read
+			nbytes--;//decrease amount left to read
+			remain--;//decrease amount remaining
+			if (nbytes <= 0 || avil <= 0)
+				break;
+		}
+
+		//if one block not enough loop to the outer while loop
+		// we also need to modify this algorithm to read large chunks of data at a time rather than byte by byte
+		//it says it is required in the notes but I am unsure how to do it
+
+
+		/*Instead of reading one byte at a time and updating the counters on each byte,
+		TRY to calculate the maximum number of bytes available in a data block and
+		the number of bytes still needed to read. Take the minimum of the two, and read
+		that many bytes in one operation. Then adjust the counters accordingly. This
+		would make the read loops more efficient.
+
+		REQUIRED: optimize the read algorithm in your project.*/
+	}
+	printf("myread: read %d char from file descriptor %d\n", count, descriptor);
+	return count;
+}
+
+
+int cat(char *fileToCat)
+{
+	char myBuf[BLOCK_SIZE], dummy = 0; //null char at end of mybuf[]
+	int n;
+
+	int descriptor = open_File(fileToCat, 0);
+
+	while (n = my_read(descriptor, myBuf, BLOCK_SIZE))
+	{
+		mybuf[n] = 0;
+		for (int i = 0; i < BLOCK_SIZE; i++)
+		{
+			putchar(mybuf[i]);
+		}
+	}
+	close(descriptor);
+
+}
+
+int write_file()
+{
+	int descriptor = command[1];
+
+	char *toWrite = command[2];
+
+	if (running->fd[descriptor] == NULL || running->fd[descriptor]->mode == 0)
+	{
+		printf("Not a valid open file or not open for read/write, returning\n");
+		return;
+	}
+
+	char buf[BLOCK_SIZE];
+	strcpy(buf, toWrite);
+
+	int nbytes = strlen(buf);
+
+	buf[nbytes - 1] = 0;
+
+	return somestuff;//need to call my_write
+
+
+}
+
+
+int my_write(int descriptor, char buf[], int nbytes)
+{
+
+	int lbk, blk, startByte, remain;
+	long indirect;
+	char indirBuf[BLOCK_SIZE], dindirBuf[BLOCK_SIZE], wbuf[BLOCK_SIZE];
+	char *cq = buf;
+	OFT *oftp = running->fd[descriptor];
+	MINODE *mip = oftp->inodeptr;
+	while (nbytes > 0)
+	{
+		lbk = oftp->offset / BLOCK_SIZE;
+		startByte = oftp->offset % BLOCK_SIZE;
+
+		if (lbk < 12)
+		{
+			if (mip->INODE.i_block[lbk] == 0)
+			{
+				//no data block yet
+				mip->INODE.i_block[lbk] = balloc(mip->dev); //allocate data block
+															// write a block of 0's to blk on disk: OPTIONAL for data block 
+															// but MUST for I or D blocks
+			}
+			blk = mip->INODE.i_block[lbk];
+		}
+		else if (lbk >= 12 && lbk < 256 + 12)
+		{
+			get_block(mip->dev, mip->INODE.i_block[12], indirectBuf);
+			indirect = (long)indirectBuf;
+			blk = (indirect + (lbk - 12));
+		}
+		else
+		{
+			get_block(mip->dev, mip->INODE.i_block[13], dindirBuf);
+			indirect = (long)dindirBuf;
+			blk = (indirect + ((lbk - 268) % 256));
+		}
+
+		get_blocl(mip->dev, blk, wbuf);
+		char *cp = wbuf + startByte;
+
+		remain = BLOCK_SIZE - startByte;
+
+		while (remain > 0)
+		{
+			*cp++ = *cq++;
+			nbytes--; remain--;
+			oftp->offset++;
+			if (offset > mip->INODE.i_size)
+				mip->INODE.i_size++;
+			if (nbytes <= 0) break;
+		}
+		put_block(mip->dev, blk, wbuf);
+
+	}
+	mip->dirty = 1;
+	printf("wrote %d char into file descriptor fd=%d\n", nbytes, descriptor);
+	return nbytes;
+
+}
+
+
+int my_cp(char *source, char *destination)
+{
+	int srcDec = open_File(source, 0);
+	int destDec = open_File(destination, 1);
+	char srcBuf[BLOCK_SIZE], destBuf[BLOCK_SIZE];
+
+	int n;
+	while (n = read(srcDec, srcBuf, BLOCK_SIZE)
+	{
+		my_write(destDec, destBuf, n);
+	}
+}
+
+
+int my_mv(char *source, char *destination)
+{
+	//techinically there are supposed to be 2 cases for this, one case where the files are on the same device, the other on seperate devices
+	//but since we probably are not gonna get to mount stuff I dont think we should bother right now
+
+
+
+
+	my_link(source, destination); // hard link two files, which makes a copy of the source in the destination 
+	my_unlink(source); // unlink the source because its not a link just want a copy
+
+	return 1;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 void debug_flip()
 {
