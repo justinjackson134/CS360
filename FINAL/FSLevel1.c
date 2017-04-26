@@ -2153,7 +2153,7 @@ void my_link(char *oldPath, char *newPath)
 
 	// If Omip is a directory, we cant link to it!
 	if(isDebug) printf("Omip->INODE.i_mode: %d\n", Omip->INODE.i_mode);
-	if ((mip->INODE.i_mode & 0040000) == 0040000)
+	if ((Omip->INODE.i_mode & 0040000) == 0040000)
   {
     printf("Cannont link to a directory, returning to main menu\n");
 		return;
@@ -2450,7 +2450,7 @@ void sym_link(char *oldPath, char *newPath)
 		return;
 	}
 
-  if ((mip->INODE.i_mode & 0040000) == 0040000)
+  if ((Omip->INODE.i_mode & 0040000) == 0040000)
   {
     printf("Cannont link to a directory, returning to main menu\n");
     return;
