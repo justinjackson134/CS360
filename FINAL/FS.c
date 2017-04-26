@@ -2787,7 +2787,7 @@ int pfd()
 {
 	char *temp;
 	printf("fd\t mode\t offset\t INODE\t\n");
-	printf("----\t ----\t ----\t ----\t");
+	printf("----\t ----\t ----\t ----\t\n");
 
 	int i;
 	for (i = 0; i < NFD; i++);
@@ -2800,6 +2800,7 @@ int pfd()
 			
 		else
 		{
+			if (isDebug) printf("INSIDE ELSE, i = %d\n", i);
 			switch (proc->fd[i]->mode)
 			{
 			case 0: temp = "READ";
@@ -2809,6 +2810,8 @@ int pfd()
 			case 2: temp = "READ/WRITE";
 				break;
 			case 3: temp = "APPEND";
+				break;
+			case default: printf("Default");
 				break;
 			}
 		}
