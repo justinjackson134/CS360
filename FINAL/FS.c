@@ -2834,15 +2834,19 @@ int readStart()
 	
 	else
 	{
-		if (running->fd[i]->mode != 0 || running->fd[i]->mode != 2)
+		if (running->fd[i]->mode == 0 || running->fd[i]->mode == 2)
+		{
+			nbytes = atoi(command[2]);
+
+			my_read(toRead, buf, nbytes);
+			
+		}
+		else
 		{
 			printf("File not open for reading, returning\n");
 			return;
 		}
-
-		nbytes = atoi(command[2]);
-
-		my_read(toRead, buf, nbytes);
+		
 	}
 
 
