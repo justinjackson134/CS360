@@ -670,6 +670,7 @@ void my_ls(char *name) {
 					// Print printMe's info
 					if ((printMe->INODE.i_mode & 0120000) == 0120000)
 					{
+						strcpy(command[1],dir->name);
 						read_link(dir->name);
 					}
 					else
@@ -723,6 +724,7 @@ void my_ls(char *name) {
 					// Print printMe's info
 					if ((printMe->INODE.i_mode & 0120000) == 0120000)
 					{
+						strcpy(command[1],dir->name);
 						read_link(dir->name);
 					}
 					else
