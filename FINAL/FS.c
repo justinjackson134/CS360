@@ -2530,8 +2530,11 @@ void read_link(char *linkedPath)
 	if(isDebug) printf("Read_Link linkedPath = %s\n", linkedPath);
 
 	MINODE *mip;
-	char readbuf[BLOCK_SIZE];
-	mip = iget(fd, getino(&fd, linkedPath));
+	char buf[BLOCK_SIZE];
+	if(isDebug) printf("get ino\n");
+	int ino = getino(&fd, linkedPath);
+	if(isDebug) prinft("got ino = %d\n", ino);
+	mip = iget(fd, );
 
 	if(isDebug) printf("Read_Link before symlink check\n");
 
@@ -2544,13 +2547,13 @@ void read_link(char *linkedPath)
 
 	if(isDebug) printf("Read_Link Before get block\n");
 
-	get_block(fd, mip->INODE.i_block[0], readbuf);
+	get_block(fd, mip->INODE.i_block[0], buf);
 
 	if(isDebug) printf("Read_Link after get block\n");
 
-	DIR *dp2 = (DIR *)readbuf;
+	DIR *dp = (DIR *)buf;
 
-	printf("SymLink: %s->%s\n", linkedPath, dp2->name);
+	printf("SymLink: %s->%s\n", linkedPath, dp->name);
 
 	return;
 
