@@ -1661,7 +1661,7 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	ip->i_uid  = running->uid;	      // Owner uid 
 	ip->i_gid  = running->gid;	      // Group Id
 	ip->i_size = 0;       		      // Size in bytes 
-	ip->i_links_count = 0;	          // Links count=0 because file
+	ip->i_links_count = 1;	          // Links count=1 because file
 	ip->i_atime = time(0L);           // set to current time 
 	ip->i_ctime = time(0L);           // set to current time 
 	ip->i_mtime = time(0L);           // set to current time
@@ -2148,6 +2148,9 @@ void my_link(char *oldPath, char *newPath)
 		// set child Minodeptr
 		if (isDebug) printf("Setting childMinodePtr\n");
 		Omip = iget(root->dev, childInode);
+
+		// Increment i_links_count
+		Omip->INODE.i_links_count++;
 	}
 	if (isDebug) printf("Loaded Omip\n");
 
