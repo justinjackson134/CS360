@@ -2825,12 +2825,13 @@ int readStart()
 	int toRead, nbytes;
 	int i = atoi(command[1]);
 	char *buf;
+	if (isDebug) printf("Running->fd[%d]->mode = %d", i, running->fd[i]->mode);
 	if (running->fd[i] == NULL)
 	{
 		printf("File not currently open, returning\n");
 		return;
 	}
-	if (isDebug) printf("Running->fd[%d]->mode = %d", i, running->fd[i]->mode);
+	
 	else
 	{
 		if (running->fd[i]->mode != 0 || running->fd[i]->mode != 2)
