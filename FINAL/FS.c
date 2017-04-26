@@ -2723,7 +2723,7 @@ int open_File(char *fileName, int mode)
 }
 
 
-
+/*
 int close_file(int descriptor)
 {
 	if (descriptor < 0 || descriptor > 16)
@@ -2777,7 +2777,7 @@ int lseek(int fileD, int position)
 	return op;
 
 }
-
+*/
 int pfd()
 {
 	char *temp;
@@ -2806,7 +2806,7 @@ int pfd()
 		printf("%d\t %s\t %d\t [%d,%d]\n", running->fd[i]->mode, temp, running->fd[i]->offset, running->fd[i]->inodeptr->dev, running->fd[i]->inodeptr->ino);
 	}
 }
-
+/*
 int readStart()
 {
 	int toRead, nbytes;
@@ -2905,13 +2905,13 @@ int my_read(int descriptor, char *buf, int nbytes)
 		that many bytes in one operation. Then adjust the counters accordingly. This
 		would make the read loops more efficient.
 
-		REQUIRED: optimize the read algorithm in your project.*/
+		REQUIRED: optimize the read algorithm in your project.
 	}
 	printf("myread: read %d char from file descriptor %d\n", count, descriptor);
 	return count;
 }
-
-
+*/
+/*
 int cat(char *fileToCat)
 {
 	char myBuf[BLOCK_SIZE], dummy = 0; //null char at end of mybuf[]
@@ -3045,7 +3045,7 @@ int my_mv(char *source, char *destination)
 
 	return 1;
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 void debug_flip()
 {
@@ -3122,6 +3122,15 @@ void commandTable()
   else if (strcmp(command[0], "rm") == 0)
   {
   	  my_rm(command[1]);
+  }
+  else if (strcmp(command[0], "open") == 0)
+  {
+	  int i = (int)command[2];
+	  open_File(command[1], i);
+  }
+  else if (strcmp(command[0], "pfd") == 0)
+  {
+	  pfd();
   }
 }
 
