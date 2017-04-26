@@ -2790,7 +2790,7 @@ int pfd()
 	printf("----\t ----\t ----\t ----\t\n");
 
 	int i;
-	for (i = 0; i < NFD; i++);
+	for (i = 0; i < NFD; i++)
 	{
 		if (running->fd[i] == NULL)
 		{
