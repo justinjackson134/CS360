@@ -2548,7 +2548,7 @@ void my_touch(char *file)
 	}
 }
 
-void my_chmod(char *filename, int permissions)
+void my_chmod(char *filename, int perm)
 {
 	int ino = 0, dev;
 	MINODE *mip;
@@ -2569,18 +2569,18 @@ void my_chmod(char *filename, int permissions)
 	// Handle the actual permission changes
 	if((mip->INODE.i_mode & 0100000) == 0100000)
 	{
-		if(isDebug) printf("CHMOD a file: %d\n", permissions);
-		mip->INODE.i_mode = 0100000 + permissions;
+		if(isDebug) printf("CHMOD a file: %d\n", perm);
+		mip->INODE.i_mode = 0100000 + perm;
 	}
 	else if ((mip->INODE.i_mode & 0040000) == 0040000)
 	{
-		if(isDebug) printf("CHMOD a dir: %d\n", permissions);
-		mip->INODE.i_mode = 0040000 + permissions;
+		if(isDebug) printf("CHMOD a dir: %d\n", perm);
+		mip->INODE.i_mode = 0040000 + perm;
 	}
 	else
 	{
-		if(isDebug) printf("CHMOD a link: %d\n", permissions);
-		mip->INODE.i_mode = 0120000 + permissions;
+		if(isDebug) printf("CHMOD a link: %d\n", perm);
+		mip->INODE.i_mode = 0120000 + perm;
 	}
 
 	// Mark dirty
