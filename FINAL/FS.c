@@ -2723,6 +2723,7 @@ int open_File(char *fileName, int mode)
 		break;
 		
 	}
+	running->fd[location] = newFile;
 }
 
 
