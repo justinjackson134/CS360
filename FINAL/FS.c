@@ -2918,7 +2918,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 		that many bytes in one operation. Then adjust the counters accordingly. This
 		would make the read loops more efficient.
 
-		REQUIRED: optimize the read algorithm in your project.
+		REQUIRED: optimize the read algorithm in your project.*/
 	}
 	printf("myread: read %d char from file descriptor %d\n", count, descriptor);
 	return count;
