@@ -2728,15 +2728,16 @@ int open_File(char *fileName, int mode)
 }
 
 
-/*
+
 int close_file(int descriptor)
 {
+	if (isDebug) printf("Begin close\n");
 	if (descriptor < 0 || descriptor > 16)
 	{
 		printf("Out of range for open file table, returning\n");
 		return;
 	}
-
+	if (isDebug) printf("checking if no open file\n");
 	if (running->fd[descriptor] == NULL)
 	{
 		printf("Already closed, returning\n");
@@ -2750,9 +2751,9 @@ int close_file(int descriptor)
 	running->fd[descriptor] = 0;
 
 	newFile->refCount--;
-
+	if (isDebug) printf("newFile->refCount = %d", newFile->refCount);
 	if (newFile->refCount > 0) return;
-
+	if (isDebug) printf("file no longer referenced, putting away\n");
 	mip = newFile->inodeptr;
 
 	mip->dirty = 1;
@@ -2762,7 +2763,7 @@ int close_file(int descriptor)
 	return 1;
 }
 
-
+/*
 int lseek(int fileD, int position)
 {
 	int op, sizeFile;
@@ -2786,7 +2787,7 @@ int lseek(int fileD, int position)
 int pfd()
 {
 	char *temp;
-	printf("fd\t mode\t offset\t INODE\t\n");
+	printf("\nfd\t mode\t offset\t INODE\t\n");
 	printf("----\t ----\t ----\t ----\t\n");
 
 	int i;
@@ -3144,6 +3145,10 @@ void commandTable()
   else if (strcmp(command[0], "pfd") == 0)
   {
 	  pfd();
+  }
+  else if (strcmp(command[0], "close") == 0)
+  {
+	  close_file(atoi(command[1]));
   }
 }
 
