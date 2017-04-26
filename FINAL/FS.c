@@ -2699,7 +2699,7 @@ int open_File(char *fileName, int mode)
 	if (isDebug) printf("Allocating a new OFT\n");
 	OFT *newFile = malloc(sizeof(OFT));
 	int location = falloc(newFile);
-
+	if (isDebug) printf("Location for table = %d", location);
 	if (location == -1)
 	{
 		printf("No available open file descriptors, please close something and try again\n");
@@ -2713,6 +2713,7 @@ int open_File(char *fileName, int mode)
 	switch (mode)
 	{
 	case(0): newFile->offset = 0;
+		if (isDebug) printf("setting offset = 0");
 		break;
 	case(1): truncate(device, mip);
 		newFile->offset = 0;
@@ -2723,7 +2724,7 @@ int open_File(char *fileName, int mode)
 		break;
 		
 	}
-	running->fd[location] = newFile;
+	running->fd[location] = &newFile;
 }
 
 
