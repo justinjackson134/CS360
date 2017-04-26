@@ -2669,7 +2669,7 @@ int open_File(char *fileName, int mode)
 	if (fileName[0] == '/') device = root->dev;
 	else device = running->cwd->dev;
 
-	ino = getino(&device, file);
+	ino = getino(&device, fileName);
 
 	mip = iget(device, ino);
 
@@ -2762,7 +2762,7 @@ int lseek(int fileD, int position)
 {
 	int op, sizeFile;
 	OFT *file = running->fd[fileD];
-	sizeFile = running->fd[fileD]->inodeptr->i_size;//probably not that but we need the size of the file as to not offset too much
+	sizeFile = running->fd[fileD]->inodeptr->INODE.i_size;//probably not that but we need the size of the file as to not offset too much
 	if (position > sizeFile)
 	{
 		printf("Cannot offset past the file, returning\n");
@@ -2803,7 +2803,7 @@ int pfd()
 				break;
 			}
 		}
-		printf("%d\t %s\t %d\t [%d,%d]\n", running->fd[i]->mode, temp, running->fd[i]->offset, running->fd[i]->inodeptr->dev, running->fd[i]->inodePtr->ino);
+		printf("%d\t %s\t %d\t [%d,%d]\n", running->fd[i]->mode, temp, running->fd[i]->offset, running->fd[i]->inodeptr->dev, running->fd[i]->inodeptr->ino);
 	}
 }
 
@@ -3004,7 +3004,7 @@ int my_write(int descriptor, char buf[], int nbytes)
 			*cp++ = *cq++;
 			nbytes--; remain--;
 			oftp->offset++;
-			if (offset > mip->INODE.i_size)
+			if (oftp->offset > mip->INODE.i_size)
 				mip->INODE.i_size++;
 			if (nbytes <= 0) break;
 		}
@@ -3025,7 +3025,7 @@ int my_cp(char *source, char *destination)
 	char srcBuf[BLOCK_SIZE], destBuf[BLOCK_SIZE];
 
 	int n;
-	while (n = read(srcDec, srcBuf, BLOCK_SIZE)
+	while (n = read(srcDec, srcBuf, BLOCK_SIZE))
 	{
 		my_write(destDec, destBuf, n);
 	}
