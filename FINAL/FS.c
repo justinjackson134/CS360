@@ -2666,7 +2666,7 @@ int open_File(char *fileName, int mode)
 	MINODE *mip;
 	int device, ino, i;
 
-	if (file[0] == '/') device = root->dev;
+	if (fileName[0] == '/') device = root->dev;
 	else device = running->cwd->dev;
 
 	ino = getino(&device, file);
@@ -2683,7 +2683,7 @@ int open_File(char *fileName, int mode)
 	{
 		if (running->fd[i] != 0)
 		{
-			if (running->fd[i]->minodeptr == mip) 
+			if (running->fd[i]->inodeptr == mip) 
 			{
 				if (running->fd[i]->mode > 0) 
 				{
@@ -2739,7 +2739,7 @@ int close_file(int descriptor)
 	}
 	MINODE *mip;
 
-	OFT *newFile = running->Fd[descriptor];
+	OFT *newFile = running->fd[descriptor];
 
 
 	running->fd[descriptor] = 0;
@@ -2762,7 +2762,7 @@ int lseek(int fileD, int position)
 {
 	int op, sizeFile;
 	OFT *file = running->fd[fileD];
-	sizeFile = running->fd[fileD]->inoodeptr->i_size;//probably not that but we need the size of the file as to not offset too much
+	sizeFile = running->fd[fileD]->inodeptr->i_size;//probably not that but we need the size of the file as to not offset too much
 	if (position > sizeFile)
 	{
 		printf("Cannot offset past the file, returning\n");
@@ -2803,7 +2803,7 @@ int pfd()
 				break;
 			}
 		}
-		printf("%d\t %s\t %d\t [%d,%d]\n", running->fd[i]->mode, temp, running->fd[i]->offset, running->fd[i]->inodePtr->dev, running->fd[i]->inodePtr->ino)
+		printf("%d\t %s\t %d\t [%d,%d]\n", running->fd[i]->mode, temp, running->fd[i]->offset, running->fd[i]->inodeptr->dev, running->fd[i]->inodePtr->ino);
 	}
 }
 
@@ -2845,10 +2845,12 @@ int my_read(int descriptor, char *buf, int nbytes)
 
 	OFT *oftp = running->fd[descriptor];
 
-	MINODE *mip = oftp->fd[descriptor]->inodeptr
-		long avil = oftp->inodeptr->INODE.i_size - oftp->offset;
+	MINODE *mip = oftp->inodeptr;
+	long avil = oftp->inodeptr->INODE.i_size - oftp->offset;
 
-	long lbk, startbyte, blk;
+
+
+	long lbk, startbyte, blk, remain;
 
 
 	char *cq = buf;
@@ -2919,10 +2921,10 @@ int cat(char *fileToCat)
 
 	while (n = my_read(descriptor, myBuf, BLOCK_SIZE))
 	{
-		mybuf[n] = 0;
+		myBuf[n] = 0;
 		for (int i = 0; i < BLOCK_SIZE; i++)
 		{
-			putchar(mybuf[i]);
+			putchar(myBuf[i]);
 		}
 	}
 	close(descriptor);
@@ -2948,7 +2950,7 @@ int write_file()
 
 	buf[nbytes - 1] = 0;
 
-	return somestuff;//need to call my_write
+	return my_write(descriptor,buf,nbytes);//need to call my_write
 
 
 }
@@ -2981,8 +2983,8 @@ int my_write(int descriptor, char buf[], int nbytes)
 		}
 		else if (lbk >= 12 && lbk < 256 + 12)
 		{
-			get_block(mip->dev, mip->INODE.i_block[12], indirectBuf);
-			indirect = (long)indirectBuf;
+			get_block(mip->dev, mip->INODE.i_block[12], indirBuf);
+			indirect = (long)indirBuf;
 			blk = (indirect + (lbk - 12));
 		}
 		else
@@ -2992,7 +2994,7 @@ int my_write(int descriptor, char buf[], int nbytes)
 			blk = (indirect + ((lbk - 268) % 256));
 		}
 
-		get_blocl(mip->dev, blk, wbuf);
+		get_block(mip->dev, blk, wbuf);
 		char *cp = wbuf + startByte;
 
 		remain = BLOCK_SIZE - startByte;
