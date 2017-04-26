@@ -167,6 +167,8 @@ int imap;
 int pathNum = 1;
 // Var used to tell getino to return the parent for rmdir and unlink
 int FindParent = 0;
+// 
+int readLinkFromLs = 0;
 
 
 
@@ -671,7 +673,9 @@ void my_ls(char *name) {
 					if ((printMe->INODE.i_mode & 0120000) == 0120000)
 					{
 						//strncpy(command[1], dir->name, dir->name_len);
+						readLinkFromLs = ino;
 						read_link(dir->name);
+						readLinkFromLs = 0;
 					}
 					else
 					{
@@ -2534,7 +2538,16 @@ void read_link(char *linkedPath)
 	MINODE *mip;
 	char buf[BLOCK_SIZE];
 	if(isDebug) printf("get ino\n");
-	int ino = getino(&fd, linkedPath);
+	int ino = 0;
+
+	if(readLinkFromLs > 0) // Calling from ls
+	{
+		ino = readLinkFromLs;
+	}
+	else // Calling this manually
+	{
+		getino(&fd, linkedPath);
+	}
 	if(isDebug) printf("got ino = %d\n", ino);
 	mip = iget(fd, ino);
 
