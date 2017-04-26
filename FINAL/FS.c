@@ -3128,7 +3128,7 @@ void commandTable()
   }
   else if (strcmp(command[0], "open") == 0)
   {
-	  int i = (int)command[2];
+	  int i = atoi(command[2]);
 	  if (isDebug) printf("i = %d", i);
 	  open_File(command[1], i);
   }
