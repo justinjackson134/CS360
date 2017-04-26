@@ -2569,17 +2569,17 @@ void my_chmod(char *filename, int perm)
 	// Handle the actual permission changes
 	if((mip->INODE.i_mode & 0100000) == 0100000)
 	{
-		if(isDebug) printf("CHMOD a file: %d\n", perm);
+		if(isDebug) printf("CHMOD a file: %d\n", command[1]);
 		mip->INODE.i_mode = 0100000 + perm;
 	}
 	else if ((mip->INODE.i_mode & 0040000) == 0040000)
 	{
-		if(isDebug) printf("CHMOD a dir: %d\n", perm);
+		if(isDebug) printf("CHMOD a dir: %d\n", command[1]);
 		mip->INODE.i_mode = 0040000 + perm;
 	}
 	else
 	{
-		if(isDebug) printf("CHMOD a link: %d\n", perm);
+		if(isDebug) printf("CHMOD a link: %d\n", command[1]);
 		mip->INODE.i_mode = 0120000 + perm;
 	}
 
