@@ -668,7 +668,7 @@ void my_ls(char *name) {
 					// Load the parents inode into a MINODE
 					printMe = iget(fd, ino);
 					// Print printMe's info
-					printf("%s\t%u\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_atime, printMe->INODE.i_links_count);					
+					printf("%s\t%o\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_atime, printMe->INODE.i_links_count);					
 
 					// Put the MINODE back into fd
 					iput(printMe);
@@ -714,7 +714,7 @@ void my_ls(char *name) {
 					// Load the parents inode into a MINODE
 					printMe = iget(fd, ino);
 					// Print printMe's info
-					printf("%s\t%u\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_atime, printMe->INODE.i_links_count);					
+					printf("%s\t%o\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_atime, printMe->INODE.i_links_count);					
 
 
 					cp += dir->rec_len;
