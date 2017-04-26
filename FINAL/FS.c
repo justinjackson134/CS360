@@ -2150,7 +2150,7 @@ void my_link(char *oldPath, char *newPath)
 		Omip = iget(root->dev, childInode);
 
 		// Increment i_links_count
-		Omip->INODE.i_links_count++;
+		//Omip->INODE.i_links_count++;
 	}
 	if (isDebug) printf("Loaded Omip\n");
 
