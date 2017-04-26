@@ -2534,7 +2534,7 @@ void read_link(char *linkedPath)
 	if(isDebug) printf("get ino\n");
 	int ino = getino(&fd, linkedPath);
 	if(isDebug) prinft("got ino = %d\n", ino);
-	mip = iget(fd, );
+	mip = iget(fd, ino);
 
 	if(isDebug) printf("Read_Link before symlink check\n");
 
