@@ -2819,11 +2819,11 @@ int pfd()
 		printf("%d\t %s\t %d\t [%d,%d]\n", running->fd[i]->mode, temp, running->fd[i]->offset, running->fd[i]->inodeptr->dev, running->fd[i]->inodeptr->ino);
 	}
 }
-/*
+
 int readStart()
 {
 	int toRead, nbytes;
-	int i = (int)command[1];
+	int i = atoi(command[1]);
 	char *buf;
 	if (running->fd[i] == NULL)
 	{
@@ -2839,7 +2839,7 @@ int readStart()
 			return;
 		}
 
-		nbytes = (int)command[2];
+		nbytes = atoi(command[2]);
 
 		my_read(toRead, buf, nbytes);
 	}
@@ -2923,7 +2923,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 	printf("myread: read %d char from file descriptor %d\n", count, descriptor);
 	return count;
 }
-*/
+
 /*
 int cat(char *fileToCat)
 {
@@ -3149,6 +3149,10 @@ void commandTable()
   else if (strcmp(command[0], "close") == 0)
   {
 	  close_file(atoi(command[1]));
+  }
+  else if (strcmp(command[0], "read") == 0)
+  {
+	  readStart();
   }
 }
 
