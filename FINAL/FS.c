@@ -2531,6 +2531,9 @@ void read_link(char *linkedPath)
 	char buf[BLOCK_SIZE];
 	mip = iget(fd, getino(&fd, linkedPath));
 
+
+	if(isDebug) printf("Read_Link linkedPath = %s\n", linkedPath);
+
 	if (mip->INODE.i_mode != SYM_LINK)
 	{
 		printf("File is not a symbolic link, returning.\n");
