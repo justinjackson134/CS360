@@ -630,7 +630,7 @@ void my_ls(char *name) {
 	}
 
 	i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
-	printf("\ni = %d\n", i);
+	if(isDebug) printf("\ni = %d\n", i);
 
 	if (!i)
 	{
@@ -640,7 +640,7 @@ void my_ls(char *name) {
 	if (isDebug) printf("mip = iget(%d, %d)\n", fd, i);
 	mip = iget(fd, i); ///changed from dev to fd
 
-	if (mip->ino == 0x8000)//
+	if (mip->ino == 0x8000)// This is wrong
 	{
 		// This sets a global named basename!
 		setDirnameBasename(name);
@@ -708,7 +708,15 @@ void my_ls(char *name) {
 				dir = (DIR *)buf;
 				while (cp < &buf[BLKSIZE])
 				{
-					printf("%s ", dir->name);
+					// This was the original print // printf("%s ", dir->name);
+					// Get the parents inode number
+					ino = dir->inode;
+					// Load the parents inode into a MINODE
+					printMe = iget(fd, ino);
+					// Print printMe's info
+					printf("%s\t%u\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_atime, printMe->INODE.i_links_count);					
+
+
 					cp += dir->rec_len;
 					dir = (DIR *)cp;
 				}
