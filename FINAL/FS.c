@@ -2136,6 +2136,18 @@ void my_link(char *oldPath, char *newPath)
 		if (isDebug) printf("Setting parentMinodePtr\n");
 		// Set Omip
 		Omip = iget(root->dev, parentInode);
+		childInode = search(Omip, child);
+
+		// Check if child directory does not exist
+		if (childInode == 0)
+		{		
+			printf("The Given Target does not exist\n");
+			return;
+		}	
+		
+		// set child Minodeptr
+		if (isDebug) printf("Setting childMinodePtr\n");
+		Omip = iget(root->dev, childInode);
 	}
 	if (isDebug) printf("Loaded Omip\n");
 
