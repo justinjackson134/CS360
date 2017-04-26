@@ -2515,7 +2515,7 @@ void read_link(char *linkedPath)
 {
 	MINODE *mip;
 	char buf[BLOCK_SIZE];
-	mip = iget(fd, getino(fd, linkedPath));
+	mip = iget(fd, getino(&fd, linkedPath));
 
 	if (mip->INODE.i_mode != SYM_LINK)
 	{
