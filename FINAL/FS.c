@@ -625,7 +625,9 @@ void my_help()
 	printf("--------------- J&J EXT2FS HELP ---------------\n");
 	printf("Commands: ls, cd, pwd, mkdir, rmdir, creat, rm,\n");
 	printf("          link, unlink, symlink, readlink,\n");
-	printf("          chmod, touch, quit\n\n");
+	printf("          chmod, touch, quit\n");
+  printf("Level 2:  open, pfd, close, read, cat, write\n");
+  printf("Utility:  debug\n\n");
 }
 
 void my_ls(char *name) {
@@ -2154,7 +2156,8 @@ void my_link(char *oldPath, char *newPath)
 		if (isDebug) printf("Setting parentMinodePtr\n");
 		// Set Omip
 		Omip = iget(root->dev, parentInode);
-		childInode = search(Omip, child);
+		/*
+    childInode = search(Omip, child);
 
 		// Check if child directory does not exist
 		if (childInode == 0)
@@ -2166,6 +2169,7 @@ void my_link(char *oldPath, char *newPath)
 		// set child Minodeptr
 		if (isDebug) printf("Setting childMinodePtr\n");
 		Omip = iget(root->dev, childInode);
+    */
 	}
 	if (isDebug) printf("Loaded Omip\n");
 
