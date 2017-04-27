@@ -2973,7 +2973,7 @@ int cat(char *fileToCat)
 		printf("%s", myBuf);
 	}
 	printf("\n\n");
-	close(descriptor);
+	close_file(descriptor);
 
 }
 /*
