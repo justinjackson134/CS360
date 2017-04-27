@@ -2156,7 +2156,7 @@ void my_link(char *oldPath, char *newPath)
 		if (isDebug) printf("Setting parentMinodePtr\n");
 		// Set Omip
 		Omip = iget(root->dev, parentInode);
-		/*
+		
     childInode = search(Omip, child);
 
 		// Check if child directory does not exist
@@ -2169,7 +2169,7 @@ void my_link(char *oldPath, char *newPath)
 		// set child Minodeptr
 		if (isDebug) printf("Setting childMinodePtr\n");
 		Omip = iget(root->dev, childInode);
-    */
+    
 	}
 	if (isDebug) printf("Loaded Omip\n");
 
@@ -2451,7 +2451,7 @@ void sym_link(char *oldPath, char *newPath)
 		// Get the In_MEMORY minode of parent:
 		if (isDebug) printf("Setting parentMinodePtr\n");
 		Omip = iget(root->dev, parentInode);
-    
+
     childInode = search(Omip, child);
 		// Check if child directory does not exist
 		if (childInode == 0)
