@@ -2868,9 +2868,11 @@ int my_read(int descriptor, char *buf, int nbytes)
 
 	if (isDebug) printf("In my_read\n");
 	OFT *oftp = running->fd[descriptor];
-
+	if (isDebug) printf("After setting oftp\n");
 	MINODE *mip = oftp->inodeptr;
+	if (isDebug) printf("After setting mip\n");
 	long avil = oftp->inodeptr->INODE.i_size - oftp->offset;
+	if (isDebug) printf("After setting avil\n");
 	if (isDebug) printf("Avil = %ld\n", avil);
 	if (isDebug) printf("nbytes = %d\n", nbytes);
 
