@@ -2682,7 +2682,7 @@ int open_File(char *fileName, int mode)
 	mip = iget(device, ino);
 	
 
-	if ((mip->INODE.i_mode & 0100000) == 0100000)
+	if ((mip->INODE.i_mode & 0100000) != 0100000)
 	{
 		printf("NOT A REGULAR FILE, RETURNING\n");
 		return;
