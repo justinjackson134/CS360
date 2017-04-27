@@ -2791,7 +2791,7 @@ int close_file(int descriptor)
 }
 
 
-int lseek(int fileD, int position)
+int my_lseek(int fileD, int position)
 {
 	int op, sizeFile;
 	OFT *file = running->fd[fileD];
@@ -3264,7 +3264,7 @@ void commandTable()
   }
   else if (strcmp(command[1], "lseek") == 0)
   {
-	  lseek(atoi(command[1]), atoi(command[2]));
+	  my_lseek(atoi(command[1]), atoi(command[2]));
   }
 }
 
