@@ -297,7 +297,7 @@ int search(MINODE *minodePtr, char *name) {
 			  cp += dp->rec_len;
 			  dp = (DIR *)cp;
 
-			  getchar();
+			  //getchar();
 		  }
 	  }
 	 
