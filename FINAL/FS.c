@@ -3118,6 +3118,7 @@ int my_write(int descriptor, char buf[], int nbytes)
 	}
 	mip->dirty = 1;
 	printf("wrote %d char into file descriptor fd=%d\n", oftp->offset, descriptor);
+	iput(mip);
 	return nbytes;
 
 }
