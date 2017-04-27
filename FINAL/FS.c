@@ -266,7 +266,7 @@ char dbuf[1024];
 int search(MINODE *minodePtr, char *name) {
   if (isDebug) printf("In search-> This is what is in minodePtr: '%d,%d'", minodePtr->dev, minodePtr->ino);
   if (isDebug) printf("\nSEARCHING FOR: %s\n", name);
-  char entryName[128];
+  char entryName[256];
   int i, j;
   for (i = 0; i < 12; i++) {
 	 /* if (minodePtr->INODE.i_block[i] == 0)
