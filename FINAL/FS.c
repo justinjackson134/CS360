@@ -2949,7 +2949,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 
 		REQUIRED: optimize the read algorithm in your project.*/
 	}
-	printf("myread: read %d char from file descriptor %d\n", count, descriptor);
+	printf("\nmyread: read %d char from file descriptor %d\n", count, descriptor);
 	return count;
 }
 
