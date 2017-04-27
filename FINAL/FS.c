@@ -2823,7 +2823,7 @@ int pfd()
 				break;
 			}
 		}
-		printf("%d\t %s\t %d\t [%d,%d]\n", running->fd[i]->mode, temp, running->fd[i]->offset, running->fd[i]->inodeptr->dev, running->fd[i]->inodeptr->ino);
+		printf("%d\t %s\t %d\t [%d,%d]\n", i, temp, running->fd[i]->offset, running->fd[i]->inodeptr->dev, running->fd[i]->inodeptr->ino);
 	}
 }
 
@@ -2980,14 +2980,17 @@ int cat(char *fileToCat)
 int write_file()
 {
 	int descriptor = atoi(command[1]);
-
+	if (isDebug) printf("Descriptor = %d\n", descriptor);
 	char *toWrite = command[2];
 
 	if (isDebug) printf("toWrite string = %s\n", toWrite);
 
 	if (running->fd[descriptor] == NULL || running->fd[descriptor]->mode == 0)
 	{
-		printf("Not a valid open file or not open for read/write, returning\n");
+		if (running->fd[descriptor] == NULL)
+			printf("Not an open file returning\n");
+		if(running->fd[descriptor]->mode == 0)
+			printf("Not open for read/write, returning\n");
 		return;
 	}
 
