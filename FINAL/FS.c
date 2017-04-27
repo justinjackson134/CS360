@@ -2981,7 +2981,34 @@ int write_file()
 {
 	int descriptor = atoi(command[1]);
 	if (isDebug) printf("Descriptor = %d\n", descriptor);
-	char *toWrite = command[2];
+	//char *toWrite = command[2];
+
+  ////////////////////////////////////// NEW GET LINE STUFF ////////////////////////
+  char *toWrite = NULL;
+  size_t len = BLOCK_SIZE;
+
+  printf("Enter line to write: ");  
+  
+  getline(&toWrite, &len, stdin);
+  // Remove newline from end of command string if string is longer than size 0
+  if(strcmp(toWrite, "\n") == 0)
+  {
+    toWrite = '\0';
+    command[0] = "";
+    return 1;
+  }
+  else
+  {
+    if(strlen(toWrite) > 1)
+    {
+        toWrite[strlen(toWrite)-1] = '\0';
+    }
+  }
+
+  ////////////////////////////////// END NEW GET LINE STUFF ////////////////////////
+
+
+
 
 	if (isDebug) printf("toWrite string = %s\n", toWrite);
 
