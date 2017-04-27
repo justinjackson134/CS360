@@ -2958,6 +2958,8 @@ int cat(char *fileToCat)
 
 	int descriptor = open_File(fileToCat, 0);
 
+	pfd();
+
 	while (n = my_read(descriptor, myBuf, BLOCK_SIZE))
 	{
 		myBuf[n] = dummy;
