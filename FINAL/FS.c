@@ -3135,11 +3135,15 @@ int my_cp(char *source, char *destination)
     my_creat(command[1]);
 	int srcDec = open_File(source, 1);
 
+	if (isDebug) pfd();
+
 	if (isDebug) printf("srcDec = %d\n", srcDec);
     command[1] = command[3];	
 
 	int destDec = open_File(destination, 0);
 	if (isDebug) printf("destDec = %d\n", destDec);
+
+	if (isDebug) pfd();
 
 	char srcBuf[BLOCK_SIZE], destBuf[BLOCK_SIZE];
 
