@@ -3131,10 +3131,10 @@ int my_cp(char *source, char *destination)
   command[3] = command[1];
   command[1] = command[2];
   my_creat(command[1]);
-	int srcDec = open_File(source, 0);
+	int srcDec = open_File(source, 1);
   command[1] = command[3];	
 
-	int destDec = open_File(destination, 1);
+	int destDec = open_File(destination, 0);
 	char srcBuf[BLOCK_SIZE], destBuf[BLOCK_SIZE];
 
 	int n;
