@@ -2966,7 +2966,7 @@ int cat(char *fileToCat)
 	while (n = my_read(descriptor, myBuf, BLOCK_SIZE))
 	{
 		myBuf[n] = dummy;
-		for (int i = 0; i < BLOCK_SIZE; i++)
+		for (int i = 0; i < n; i++)
 		{
 			putchar(myBuf[i]);
 		}
