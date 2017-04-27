@@ -284,11 +284,9 @@ int search(MINODE *minodePtr, char *name) {
 		  DIR *dp = (SUPER *)dbuf;
 		  char *cp = dbuf;
 
-		  while (cp < &dbuf[1024])
+      while (cp < &dbuf[1024])
 		  {
-			  //use dp-> to print the DIR entries as  [inode rec_len name_len name]
-			  if (isDebug) printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
-			  // Copy only the length of the dir entry name
+        // Copy only the length of the dir entry name
         for (j = 0; j < dp->name_len; j++)
         {
           entryName[j] = dp->name[j];
@@ -296,6 +294,9 @@ int search(MINODE *minodePtr, char *name) {
         // Null terminate the name string
         entryName[j] = 0;
 
+			  //use dp-> to print the DIR entries as  [inode rec_len name_len name]
+			  if (isDebug) printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, entryName);
+			  
         if (strcmp(name, entryName) == 0)
 			  {
 				  if (isDebug) printf("\n - Name: %s == %s", name, entryName);
