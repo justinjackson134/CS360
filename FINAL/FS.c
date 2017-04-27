@@ -3262,7 +3262,7 @@ void commandTable()
   {
 	  my_cp(command[1], command[2]);
   }
-  else if (strcmp(command[1], "lseek") == 0)
+  else if (strcmp(command[0], "lseek") == 0)
   {
 	  my_lseek(atoi(command[1]), atoi(command[2]));
   }
