@@ -3130,7 +3130,7 @@ int my_cp(char *source, char *destination)
 	char srcBuf[BLOCK_SIZE], destBuf[BLOCK_SIZE];
 
 	int n;
-	while (n = read(srcDec, srcBuf, BLOCK_SIZE))
+	while (n = my_read(srcDec, srcBuf, BLOCK_SIZE))
 	{
 		my_write(destDec, destBuf, n);
 	}
