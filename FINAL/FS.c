@@ -3136,12 +3136,12 @@ int my_cp(char *source, char *destination)
 
 
 
-	int srcDec = open_File(source, 0);
+	int srcDec = open_File(command[1], 0);
 	
 	
 	
 
-	int destDec = open_File(destination, 1);
+	int destDec = open_File(command[2], 1);
 	char srcBuf[BLOCK_SIZE], destBuf[BLOCK_SIZE];
 
 	int n;
