@@ -2961,7 +2961,7 @@ int cat(char *fileToCat)
 
 	int descriptor = open_File(fileToCat, 0);
 
-	pfd();
+	if (isDebug) pfd();
 
 	while (n = my_read(descriptor, myBuf, BLOCK_SIZE))
 	{
@@ -2976,12 +2976,14 @@ int cat(char *fileToCat)
 	close_file(descriptor);
 
 }
-/*
+
 int write_file()
 {
-	int descriptor = command[1];
+	int descriptor = atoi(command[1]);
 
 	char *toWrite = command[2];
+
+	if (isDebug) printf("toWrite string = %s\n", toWrite);
 
 	if (running->fd[descriptor] == NULL || running->fd[descriptor]->mode == 0)
 	{
@@ -3063,7 +3065,7 @@ int my_write(int descriptor, char buf[], int nbytes)
 
 }
 
-
+/*
 int my_cp(char *source, char *destination)
 {
 	int srcDec = open_File(source, 0);
