@@ -2790,7 +2790,7 @@ int close_file(int descriptor)
 	return 1;
 }
 
-/*
+
 int lseek(int fileD, int position)
 {
 	int op, sizeFile;
@@ -2810,7 +2810,7 @@ int lseek(int fileD, int position)
 	return op;
 
 }
-*/
+
 int pfd()
 {
 	char *temp;
@@ -2970,6 +2970,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 		REQUIRED: optimize the read algorithm in your project.*/
 	}
 	printf("\nmyread: read %d char from file descriptor %d\n", count, descriptor);
+	if (isDebug) printf("%s\n", buf);
 	return count;
 }
 
@@ -3121,7 +3122,7 @@ int my_write(int descriptor, char buf[], int nbytes)
 
 }
 
-/*
+
 int my_cp(char *source, char *destination)
 {
 	int srcDec = open_File(source, 0);
@@ -3149,7 +3150,7 @@ int my_mv(char *source, char *destination)
 
 	return 1;
 }
-*/
+
 ////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
 void debug_flip()
 {
@@ -3252,6 +3253,18 @@ void commandTable()
   else if (strcmp(command[0], "write") == 0)
   {
 	  write_file();
+  }
+  else if (strcmp(command[0], "mv") == 0)
+  {
+	  my_mv(command[1], command[2]);
+  }
+  else if (strcmp(command[0], "cp") == 0)
+  {
+	  my_cp(command[1], command[2]);
+  }
+  else if (strcmp(command[1], "lseek") == 0)
+  {
+	  lseek(atoi(command[1]), atoi(command[2]));
   }
 }
 
