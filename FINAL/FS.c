@@ -2750,6 +2750,7 @@ int open_File(char *fileName, int mode)
 		break;
 		
 	}
+	if (isDebug) printf("Location of open file = %d\n", location);
 	running->fd[location] = newFile;
 	return location;
 }
