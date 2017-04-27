@@ -735,6 +735,7 @@ void my_ls(char *name) {
 				get_block(fd, mip->INODE.i_block[i], buf);
 				cp = buf;
 				dir = (DIR *)buf;
+        printf("Name\tMode\tC_time\t\tM_time\t\tA_time\tLink Count\n");
 				while (cp < &buf[BLKSIZE])
 				{
 					// This was the original print // printf("%s ", dir->name);
