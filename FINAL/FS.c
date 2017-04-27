@@ -2866,7 +2866,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 	char indirectBuf[BLOCK_SIZE], dblindirectBuf[BLOCK_SIZE];
 	long indirect;
 
-	if (isDebug) printf("In my_read\n");
+	if (isDebug) printf("In my_read, decriptor = %d\n",descriptor);
 	OFT *oftp = running->fd[descriptor];
 	if (isDebug) printf("After setting oftp\n");
 	MINODE *mip = oftp->inodeptr;
