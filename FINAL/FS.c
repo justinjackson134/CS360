@@ -2996,9 +2996,9 @@ int write_file()
 
 	char buf[BLOCK_SIZE];
 	strcpy(buf, toWrite);
-
+	if (isDebug) printf("buf = %s\n",buf);
 	int nbytes = strlen(buf);
-
+	if (isDebug) printf("nbytes = %d", nbytes);
 	buf[nbytes - 1] = 0;
 
 	return my_write(descriptor,buf,nbytes);//need to call my_write
