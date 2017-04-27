@@ -266,7 +266,8 @@ char dbuf[1024];
 int search(MINODE *minodePtr, char *name) {
   if (isDebug) printf("In search-> This is what is in minodePtr: '%d,%d'", minodePtr->dev, minodePtr->ino);
   if (isDebug) printf("\nSEARCHING FOR: %s\n", name);
-  int i;
+  char entryName[128];
+  int i, j;
   for (i = 0; i < 12; i++) {
 	 /* if (minodePtr->INODE.i_block[i] == 0)
 	  {
@@ -287,7 +288,15 @@ int search(MINODE *minodePtr, char *name) {
 		  {
 			  //use dp-> to print the DIR entries as  [inode rec_len name_len name]
 			  if (isDebug) printf("\n - DIR ENTRY - rec_len: %d, name_len: %d, name: %s", dp->rec_len, dp->name_len, dp->name);
-			  if (strcmp(name, dp->name) == 0)
+			  // Copy only the length of the dir entry name
+        for (j = 0; j < dp->name_len; j++)
+        {
+          entryName[j] = dp->name[j];
+        }
+        // Null terminate the name string
+        entryName[j] = 0;
+
+        if (strcmp(name, dp->name) == 0)
 			  {
 				  if (isDebug) printf("\n - Name: %s == %s", name, dp->name);
 				  if (isDebug) printf("\n - Found at INODE: %d\n", dp->inode);
