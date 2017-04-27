@@ -2965,7 +2965,7 @@ int cat(char *fileToCat)
 
 	while (n = my_read(descriptor, myBuf, BLOCK_SIZE))
 	{
-		myBuf[n] = dummy;
+		myBuf[n+1] = dummy;
 		/*for (int i = 0; i < n; i++)
 		{
 			putchar(myBuf[i]);
@@ -3063,7 +3063,7 @@ int my_write(int descriptor, char buf[], int nbytes)
 
 	}
 	mip->dirty = 1;
-	printf("wrote %d char into file descriptor fd=%d\n", nbytes, descriptor);
+	printf("wrote %d char into file descriptor fd=%d\n", oftp->offset, descriptor);
 	return nbytes;
 
 }
