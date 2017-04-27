@@ -3193,6 +3193,10 @@ void commandTable()
   {
 	  cat(command[1]);
   }
+  else if (strcmp(command[0], "write") == 0)
+  {
+	  write_file();
+  }
 }
 
 
