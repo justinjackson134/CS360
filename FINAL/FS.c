@@ -2731,6 +2731,7 @@ int open_File(char *fileName, int mode)
 		
 	}
 	running->fd[location] = newFile;
+	return location;
 }
 
 
