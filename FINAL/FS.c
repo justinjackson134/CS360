@@ -267,6 +267,12 @@ int search(MINODE *minodePtr, char *name) {
   if (isDebug) printf("In search-> This is what is in minodePtr: '%d,%d'", minodePtr->dev, minodePtr->ino);
   if (isDebug) printf("\nSEARCHING FOR: %s\n", name);
   char entryName[256];
+  char givenName[256];
+
+  strncpy(givenName, name, stlen(name));
+  printf("??????????????????? GIVEN NAME: %s ??????????????????????\n", givenName);
+
+
   int i, j;
   for (i = 0; i < 12; i++) {
 	 /* if (minodePtr->INODE.i_block[i] == 0)
