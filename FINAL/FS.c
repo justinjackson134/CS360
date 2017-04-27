@@ -3052,6 +3052,7 @@ int my_write(int descriptor, char buf[], int nbytes)
 
 		while (remain > 0)
 		{
+			if (isDebug) printf("cp = %s\n", cp);
 			*cp++ = *cq++;
 			nbytes--; remain--;
 			oftp->offset++;
