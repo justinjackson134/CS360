@@ -140,7 +140,7 @@ MINODE minode[NMINODES];
 MINODE *root;
 // Array of Procs and the running proc
 PROC   proc[NPROC], *running;
-// Used for the tokenizer //////////////////////////////////////////////I dont think this is used anywhere
+// Used for the tokenizer
 char *name[32];
 // Command tokenizer!
 char *command[32];
@@ -274,14 +274,6 @@ int search(MINODE *minodePtr, char *name) {
 
   int i, j;
   for (i = 0; i < 12; i++) {
-	 /* if (minodePtr->INODE.i_block[i] == 0)
-	  {
-		  printf("This is where we return 0");
-		  return 0;
-	  }*/
-
-	  // get_block(fd, minodePtr->INODE.i_block[i], dbuf);  // char dbuf[1024]
-	  //printf("Before if(minodePtr->INODE.i_block[%d])\n", i);
 	  if (minodePtr->INODE.i_block[i])
 	  {
 		  if (isDebug) printf("inside if(minodePtr->INODE.i_block[%d])\n", i);
@@ -351,7 +343,8 @@ int getino(int *dev, char *pathname)
   strcpy(buf, pathname);
 
 
-  // command[1] currently equals the entire pathname, but if we get here by mkdir, we need it to contain only the parent(dirname_value)
+  // command[1] currently equals the entire pathname, but if we get here by mkdir, 
+  // we need it to contain only the parent(dirname_value)
   if(pathNum == 1)
   {
   	n = tokenizePathname(); // n = number of token strings
@@ -378,9 +371,7 @@ int getino(int *dev, char *pathname)
   }
 
   for (i=0; i < n; i++){
-      //printf("===========================================\n");
-      //printf("getino: i=%d name[%d]=%s\n", i, i, kcwname[i]);
-	  gip = &mip->INODE;
+    gip = &mip->INODE;
 	  if (isDebug) printf("THIS IS WHAT IS IN PATH[0]: '%s', This is what is in mip: '%d,%d'\n\n", path[0], mip->dev, mip->ino);
 	  if (isDebug) printf("This is what is in gip: '%d,%d'\n\n", gip->i_mode, gip->i_uid);
       ino = search(mip, path[i]);
@@ -625,7 +616,8 @@ void my_help()
 	printf("Commands: ls, cd, pwd, mkdir, rmdir, creat, rm,\n");
 	printf("          link, unlink, symlink, readlink,\n");
 	printf("          chmod, touch, quit\n");
-  printf("Level 2:  open, pfd, close, read, cat, write\n");
+  printf("Level 2:  open, pfd, close, read, cat, write,\n");
+  printf("          cp, move\n");
   printf("Utility:  debug\n\n");
 }
 
@@ -673,7 +665,6 @@ void my_ls(char *name) {
 		int i;
 		for (i = 0; i <= 11; i++)
 		{
-			//printf("if(mip->INODE.i_block[%d])\n", i);
 			if (mip->INODE.i_block[i])
 			{
 				get_block(fd, mip->INODE.i_block[i], buf);
@@ -682,7 +673,6 @@ void my_ls(char *name) {
 				printf("Name\tMode\tC_time\t\tM_time\t\tA_time\tLink Count\n");
 				while (cp < &buf[BLKSIZE])
 				{					
-					
 					// Get the parents inode number
 					ino = dir->inode;
 					// Load the parents inode into a MINODE
@@ -690,7 +680,6 @@ void my_ls(char *name) {
 					// Print printMe's info
 					if ((printMe->INODE.i_mode & 0120000) == 0120000)
 					{
-						//strncpy(command[1], dir->name, dir->name_len);
 						readLinkFromLs = ino;
 						read_link(dir->name);
 						readLinkFromLs = 0;
@@ -699,7 +688,6 @@ void my_ls(char *name) {
 					{
 						printf("%s\t%07o\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_atime, printMe->INODE.i_links_count);					
 					}
-
 					// Put the MINODE back into fd
 					iput(printMe);
 
@@ -712,58 +700,54 @@ void my_ls(char *name) {
   }
   else
   {
-	fd = running->cwd->dev; 
-	name = running->cwd->name;//i dont think we need this but i will leave it for now
+  	fd = running->cwd->dev; 
+  	name = running->cwd->name;
     if(isDebug) printf("LS (NO PARAMS) from running->cwd->dev: fd = %d & name = %s\n", fd, name);
-	mip = iget(fd, running->cwd->ino);
+  	mip = iget(fd, running->cwd->ino);
 
-	if (mip->ino == 0x8000)//this needs to be changed 
-	{
-		// This sets a global named basename!
-		setDirnameBasename(name);
-		// Print the global basename
-		if (isDebug) printf("%s", basename_value);
-	}
-	else
-	{
-		if (isDebug) printf("ACTUAL OUTPUT:\n");
-		int i;
-		for (i = 0; i <= 11; i++)
-		{
-			//printf("if(mip->INODE.i_block[%d])\n", i);
-			if (mip->INODE.i_block[i])
-			{
-				get_block(fd, mip->INODE.i_block[i], buf);
-				cp = buf;
-				dir = (DIR *)buf;
-        printf("Name\tMode\tC_time\t\tM_time\t\tA_time\tLink Count\n");
-				while (cp < &buf[BLKSIZE])
-				{
-					// This was the original print // printf("%s ", dir->name);
-					// Get the parents inode number
-					ino = dir->inode;
-					// Load the parents inode into a MINODE
-					printMe = iget(fd, ino);
-					// Print printMe's info
-					if ((printMe->INODE.i_mode & 0120000) == 0120000)
-					{
-						//strncpy(command[1], dir->name, dir->name_len);
-						readLinkFromLs = ino;
-						read_link(dir->name);
-						readLinkFromLs = 0;
-					}
-					else
-					{
-						printf("%s\t%07o\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_atime, printMe->INODE.i_links_count);					
-					}
+  	if (mip->ino == 0x8000)
+  	{
+  		// This sets a global named basename!
+  		setDirnameBasename(name);
+  		// Print the global basename
+  		if (isDebug) printf("%s", basename_value);
+  	}
+  	else
+  	{
+  		if (isDebug) printf("ACTUAL OUTPUT:\n");
+  		int i;
+  		for (i = 0; i <= 11; i++)
+  		{
+  			if (mip->INODE.i_block[i])
+  			{
+  				get_block(fd, mip->INODE.i_block[i], buf);
+  				cp = buf;
+  				dir = (DIR *)buf;
+          printf("Name\tMode\tC_time\t\tM_time\t\tA_time\tLink Count\n");
+  				while (cp < &buf[BLKSIZE])
+  				{
+  					// Get the parents inode number
+  					ino = dir->inode;
+  					// Load the parents inode into a MINODE
+  					printMe = iget(fd, ino);
+  					// Print printMe's info
+  					if ((printMe->INODE.i_mode & 0120000) == 0120000)
+  					{
+  						readLinkFromLs = ino;
+  						read_link(dir->name);
+  						readLinkFromLs = 0;
+  					}
+  					else
+  					{
+  						printf("%s\t%07o\t%d\t%d\t%d\t%d\n", dir->name, printMe->INODE.i_mode, printMe->INODE.i_ctime, printMe->INODE.i_mtime, printMe->INODE.i_atime, printMe->INODE.i_links_count);					
+  					}
 
-
-					cp += dir->rec_len;
-					dir = (DIR *)cp;
-				}
-			}
-		}
-	}
+  					cp += dir->rec_len;
+  					dir = (DIR *)cp;
+  				}
+  			}
+  		}
+  	}
   }
 }
 
@@ -831,8 +815,8 @@ void my_pwd()
 
 void recursive_pwd(MINODE *cwd, int child_ino)
 {
-  	char buf[BLKSIZE], *cp, name[128];
-  	DIR *dir;
+  char buf[BLKSIZE], *cp, name[128];
+  DIR *dir;
 	int ino;
 	MINODE *parentMinodePtr;
 
@@ -886,8 +870,6 @@ void recursive_pwd(MINODE *cwd, int child_ino)
 
 	return;
 }
-
-///////////////////////////////////////////////////////////////////////////////////// ALL COPIED FROM LAB 6
 
 int tst_bit(char *buf, int bit)
 {
@@ -980,9 +962,7 @@ int balloc(int mydev)
        set_bit(buf,i);
        decFreeBlocks(bmap);
 
-       put_block(mydev, bmap, buf);
-	   
-       
+       put_block(mydev, bmap, buf);       
 
        if (isDebug) printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
@@ -1009,7 +989,6 @@ int falloc(OFT *op) {
 	return -1;
 }
 
-
 void truncate(int dev, MINODE *mip)
 {
 	//deallocates all i_blocks of an inode
@@ -1018,8 +997,8 @@ void truncate(int dev, MINODE *mip)
 	mip->INODE.i_size = 0;
 	mip->INODE.i_mtime = time(NULL);
 	mip->dirty = 1;
-
 }
+
 void idealloc(int dev, int ino)
 {
 	char buf[BLOCK_SIZE];
@@ -1082,7 +1061,6 @@ void deallocIBlocks(int dev, MINODE *mip)
 	}
 
 	//deallocate double indirect blocks
-
 	if (mip->INODE.i_block[13] != 0)
 	{
 		dindirblk = mip->INODE.i_block[13];
@@ -1304,13 +1282,13 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 {
 	int ino, bno;
 	MINODE *mip;
-  	char buf[BLKSIZE];
-  	char *cp;
+  char buf[BLKSIZE];
+  char *cp;
 
-  	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
-  	fd = parentMinodePtr->dev;
+  // NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id
+  fd = parentMinodePtr->dev;
 
-  	if (isDebug) printf("Allocating ino and bno on fd = %d\n", fd);
+  if (isDebug) printf("Allocating ino and bno on fd = %d\n", fd);
 	ino = ialloc(fd);
 	bno = balloc(fd);
 	if (isDebug) printf("After allocation, ino = %d, bno = %d\n", ino, bno);
@@ -1324,10 +1302,10 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	if (isDebug) printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
 
 	// Use ip-> to acess the INODE fields:
-	ip->i_mode = 0x41ED;		      // OR 040755: DIR type and permissions
+	ip->i_mode = 0x41ED;		          // OR 040755: DIR type and permissions
 	ip->i_uid  = running->uid;	      // Owner uid 
 	ip->i_gid  = running->gid;	      // Group Id
-	ip->i_size = BLKSIZE;		      // Size in bytes 
+	ip->i_size = BLKSIZE;		          // Size in bytes 
 	ip->i_links_count = 2;	          // Links count=2 because of . and ..
 	ip->i_atime = time(0L);           // set to current time 
 	ip->i_ctime = time(0L);           // set to current time 
@@ -1383,9 +1361,6 @@ int my_make_dir_Helper(MINODE *parentMinodePtr, char *name)
 	// Put the block into the file system
 	put_block(fd, bno, buf);
 
-	// get the parent MINODES block into buf (CALLED IN NEXT FUNCTION)
-	//get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
-
 	// We never set mips name! We may not be initializing this as much as needed!!!!
 	if (isDebug) printf("Going to Enter_Name: name = %s\n", name);
 	enter_name(parentMinodePtr, mip->ino, name);
@@ -1396,11 +1371,11 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	char *cp;
 	int i = 0;
 	int need_length = 0, last_length = 0, last_ideal = 0;
-  	char buf[BLKSIZE];
+  char buf[BLKSIZE];
 
 	if (isDebug) printf("Inside ofEnter_Name: name = %s\n", myname);
 
-  	// get the parent MINODES block into buf
+  // get the parent MINODES block into buf
 	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
 
 	// Setup cp and dp
@@ -1408,7 +1383,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 	dp = (DIR *)buf;
 
 	// Step to the end of the data block
-    if (isDebug) printf("step to LAST entry in data block %d\n", buf);
+  if (isDebug) printf("step to LAST entry in data block %d\n", buf);
 	while (cp + dp->rec_len < buf + BLKSIZE)
 	{
 		if (isDebug) printf("Stepping Over: %s\n", dp->name);
@@ -1478,7 +1453,7 @@ int enter_name(MINODE *parentMinodePtr, int myino, char *myname)
 				dp = (DIR *)buf;
 
 				// Step to the end of the data block
-			    if (isDebug) printf("AL: step to LAST entry in data block %d\n", buf);
+			  if (isDebug) printf("AL: step to LAST entry in data block %d\n", buf);
 				while (cp + dp->rec_len < buf + BLKSIZE)
 				{
 					if (isDebug) printf("AL: Stepping Over: %s\n", dp->name);
@@ -1554,14 +1529,13 @@ int my_creat(char *pathname)
 
 	// Set dirname and basename globals given pathname
 	if(pathNum == 1)
-  	{
+  {
 		setDirnameBasename(pathname);
-  	}
-  	else // pathNum == 2
-  	{  		
+  }
+  else // pathNum == 2
+  {  		
 		setDirnameBasename2(pathname);
-  	}
-
+  }
 
 	// Set the parent and child equal to the new dirname/basename globals
 	parent = dirname_value;
@@ -1641,15 +1615,14 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 {
 	int ino, bno;
 	MINODE *mip;
-  	char buf[BLKSIZE];
-  	char *cp;
+  char buf[BLKSIZE];
+  char *cp;
 
-  	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
-  	fd = parentMinodePtr->dev;
+  // NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id
+  fd = parentMinodePtr->dev;
 
-  	if (isDebug) printf("Allocating ino fd = %d\n", fd);
+  if (isDebug) printf("Allocating ino fd = %d\n", fd);
 	ino = ialloc(fd);
-	//bno = balloc(fd);
 	if (isDebug) printf("After allocation, ino = %d\n", ino);
 
 	if (isDebug) printf("Pointing mip at ino\n");
@@ -1676,10 +1649,10 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	if (isDebug) printf("ip points at &mip->INODE, mip->ino = %d\n", mip->ino);
 
 	// Use ip-> to acess the INODE fields:
-	ip->i_mode = 0x81A4;		      // OR 040755: FILE type and permissions
+	ip->i_mode = 0x81A4;		          // OR 040755: FILE type and permissions
 	ip->i_uid  = running->uid;	      // Owner uid 
 	ip->i_gid  = running->gid;	      // Group Id
-	ip->i_size = 0;       		      // Size in bytes 
+	ip->i_size = 0;       		        // Size in bytes 
 	ip->i_links_count = 1;	          // Links count=1 because file
 	ip->i_atime = time(0L);           // set to current time 
 	ip->i_ctime = time(0L);           // set to current time 
@@ -1689,9 +1662,6 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 	mip->dirty = 1;                   // mark minode dirty
 	iput(mip);                        // write INODE to disk
 
-	// get the parent MINODES block into buf (CALLED IN NEXT FUNCTION)
-	//get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
-
 	// We never set mips name! We may not be initializing this as much as needed!!!!
 	if (isDebug) printf("Going to Enter_Name: name = %s\n", name);
 	enter_name(parentMinodePtr, mip->ino, name);
@@ -1699,7 +1669,6 @@ int my_creat_helper(MINODE* parentMinodePtr, char *name)
 
 int my_rm_dir(char *pathname)
 {
-
   MINODE *parentMinodePtr, *childMinodePtr;
   char *parent, *child;
   int parentInode, childInode;
@@ -1752,7 +1721,6 @@ int my_rm_dir(char *pathname)
 	FindParent = 0;
 	if (isDebug) printf("\n\n_________________________________\nSetting parentInode: %s, %d\n", parent, parentInode);
 	
-
 	if(strcmp(parent, "") == 0)
 	{		
 		if (isRootPath == 0)
@@ -1808,7 +1776,7 @@ int my_rm_dir(char *pathname)
 					if(isDebug) printf("Deallocating Child Inode: %d\n", childMinodePtr->ino);
 					childMinodePtr->dirty = 1;
 					idealloc(fd, childMinodePtr->ino);
-					//deallocIBlocks(fd, childMinodePtr); // Deallocing blocks here ruins EVERYTHING
+					//deallocIBlocks(fd, childMinodePtr);
 
 					// Call rmdir helper function
 					if (isDebug) printf("Calling rmdir helper\n");
@@ -1917,7 +1885,6 @@ int my_rm(char *pathname)
 	parentMinodePtr = iget(root->dev, parentInode);
 
 	// Get the inode number of the child MINODE
-	//childInode = getino(&parentMinodePtr, child);
 	childInode = search(parentMinodePtr, child);
 	if (isDebug) printf("\n\n_________________________________\nSetting childInode: %s, %d\n", child, childInode);
 
@@ -1948,7 +1915,7 @@ int my_rm(char *pathname)
 				if(isDebug) printf("Deallocating Child Inode: %d\n", childMinodePtr->ino);
 				childMinodePtr->dirty = 1;
 				idealloc(fd, childMinodePtr->ino);
-				//deallocIBlocks(fd, childMinodePtr); // Deallocing blocks here ruins EVERYTHING
+				//deallocIBlocks(fd, childMinodePtr);
 
 				// Call rmdir helper function
 				if (isDebug) printf("Calling rmdir helper\n");
@@ -1979,17 +1946,17 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 {
 	int temp, lastRec, distanceFromBegin = 0;
 	MINODE *mip;
-  	char buf[BLKSIZE];
-  	char *cp, *endCP;
+  char buf[BLKSIZE];
+  char *cp, *endCP;
 
-  	// NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id // THIS MAY BE WRONG
-  	fd = parentMinodePtr->dev;
+  // NOTE! as we are adding this dir entry to the parent, we must be pointing at the parents dev id
+  fd = parentMinodePtr->dev;
 
-  	// get the parent MINODES i_block into buf so we can delete from it
-  	get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
-  	if(isDebug) printf("ParentMinodePtr ino = %d\n", parentMinodePtr->ino);
+  // get the parent MINODES i_block into buf so we can delete from it
+  get_block(fd, parentMinodePtr->INODE.i_block[0], buf);
+  if(isDebug) printf("ParentMinodePtr ino = %d\n", parentMinodePtr->ino);
 
-  	// Setup cp, endCP and dp
+  // Setup cp, endCP and dp
 	cp = buf;
 	endCP = buf;
 	dp = (DIR *)buf;
@@ -2007,7 +1974,7 @@ void my_rm_dir_Helper(MINODE *parentMinodePtr, char *name)
 	dp = (DIR *) cp;
 
 	// Step to the end of the data block
-    if (isDebug) printf("step through data block to find: %s\n", name);
+  if (isDebug) printf("step through data block to find: %s\n", name);
 	while (cp <= buf + BLKSIZE)
 	{
 		if (isDebug) printf("If dp->name: %s, == name: %s\n", dp->name, name);
@@ -2082,9 +2049,9 @@ int dirIsEmpty(MINODE *childMinodePtr)
 void my_link(char *oldPath, char *newPath)
 {
 	char *parent, *child;
-  	int parentInode, childInode;
-  	int isRootPath = 0;
-  	MINODE *Omip, *Nmip;
+  int parentInode, childInode;
+  int isRootPath = 0;
+  MINODE *Omip, *Nmip;
 
 	if (isDebug) printf("BEGIN my_link\n");
 
@@ -2175,8 +2142,8 @@ void my_link(char *oldPath, char *newPath)
 	// If Omip is a directory, we cant link to it!
 	if(isDebug) printf("Omip->INODE.i_mode: %d\n", Omip->INODE.i_mode);
 	if ((Omip->INODE.i_mode & 0040000) == 0040000)
-  	{
-    	printf("Cannont link to a directory, returning to main menu\n");
+  {
+   	printf("Cannont link to a directory, returning to main menu\n");
 		return;
 	}
 
@@ -2278,8 +2245,8 @@ void my_link(char *oldPath, char *newPath)
 void my_unlink(char *pathToUnlink)
 {
 	char *parent, *child;
-  	int parentInode, childInode;
-  	int isRootPath = 0;
+  int parentInode, childInode;
+  int isRootPath = 0;
 	MINODE *mip, *pmip;
 	int ino;
 
@@ -2376,9 +2343,9 @@ void my_unlink(char *pathToUnlink)
 void sym_link(char *oldPath, char *newPath)
 {
 	char *parent, *child;
-  	int parentInode, childInode;
-  	int isRootPath = 0;
-  	MINODE *Omip, *Nmip;
+  int parentInode, childInode;
+  int isRootPath = 0;
+  MINODE *Omip, *Nmip;
 
 	char buf[BLOCK_SIZE];
 	int i;
@@ -2395,8 +2362,8 @@ void sym_link(char *oldPath, char *newPath)
 		if(oldPath[0] == '/')
 		{
 			fd = root->dev;
-		  	if(isDebug) printf("OLD Symlink from root->dev: fd = %d\n", fd);
-		  	isRootPath = 1;
+		  if(isDebug) printf("OLD Symlink from root->dev: fd = %d\n", fd);
+		  isRootPath = 1;
 		}
 		else
 		{
@@ -2479,16 +2446,11 @@ void sym_link(char *oldPath, char *newPath)
 	if (isDebug) printf("Setting pathNum to 2\n");
 	pathNum = 2;
 	// This is too make get inode only find the parent dir to create the new file in
-	//strncpy(command[0],"creat",strlen("creat"));
 	FindParent = 1;
 	if (isDebug) printf("Creating new file %s\n", newPath);
 	my_creat(newPath);//create the file that will link to OldName
 	FindParent = 0;
-	// This is too reset the command[0] to be accurate
-	//strncpy(command[0],"symlink",strlen("symlink"));
 	pathNum = 1;
-
-
 
 	// Get the inode of newPath into memory
 	if (isDebug) printf("Getting INODE of %s into memory\n", newPath);
@@ -2572,14 +2534,13 @@ void sym_link(char *oldPath, char *newPath)
 	
 	dp->name_len = (strlen(oldPath));
 	dp->rec_len = BLOCK_SIZE;
-	strncpy(dp->name, oldPath, dp->name_len); ////////////////////////////////////////////////////////////////////////SHOULD THIS BE THE LOCAL PATH OR THE ABSOLUTE PATH?
+	strncpy(dp->name, oldPath, dp->name_len); 
 	put_block(fd, Nmip->INODE.i_block[0], buf);
 	//write the string oldName into the i_block[], which has room for 60 chars
 	//this I have no idea how to do so we will have to tackle it together
 	if (isDebug) printf("Putting away Nmip\n");
 	iput(Nmip);
 }
-
 
 void read_link(char *linkedPath)
 {
@@ -2609,7 +2570,6 @@ void read_link(char *linkedPath)
 		return;
 	}
 
-
 	if(isDebug) printf("Read_Link Before get block\n");
 
 	get_block(fd, mip->INODE.i_block[0], buf);
@@ -2621,9 +2581,7 @@ void read_link(char *linkedPath)
 	printf("SymLink: %s->%s\n", linkedPath, dp->name);
 
 	return;
-
 }
-
 
 void my_touch(char *file)
 {
@@ -2700,7 +2658,6 @@ int open_File(char *fileName, int mode)
 	if (isDebug) printf("Ino = %d\n", ino);
 	mip = iget(device, ino);
 	
-
 	if ((mip->INODE.i_mode & 0100000) != 0100000)
 	{
 		printf("NOT A REGULAR FILE, RETURNING\n");
@@ -2746,15 +2703,12 @@ int open_File(char *fileName, int mode)
 	case(2): newFile->offset = 0;
 		break;
 	case(3): newFile->offset = mip->INODE.i_size;
-		break;
-		
+		break;		
 	}
 	if (isDebug) printf("Location of open file = %d\n", location);
 	running->fd[location] = newFile;
 	return location;
 }
-
-
 
 int close_file(int descriptor)
 {
@@ -2774,7 +2728,6 @@ int close_file(int descriptor)
 
 	OFT *newFile = running->fd[descriptor];
 
-
 	running->fd[descriptor] = 0;
 
 	newFile->refCount--;
@@ -2789,7 +2742,6 @@ int close_file(int descriptor)
 
 	return 1;
 }
-
 
 int my_lseek(int fileD, int position)
 {
@@ -2808,7 +2760,6 @@ int my_lseek(int fileD, int position)
 	}
 	file->offset = position;
 	return op;
-
 }
 
 int pfd()
@@ -2824,11 +2775,9 @@ int pfd()
 		{
 			if (isDebug) printf("running->fd[%d] == NULL returning\n", i);
 			return;
-		}
-			
+		}			
 		else
-		{
-			
+		{			
 			switch (proc->fd[i]->mode)
 			{
 			case 0: temp = "READ";
@@ -2857,28 +2806,22 @@ int readStart()
 	{
 		printf("File not currently open, returning\n");
 		return;
-	}
-	
+	}	
 	else
 	{
 		if (running->fd[toRead]->mode == 0 || running->fd[toRead]->mode == 2)
 		{
 			nbytes = atoi(command[2]);
 
-			my_read(toRead, buf, nbytes);
-			
+			my_read(toRead, buf, nbytes);			
 		}
 		else
 		{
 			printf("File not open for reading, returning\n");
 			return;
-		}
-		
+		}		
 	}
-
-
 }
-
 
 int my_read(int descriptor, char *buf, int nbytes)
 {
@@ -2897,10 +2840,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 	if (isDebug) printf("Avil = %ld\n", avil);
 	if (isDebug) printf("nbytes = %d\n", nbytes);
 
-
 	long lbk, startbyte, blk, remain;
-
-
 	char *cq = buf;
 
 	while (nbytes && avil)
@@ -2954,9 +2894,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 			remain--;//decrease amount remaining
 			if (nbytes <= 0 || avil <= 0)
 				break;
-		}
-
-		
+		}		
 	}
 	printf("\nmyread: read %d char from file descriptor %d\n", count, descriptor);
 	if (isDebug) printf("%s\n", buf);
@@ -2986,7 +2924,6 @@ int cat(char *fileToCat)
 	}
 	printf("\n\n");
 	close_file(descriptor);
-
 }
 
 int write_file()
@@ -2994,8 +2931,6 @@ int write_file()
 	int descriptor = atoi(command[1]);
 	if (isDebug) printf("Descriptor = %d\n", descriptor);
 	
-
-  ////////////////////////////////////// NEW GET LINE STUFF ////////////////////////
   char *toWrite = NULL;
   size_t len = BLOCK_SIZE;
 
@@ -3017,11 +2952,6 @@ int write_file()
     }
   }
 
-  ////////////////////////////////// END NEW GET LINE STUFF ////////////////////////
-
-
-
-
 	if (isDebug) printf("toWrite string = %s\n", toWrite);
 
 	if (running->fd[descriptor] == NULL || running->fd[descriptor]->mode == 0)
@@ -3041,14 +2971,10 @@ int write_file()
 	buf[nbytes] = 0;
 
 	return my_write(descriptor,buf,nbytes);
-
-
 }
-
 
 int my_write(int descriptor, char buf[], int nbytes)
 {
-
 	int lbk, blk, startByte, remain;
 	long indirect;
 	char indirBuf[BLOCK_SIZE], dindirBuf[BLOCK_SIZE], wbuf[BLOCK_SIZE];
@@ -3106,18 +3032,15 @@ int my_write(int descriptor, char buf[], int nbytes)
 	printf("wrote %d char into file descriptor fd=%d\n", oftp->offset, descriptor);
 	iput(mip);
 	return nbytes;
-
 }
-
 
 int my_cp(char *source, char *destination)
 {
-
 	if (isDebug) printf("source = %s             destination = %s\n", source, destination);
 
-    command[3] = command[1];
-    command[1] = command[2];
-    my_creat(command[1]);
+  command[3] = command[1];
+  command[1] = command[2];
+  my_creat(command[1]);
 	int srcDec = open_File(source, 1);
 
 	if (isDebug) pfd();
@@ -3139,16 +3062,13 @@ int my_cp(char *source, char *destination)
 	}
 }
 
-
 int my_mv(char *source, char *destination)
-{
-	
+{	
 	my_link(source, destination); // hard link two files, which makes a copy of the source in the destination 
 	my_unlink(source); // unlink the source because its not a link just want a copy
 
 	return 1;
 }
-
 
 void debug_flip()
 {
@@ -3266,8 +3186,6 @@ void commandTable()
   }
 }
 
-
-
 ////////////////////////////////////////////////////////////////////
 // MAINLINE                                                       //
 ////////////////////////////////////////////////////////////////////
@@ -3294,8 +3212,7 @@ main(int argc, char *argv[ ]) {
   // Print help menu
   my_help();
 
-  // Get commands from stdin
-  //MAGIC LOOP    
+  // Get commands from stdin    
   while(1)
   {
     // Print prompt for user command entry
@@ -3317,7 +3234,7 @@ main(int argc, char *argv[ ]) {
       	}
       }
 
- 	  char buf[BLKSIZE];
+ 	    char buf[BLKSIZE];
   	  get_block(fd, 1, buf);
   	  sp = (SUPER *)buf;
 
@@ -3341,6 +3258,5 @@ main(int argc, char *argv[ ]) {
     // Call command table, looks up the command in command[0] and executes
     commandTable();
   }
-
-  printf("Exiting J&J EXT2FS program! Have a nice day!\n");
+  printf("\nExiting J&J EXT2FS program! Have a nice day!\n\n");
 }
