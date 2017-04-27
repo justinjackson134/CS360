@@ -2682,7 +2682,7 @@ int open_File(char *fileName, int mode)
 	mip = iget(device, ino);
 	
 
-	if (mip->INODE.i_mode != FILE_MODE)
+	if ((mip->INODE.i_mode & 0100000) == 0100000)
 	{
 		printf("NOT A REGULAR FILE, RETURNING\n");
 		return;
@@ -2916,7 +2916,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 		char *cp = readBuf + startbyte;
 
 		remain = BLOCK_SIZE - startbyte;
-		if (isDebug) printf("Before while(remaing > 0)\n");
+		if (isDebug) printf("Before while(remain > 0)   remain = %ld\n", remain);
 
 		while (remain > 0)
 		{
