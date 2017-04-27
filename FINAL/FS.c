@@ -2950,7 +2950,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 	return count;
 }
 
-/*
+
 int cat(char *fileToCat)
 {
 	char myBuf[BLOCK_SIZE], dummy = 0; //null char at end of mybuf[]
@@ -2960,7 +2960,7 @@ int cat(char *fileToCat)
 
 	while (n = my_read(descriptor, myBuf, BLOCK_SIZE))
 	{
-		myBuf[n] = 0;
+		myBuf[n] = dummy;
 		for (int i = 0; i < BLOCK_SIZE; i++)
 		{
 			putchar(myBuf[i]);
@@ -2969,7 +2969,7 @@ int cat(char *fileToCat)
 	close(descriptor);
 
 }
-
+/*
 int write_file()
 {
 	int descriptor = command[1];
@@ -3179,6 +3179,10 @@ void commandTable()
   else if (strcmp(command[0], "read") == 0)
   {
 	  readStart();
+  }
+  else if (strcmp(command[0], "cat") == 0)
+  {
+	  cat(command[1]);
   }
 }
 
