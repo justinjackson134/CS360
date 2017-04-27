@@ -3128,7 +3128,14 @@ int my_cp(char *source, char *destination)
 
 	if (isDebug) printf("source = %s             destination = %s\n", source, destination);
 
+  char *tempSource;
+  tempSource = command[1];
+  command[1] = command[2];
 	my_creat(destination);
+  command[1] = tempSource;
+
+
+
 	int srcDec = open_File(source, 0);
 	
 	
