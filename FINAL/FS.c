@@ -2965,12 +2965,16 @@ int cat(char *fileToCat)
 
 	while (n = my_read(descriptor, myBuf, BLOCK_SIZE))
 	{
-		myBuf[n+1] = dummy;
-		/*for (int i = 0; i < n; i++)
+		if (n != 0)
 		{
+			myBuf[n + 1] = dummy;
+			/*for (int i = 0; i < n; i++)
+			{
 			putchar(myBuf[i]);
-		}*/
-		printf("%s", myBuf);
+			}*/
+			printf("%s", myBuf);
+		}
+		
 	}
 	printf("\n\n");
 	close_file(descriptor);
