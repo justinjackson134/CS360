@@ -3125,6 +3125,7 @@ int my_write(int descriptor, char buf[], int nbytes)
 
 int my_cp(char *source, char *destination)
 {
+	my_creat(destination);
 	int srcDec = open_File(source, 0);
 	int destDec = open_File(destination, 1);
 	char srcBuf[BLOCK_SIZE], destBuf[BLOCK_SIZE];
