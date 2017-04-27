@@ -3128,20 +3128,14 @@ int my_cp(char *source, char *destination)
 
 	if (isDebug) printf("source = %s             destination = %s\n", source, destination);
 
-  char *tempSource;
-  tempSource = command[1];
-  command[1] = command[2];
-	my_creat(destination);
-  command[1] = tempSource;
 
-
-
-	int srcDec = open_File(command[1], 0);
+	my_creat(command[2]);
+	int srcDec = open_File(source, 0);
 	
 	
 	
 
-	int destDec = open_File(command[2], 1);
+	int destDec = open_File(destination, 1);
 	char srcBuf[BLOCK_SIZE], destBuf[BLOCK_SIZE];
 
 	int n;
