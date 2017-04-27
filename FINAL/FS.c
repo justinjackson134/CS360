@@ -129,8 +129,7 @@ SUPER *sp;
 INODE *ip;
 DIR   *dp; 
 
-// Buffer used in getblock
-//char buf[BLKSIZE];
+
 // File Descriptor int
 int fd;
 // Location of Inodes Beging Block
@@ -216,12 +215,12 @@ MINODE *iget(int dev, int ino)
   for (i=0; i < NMINODES; i++){
     mip = &minode[i];
     if (mip->refCount == 0){
-       if (isDebug) printf("\nallocating NEW minode[%d] for [%d %d]\n", i, dev, ino);  // WHAT IS DEV? EARLIER WE GET GROUP DESCRIPTOR, IT USED TO SAY DEV, BUT THAT DIDNT WORK SO I MADE IT FD
+       if (isDebug) printf("\nallocating NEW minode[%d] for [%d %d]\n", i, dev, ino); 
        // Increment ref count as we are using it
        mip->refCount = 1;
-       // I DONT KNOW WHAT THIS DOES <--------------------------------------------------------------------------------------------------------------------
+       
        mip->dev = dev; mip->ino = ino;  // assing to (dev, ino)
-       // WHAT DOES DIRTY MEAN <--------------------------------------------------------------------------------------------------------------------------
+     
        mip->dirty = mip->mounted = mip->mountptr = 0;
        // get INODE of ino into buf[ ]      
        blk  = (ino-1)/8 + InodesBeginBlock;  // iblock = Inodes start block #
@@ -270,7 +269,7 @@ int search(MINODE *minodePtr, char *name) {
   char givenName[256];
 
   strncpy(givenName, name, strlen(name));
-  //printf("??????????????????? GIVEN NAME: %s ??????????????????????\n", givenName);
+ 
 
 
   int i, j;
@@ -313,7 +312,7 @@ int search(MINODE *minodePtr, char *name) {
 			  cp += dp->rec_len;
 			  dp = (DIR *)cp;
 
-			  //getchar();
+			
 		  }
 	  }
 	 
@@ -322,7 +321,7 @@ int search(MINODE *minodePtr, char *name) {
   return 0;
 }
 
-// Given by KC
+
 int getino(int *dev, char *pathname)
 {
   int i, ino = 0, blk, disp,n;
@@ -331,24 +330,24 @@ int getino(int *dev, char *pathname)
   MINODE *mip;
 
   if (isDebug) printf("getino: dev=%d pathname=%s\n", *dev, pathname);
-  if (isDebug) printf("Right before strcmp1\n");                /////////////////////////////// Going
+  if (isDebug) printf("Right before strcmp1\n");              
   if (strcmp(pathname, "/")==0)
   {
       return 2;
   }
-  if (isDebug) printf("Right before strcmp2\n");                /////////////////////////////// Hard
+  if (isDebug) printf("Right before strcmp2\n");                
   if (pathname[0]=='/')
   {
-    if (isDebug) printf("Right before iget(*dev, 2)\n");                /////////////////////// With
+    if (isDebug) printf("Right before iget(*dev, 2)\n");                
     mip = iget(*dev, 2);
   }
   else    
   {
-    if (isDebug) printf("Right before iget(running->cwd->dev, running->cwd->ino)\n");   /////// The
+    if (isDebug) printf("Right before iget(running->cwd->dev, running->cwd->ino)\n");  
     mip = iget(running->cwd->dev, running->cwd->ino);
   }
 
-  if (isDebug) printf("Right before strcpy\n"); /////////////////////////////////////////////// Prints
+  if (isDebug) printf("Right before strcpy\n");
   strcpy(buf, pathname);
 
 
@@ -392,7 +391,7 @@ int getino(int *dev, char *pathname)
          return 0;
       }
       iput(mip);
-      mip = iget(*dev, ino);//need to delete * 
+      mip = iget(*dev, ino);
   }
   iput(mip);
   return ino;
@@ -440,7 +439,7 @@ void mountRoot(char *disk)
   // Set the super pointer == buf
   sp = (SUPER *)buf;
 
-  // Added this from the ialloc.c of lab 6, I believe we need it in order for ialloc and balloc to work correctly --- This may need to be something else however!
+  
   ninodes = sp->s_inodes_count;
   nblocks = sp->s_blocks_count;
   if(isDebug)
@@ -471,7 +470,7 @@ void mountRoot(char *disk)
     
     // Set InodesBeginBlock
     InodesBeginBlock = gp->bg_inode_table;
-    // Added this from the ialloc.c of lab 6, I believe we need it in order for ialloc and balloc to work correctly --- This may need to be something else however!
+    
     imap = gp->bg_inode_bitmap;
   	if(isDebug) printf("imap = %d\n", imap);
   	bmap = gp->bg_block_bitmap;
@@ -497,8 +496,8 @@ void mountRoot(char *disk)
 	  if (isDebug) printf(" - i_block[0]=%d\n", ip->i_block[0]);
     }
 
-    // WHAT DOES THIS DO?
-    root = iget(fd, 2); // NOTE!!! THIS USED TO SAY "iget(dev,2)" BUT IVE BEEN REPLACING dev WITH fd EVERYWEHER, SO, WHAT??? <--------------------------------------------------------------------
+   
+    root = iget(fd, 2); 
     root->mountptr = (MOUNT *)malloc(sizeof(MOUNT));
     root->mountptr->ninodes = ninodes;
     root->mountptr->nblocks = nblocks;
@@ -600,7 +599,7 @@ int tokenizeCommmand()
   }
   else
   {
-	if(strlen(readLine) > 1) /////////////////////////////////////////////////////Still weird when you enter just a newline
+	if(strlen(readLine) > 1) 
 	{
 	  readLine[strlen(readLine)-1] = '\0';
 	}
@@ -646,11 +645,11 @@ void my_ls(char *name) {
 	}
 	else
 	{
-	  fd = running->cwd->dev; ////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
+	  fd = running->cwd->dev;
 	  if(isDebug) printf("LS from running->cwd->dev: fd = %d & name = %s\n", fd, name);
 	}
 
-	i = getino(&fd, name); ///////////////////////////////////////////////////////////changed from getino(dev, name) to getino(fd, name)
+	i = getino(&fd, name); 
 	if(isDebug) printf("\ni = %d\n", i);
 
 	if (!i)
@@ -659,7 +658,7 @@ void my_ls(char *name) {
 		return;
 	}
 	if (isDebug) printf("mip = iget(%d, %d)\n", fd, i);
-	mip = iget(fd, i); ///changed from dev to fd
+	mip = iget(fd, i); 
 
 	if (mip->ino == 0x8000)// This is wrong
 	{
@@ -683,7 +682,7 @@ void my_ls(char *name) {
 				printf("Name\tMode\tC_time\t\tM_time\t\tA_time\tLink Count\n");
 				while (cp < &buf[BLKSIZE])
 				{					
-					// This was the original print // printf("%s ", dir->name);
+					
 					// Get the parents inode number
 					ino = dir->inode;
 					// Load the parents inode into a MINODE
@@ -713,7 +712,7 @@ void my_ls(char *name) {
   }
   else
   {
-	fd = running->cwd->dev; //////////////////////////////////////////////////////// THIS IS CURRENTLY REDUNDANT
+	fd = running->cwd->dev; 
 	name = running->cwd->name;//i dont think we need this but i will leave it for now
     if(isDebug) printf("LS (NO PARAMS) from running->cwd->dev: fd = %d & name = %s\n", fd, name);
 	mip = iget(fd, running->cwd->ino);
@@ -944,7 +943,7 @@ int ialloc(int mydev)
 
        put_block(mydev, imap, buf);
 	   fflush(stdout);
-       //printf("!!! IALLOC returning i+1: %d\n", i+1);
+      
        return i+1;
     }
   }
@@ -983,7 +982,7 @@ int balloc(int mydev)
 
        put_block(mydev, bmap, buf);
 	   
-       // GARBAGE PRINTS FROM HERE <-----------------------------------------------------------------------------------
+       
 
        if (isDebug) printf("!!! BALLOC returning i+1: %d\n", i+1);
        return i+1;
@@ -2796,7 +2795,7 @@ int my_lseek(int fileD, int position)
 {
 	int op, sizeFile;
 	OFT *file = running->fd[fileD];
-	sizeFile = running->fd[fileD]->inodeptr->INODE.i_size;//probably not that but we need the size of the file as to not offset too much
+	sizeFile = running->fd[fileD]->inodeptr->INODE.i_size;
 	if (position > sizeFile)
 	{
 		printf("Cannot offset past the file, returning\n");
@@ -2829,7 +2828,7 @@ int pfd()
 			
 		else
 		{
-			//if (isDebug) printf("INSIDE ELSE, i = %d\n", i);
+			
 			switch (proc->fd[i]->mode)
 			{
 			case 0: temp = "READ";
@@ -2957,18 +2956,7 @@ int my_read(int descriptor, char *buf, int nbytes)
 				break;
 		}
 
-		//if one block not enough loop to the outer while loop
-		// we also need to modify this algorithm to read large chunks of data at a time rather than byte by byte
-		//it says it is required in the notes but I am unsure how to do it
-
-
-		/*Instead of reading one byte at a time and updating the counters on each byte,
-		TRY to calculate the maximum number of bytes available in a data block and
-		the number of bytes still needed to read. Take the minimum of the two, and read
-		that many bytes in one operation. Then adjust the counters accordingly. This
-		would make the read loops more efficient.
-
-		REQUIRED: optimize the read algorithm in your project.*/
+		
 	}
 	printf("\nmyread: read %d char from file descriptor %d\n", count, descriptor);
 	if (isDebug) printf("%s\n", buf);
@@ -2991,10 +2979,7 @@ int cat(char *fileToCat)
 		{
 			if (isDebug) printf("n!=0");
 			myBuf[n] = dummy;
-			/*for (int i = 0; i < n; i++)
-			{
-			putchar(myBuf[i]);
-			}*/
+			
 			printf("%s", myBuf);
 		}
 		
@@ -3008,7 +2993,7 @@ int write_file()
 {
 	int descriptor = atoi(command[1]);
 	if (isDebug) printf("Descriptor = %d\n", descriptor);
-	//char *toWrite = command[2];
+	
 
   ////////////////////////////////////// NEW GET LINE STUFF ////////////////////////
   char *toWrite = NULL;
@@ -3055,7 +3040,7 @@ int write_file()
 	if (isDebug) printf("nbytes = %d", nbytes);
 	buf[nbytes] = 0;
 
-	return my_write(descriptor,buf,nbytes);//need to call my_write
+	return my_write(descriptor,buf,nbytes);
 
 
 }
@@ -3157,19 +3142,14 @@ int my_cp(char *source, char *destination)
 
 int my_mv(char *source, char *destination)
 {
-	//techinically there are supposed to be 2 cases for this, one case where the files are on the same device, the other on seperate devices
-	//but since we probably are not gonna get to mount stuff I dont think we should bother right now
-
-
-
-
+	
 	my_link(source, destination); // hard link two files, which makes a copy of the source in the destination 
 	my_unlink(source); // unlink the source because its not a link just want a copy
 
 	return 1;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////// I THINK WE ARE MISSING idealloc and bdealloc (We also need a falloc(later) for oft's)
+
 void debug_flip()
 {
 	if(isDebug)
