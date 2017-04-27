@@ -296,13 +296,13 @@ int search(MINODE *minodePtr, char *name) {
         // Null terminate the name string
         entryName[j] = 0;
 
-        if (strcmp(name, dp->name) == 0)
+        if (strcmp(name, entryName) == 0)
 			  {
-				  if (isDebug) printf("\n - Name: %s == %s", name, dp->name);
+				  if (isDebug) printf("\n - Name: %s == %s", name, entryName);
 				  if (isDebug) printf("\n - Found at INODE: %d\n", dp->inode);
 				  return dp->inode;
 			  }
-			  if (isDebug) printf("\n - Name: %s != %s", name, dp->name);
+			  if (isDebug) printf("\n - Name: %s != %s", name, entryName);
 			  cp += dp->rec_len;
 			  dp = (DIR *)cp;
 
