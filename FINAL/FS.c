@@ -2967,7 +2967,8 @@ int cat(char *fileToCat)
 	{
 		if (n != 0)
 		{
-			myBuf[n + 1] = dummy;
+			if (isDebug) printf("n!=0");
+			myBuf[n] = dummy;
 			/*for (int i = 0; i < n; i++)
 			{
 			putchar(myBuf[i]);
